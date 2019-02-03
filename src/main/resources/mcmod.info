@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "minecraft-ml",
+  "name": "Minecraft-ML",
+  "description": "Machine learning utilities in Minecraft.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["d0048"],
+  "credits": "TODO",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
