@@ -7,10 +7,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ServerProxy implements IProxy{
 	public void preInit() {
-		ForgeRegistries.BLOCKS.register(MCML.mlBlockBase = new MLBlockBase());
-		MCML.mlBlockBaseItemBlock = new ItemBlock(MCML.mlBlockBase);
-		MCML.mlBlockBaseItemBlock.setRegistryName(MCML.mlBlockBase.getRegistryName());
-		ForgeRegistries.ITEMS.register(MCML.mlBlockBaseItemBlock);
 	}
 
 	public void init() {

@@ -1,0 +1,12 @@
+ {
+    "parent": "block/cube",
+    "textures": {
+        "down": "minecraft-ml:blocks/mlbase_down",
+        "up": "minecraft-ml:blocks/mlbase_up",
+        "north": "minecraft-ml:blocks/mlbase_north",
+        "east": "minecraft-ml-ml:blocks/mlbase_east",
+        "south": "minecraft-ml:blocks/mlbase_south",
+        "west": "minecraft-ml:blocks/mlbase_west",
+        "particle": "blocks/lapis_block"
+    }
+}

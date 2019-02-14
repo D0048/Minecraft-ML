@@ -1,6 +1,6 @@
 [
 {
-  "modid": "minecraft-ml",
+  "modid": "minecraft_ml",
   "name": "Minecraft-ML",
   "description": "Machine learning utilities in Minecraft.",
   "version": "${version}",
