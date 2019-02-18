@@ -33,20 +33,14 @@ public class MCML {
 	public static IProxy proxy;
 	public static Configuration config;
 
-	public static MLBlockBase mlBlockBase; // this holds the unique instance of your block
-	public static ItemBlock mlBlockBaseItemBlock;
-
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		// Common Init
 		MCML.logger.error("--MCML Start Init---");
-		ForgeRegistries.BLOCKS.register(MCML.mlBlockBase = new MLBlockBase());
-		MCML.mlBlockBaseItemBlock = new ItemBlock(MCML.mlBlockBase);
-		MCML.mlBlockBaseItemBlock.setRegistryName(MCML.mlBlockBase.getRegistryName());
-		ForgeRegistries.ITEMS.register(MCML.mlBlockBaseItemBlock);
-		
+		MLBlockBase.commonInit();
+
 		proxy.preInit();
 	}
 
