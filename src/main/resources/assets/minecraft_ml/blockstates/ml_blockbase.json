@@ -2,10 +2,10 @@
 	"forge_marker": 1,
 	"variants": {
 		"normal": {
-			"model": "minecraft_ml:ml_blockbase"
+			"model": "minecraft_ml:ml_blockbase/ml_blockbase.obj"
 		},
 		"inventory": {
-			"model": "minecraft_ml:ml_blockbase"
+            "model": "minecraft_ml:ml_blockbase/ml_blockbase.obj"
 		}
 	}
 }
