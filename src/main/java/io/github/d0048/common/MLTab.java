@@ -18,6 +18,6 @@ public class MLTab extends CreativeTabs {
 
 	@Override
 	public ItemStack getTabIconItem() {
-		return new ItemStack(MLBlockBase.mlBlockBaseItemBlock);
+		return new ItemStack(MLBlockBase.mlBlockBaseItemBlock).setStackDisplayName(MCML.NAME);
 	}
 }

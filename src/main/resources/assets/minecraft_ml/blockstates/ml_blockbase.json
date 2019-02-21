@@ -1,15 +1,13 @@
 {
-	"forge_marker": 1,
-	"defaults": {
-	    "parent": "block/cube",
+    "forge_marker": 1,
+    "defaults": {
+        "parent": "block/cube",
         "model": "minecraft_ml:ml_blockbase/ml_blockbase.obj"
-	},
-	"variants": {
-		"normal": {
-            "model": "minecraft_ml:ml_blockbase/ml_blockbase.obj"
-		},
-		"inventory": {
-            "model": "minecraft_ml:ml_blockbase/ml_blockbase.obj"
-		}
-	}
+    },
+    "variants": {
+        "normal": {
+            "y": 0, "x": 0
+        },
+        "inventory": [{}]
+    }
 }
