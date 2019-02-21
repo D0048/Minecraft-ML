@@ -1,6 +1,6 @@
 {
-    "_comment": "this is useless now",
     "parent": "block/cube",
+    "model": "minecraft_ml:ml_blockbase/ml_blockbase.obj",
     "textures": {
         "down": "minecraft_ml:blocks/haha",
         "up": "minecraft_ml:blocks/haha",

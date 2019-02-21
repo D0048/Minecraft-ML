@@ -1,5 +1,6 @@
 package io.github.d0048.common.blocks;
 
+import io.github.d0048.common.MLTab;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -18,22 +19,24 @@ public class MLBlockBase extends Block {
 	public static ItemBlock mlBlockBaseItemBlock;
 
 	public static void commonInit() {
-		ForgeRegistries.BLOCKS.register(mlBlockBase = new MLBlockBase());
+		ForgeRegistries.BLOCKS.register(mlBlockBase = new MLBlockBase("ml_blockbase", "MCML BlockBase"));
 		mlBlockBaseItemBlock = new ItemBlock(mlBlockBase);
 		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
 		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
+		mlBlockBase.setCreativeTab(MLTab.mlTab);
 	}
 
 	public static void clientInit() {
 		ModelLoader.setCustomModelResourceLocation(MLBlockBase.mlBlockBaseItemBlock, 0,
-				new ModelResourceLocation("minecraft_ml:ml_blockbase_item", "inventory"));
+				new ModelResourceLocation("minecraft_ml:ml_blockbase", "inventory"));
+
 	}
 
-	public MLBlockBase() {
+	public MLBlockBase(String registryName, String unlocalizedName) {
 		super(Material.ROCK);
-		this.setCreativeTab(CreativeTabs.REDSTONE); // the block will appear on the Blocks tab in creative
-		this.setUnlocalizedName("MCML BlockBase");
-		this.setRegistryName("ml_blockbase");
+		this.setCreativeTab(CreativeTabs.REDSTONE);
+		this.setRegistryName(registryName);
+		this.setUnlocalizedName(unlocalizedName);
 	}
 
 	@Override
@@ -49,5 +52,11 @@ public class MLBlockBase extends Block {
 	@Override
 	public boolean isOpaqueCube(IBlockState iBlockState) {
 		return true;
+	}
+
+	@Override
+	public MLBlockBase setCreativeTab(CreativeTabs tab) {
+		super.setCreativeTab(tab);
+		return this;
 	}
 }
