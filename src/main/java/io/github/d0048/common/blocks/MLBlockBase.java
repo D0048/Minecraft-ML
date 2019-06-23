@@ -15,6 +15,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,6 +29,7 @@ public class MLBlockBase extends Block {
 		mlBlockBaseItemBlock = new ItemBlock(mlBlockBase);
 		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
 		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
+		//mlBlockBaseItemBlock.setFull3D();
 		mlBlockBase.setCreativeTab(MLTab.mlTab);
 	}
 
@@ -40,6 +42,9 @@ public class MLBlockBase extends Block {
 		super(Material.ROCK);
 		this.setRegistryName(registryName);
 		this.setUnlocalizedName(unlocalizedName);
+		this.setLightLevel(1f);
+		this.setLightOpacity(1);
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	@Override

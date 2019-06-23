@@ -5,9 +5,15 @@
         "model": "minecraft_ml:ml_scalar/ml_scalar.obj"
     },
     "variants": {
-        "normal": {
+        "nan": {
             "y": 0, "x": 0
         },
-        "inventory": [{}]
+        "normal": {
+            "y": 0, "x": 0
+        }
+        ,
+        "inventory": {
+            "y": 0, "x": 0
+        }
     }
 }

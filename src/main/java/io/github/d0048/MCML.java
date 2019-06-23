@@ -4,6 +4,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -39,7 +40,7 @@ public class MCML {
 		logger = event.getModLog();
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		// Common Init
-		MCML.logger.error("--MCML Start Init---");
+		MCML.logger.info("--MCML Start Init---");
 		MLBlockBase.commonInit();
 		MLScalar.commonInit();
 		proxy.preInit();
@@ -48,9 +49,8 @@ public class MCML {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		proxy.init();
-		// just a small test
 		MinecraftForge.EVENT_BUS.register(this);
-		MCML.logger.error("--MCML End Init---");
+		MCML.logger.info("--MCML End Init---");
 	}
 
 	@SubscribeEvent
@@ -58,4 +58,5 @@ public class MCML {
 		event.getEntityPlayer().attemptTeleport(event.getEntityPlayer().posX, event.getEntityPlayer().posY + 5,
 				event.getEntityPlayer().posZ);
 	}
+
 }
