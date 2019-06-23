@@ -21,9 +21,12 @@ public class MLScalar extends MLBlockBase {
 	public static MLScalar mlScalar;// this holds the unique instance of your block
 	public static ItemBlock mlScalarItemBlock;
 
+	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		MCML.logger.info("clicked");
+			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (worldIn.isRemote) {
+			MCML.logger.info("clicked");
+		}
 		return true;
 	}
 

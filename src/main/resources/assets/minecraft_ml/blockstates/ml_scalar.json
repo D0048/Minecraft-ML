@@ -10,10 +10,41 @@
         },
         "normal": {
             "y": 0, "x": 0
-        }
-        ,
+        },
         "inventory": {
             "y": 0, "x": 0
-        }
+        },
+        "value_0": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_0.obj"},
+        "value_1": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_1.obj"},
+        "value_2": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_2.obj"},
+        "value_3": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_3.obj"},
+        "value_4": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_4.obj"},
+        "value_5": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_5.obj"},
+        "value_6": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_6.obj"},
+        "value_7": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_7.obj"},
+        "value_8": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_8.obj"},
+        "value_9": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_9.obj"},
+        "value_10": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_10.obj"},
+        "value_11": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_11.obj"},
+        "value_12": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_12.obj"},
+        "value_13": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_13.obj"},
+        "value_14": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_14.obj"},
+        "value_15": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_15.obj"},
+        "value_16": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_16.obj"},
+        "value_17": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_17.obj"},
+        "value_18": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_18.obj"},
+        "value_19": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_19.obj"},
+        "value_20": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_20.obj"},
+        "value_21": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_21.obj"},
+        "value_22": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_22.obj"},
+        "value_23": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_23.obj"},
+        "value_24": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_24.obj"},
+        "value_25": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_25.obj"},
+        "value_26": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_26.obj"},
+        "value_27": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_27.obj"},
+        "value_28": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_28.obj"},
+        "value_29": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_29.obj"},
+        "value_30": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_30.obj"},
+        "value_31": {"parent": "block/cube", "model": "minecraft_ml:ml_scalar/ml_scalar_value_31.obj"}
     }
 }
