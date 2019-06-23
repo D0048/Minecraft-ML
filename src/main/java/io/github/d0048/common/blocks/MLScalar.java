@@ -1,5 +1,6 @@
 package io.github.d0048.common.blocks;
 
+import io.github.d0048.common.MLTab;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.client.model.ModelLoader;
@@ -14,11 +15,12 @@ public class MLScalar extends MLBlockBase {
 		mlScalarItemBlock = new ItemBlock(mlScalar);
 		mlScalarItemBlock.setRegistryName(mlScalar.getRegistryName());
 		ForgeRegistries.ITEMS.register(mlScalarItemBlock);
+		mlScalar.setCreativeTab(MLTab.mlTab);
 	}
 
 	public static void clientInit() {
-		ModelLoader.setCustomModelResourceLocation(MLBlockBase.mlBlockBaseItemBlock, 0,
-				new ModelResourceLocation("minecraft_ml:ml_blockbase_item", "inventory"));
+		ModelLoader.setCustomModelResourceLocation(mlScalarItemBlock, 0,
+				new ModelResourceLocation("minecraft_ml:ml_scalar", "inventory"));
 	}
 
 	public MLScalar() {

@@ -1,5 +1,7 @@
 package io.github.d0048.common.blocks;
 
+import javax.annotation.Nullable;
+
 import io.github.d0048.common.MLTab;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -9,6 +11,9 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,16 +32,25 @@ public class MLBlockBase extends Block {
 	}
 
 	public static void clientInit() {
-		ModelLoader.setCustomModelResourceLocation(MLBlockBase.mlBlockBaseItemBlock, 0,
+		ModelLoader.setCustomModelResourceLocation(mlBlockBaseItemBlock, 0,
 				new ModelResourceLocation("minecraft_ml:ml_blockbase", "inventory"));
-
 	}
 
 	public MLBlockBase(String registryName, String unlocalizedName) {
 		super(Material.ROCK);
-		this.setCreativeTab(CreativeTabs.REDSTONE);
 		this.setRegistryName(registryName);
 		this.setUnlocalizedName(unlocalizedName);
+	}
+
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+		return new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
+	}
+
+	@Nullable
+	@Override
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+		return new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
 	}
 
 	@Override

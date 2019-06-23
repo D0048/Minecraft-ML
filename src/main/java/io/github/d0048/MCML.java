@@ -19,6 +19,7 @@ import org.tensorflow.TensorFlow;
 import com.typesafe.config.Config;
 
 import io.github.d0048.common.blocks.MLBlockBase;
+import io.github.d0048.common.blocks.MLScalar;
 
 @Mod(modid = MCML.MODID, name = MCML.NAME, version = MCML.VERSION)
 public class MCML {
@@ -40,7 +41,7 @@ public class MCML {
 		// Common Init
 		MCML.logger.error("--MCML Start Init---");
 		MLBlockBase.commonInit();
-
+		MLScalar.commonInit();
 		proxy.preInit();
 	}
 
