@@ -27,6 +27,8 @@ public class MCML {
 	public static final String MODID = "minecraft_ml";
 	public static final String NAME = "Minecraft-ML";
 	public static final String VERSION = "0.1a";
+	
+	public static int scalarResolution=16;
 
 	public static Logger logger;
 	@Mod.Instance(MCML.MODID)

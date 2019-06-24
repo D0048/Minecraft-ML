@@ -1,25 +1,34 @@
 package io.github.d0048.common.blocks;
 
-import javax.annotation.Nullable;
+import java.awt.List;
+
+import com.google.common.collect.ImmutableList;
 
 import io.github.d0048.MCML;
 import io.github.d0048.common.MLTab;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import scala.xml.PrettyPrinter;
 
 public class MLScalar extends MLBlockBase {
 	public static MLScalar mlScalar;// this holds the unique instance of your block
 	public static ItemBlock mlScalarItemBlock;
+
+	public static IProperty<Integer> propertyValue = PropertyInteger.create("value", 0, MCML.scalarResolution - 1);;
+	public static IStateMapper valueMapper;
 
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
@@ -27,11 +36,20 @@ public class MLScalar extends MLBlockBase {
 		if (worldIn.isRemote) {
 			MCML.logger.info("clicked");
 		}
+		worldIn.setBlockState(pos, getStateFromMeta((getMetaFromState(state) + 1) % MCML.scalarResolution));
+		MCML.logger.info((getMetaFromState(state)));
 		return true;
+	}
+
+	public void setValue(World worldIn, BlockPos pos, int val, int lower, int upper) {
+		if (val > upper || val < lower || upper < lower)
+			return;
+		worldIn.setBlockState(pos, getStateFromMeta((int) ((double) val / (upper - lower) * MCML.scalarResolution)));
 	}
 
 	public static void commonInit() {
 		ForgeRegistries.BLOCKS.register(mlScalar = new MLScalar());
+		ModelLoader.setCustomStateMapper(mlScalar, valueMapper = new ValueStateMapper());
 		mlScalarItemBlock = new ItemBlock(mlScalar);
 		mlScalarItemBlock.setRegistryName(mlScalar.getRegistryName());
 		ForgeRegistries.ITEMS.register(mlScalarItemBlock);
@@ -43,8 +61,32 @@ public class MLScalar extends MLBlockBase {
 				new ModelResourceLocation("minecraft_ml:ml_scalar", "inventory"));
 	}
 
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, propertyValue);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(propertyValue).intValue();
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return this.getDefaultState().withProperty(propertyValue, meta);
+	}
+
 	public MLScalar() {
 		super("ml_scalar", "Scalar");
 	}
+}
 
+class ValueStateMapper extends StateMapperBase {
+	@Override
+	protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+		int val = state.getValue(MLScalar.propertyValue).intValue();
+		MCML.logger.warn("value_" + val);
+		return new ModelResourceLocation("minecraft_ml:ml_scalar", "value_" + val);
+		// return new ModelResourceLocation("minecraft_ml:ml_scalar", "value_15");
+	}
 }

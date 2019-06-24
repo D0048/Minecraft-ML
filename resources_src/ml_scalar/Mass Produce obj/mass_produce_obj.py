@@ -16,8 +16,10 @@ resolution = 32
 
 for i in range(resolution):
     new_name = 'ml_scalar_value_'+str(i)
+    # obj = objfile.replace('ml_scalar', 'ml_scalar_values/'+new_name)
+    # mtl = mtlfile.replace('ml_scalar', 'ml_scalar_values/'+new_name)
     obj = objfile.replace('ml_scalar', new_name)
-    mtl = mtlfile.replace('ml_scalar', new_name)
+    mtl = mtlfile.replace('ml_scalar', 'ml_scalar_values/'+new_name)
     open(new_name+'.obj', "w").write(obj)
     open(new_name+'.mtl', "w").write(mtl)
     pass

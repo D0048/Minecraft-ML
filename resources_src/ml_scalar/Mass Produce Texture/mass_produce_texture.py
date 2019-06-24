@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 
 original = imread('./ml_scalar.png')
 print(original.shape)
-# White stride at [:,255,:]
-resolution = 32
+# White stride at [:,255-10,:]
+resolution = 16
 width_step = (1/resolution)
-print(original[:, 255, :])
+print(original[:, 255-10, :])
 
 for i in range(resolution):
-    original[:, 255, :] -= width_step
+    original[:, 255-10, :] -= width_step
     plt.imsave('./ml_scalar_value_'+str(i)+'.png', original)

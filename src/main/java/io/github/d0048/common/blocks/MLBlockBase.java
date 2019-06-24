@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import io.github.d0048.common.MLTab;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -29,7 +30,6 @@ public class MLBlockBase extends Block {
 		mlBlockBaseItemBlock = new ItemBlock(mlBlockBase);
 		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
 		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
-		//mlBlockBaseItemBlock.setFull3D();
 		mlBlockBase.setCreativeTab(MLTab.mlTab);
 	}
 
@@ -65,12 +65,17 @@ public class MLBlockBase extends Block {
 
 	@SideOnly(Side.CLIENT)
 	public BlockRenderLayer getBlockLayer() {
-		return BlockRenderLayer.SOLID;
+		return BlockRenderLayer.CUTOUT_MIPPED;
 	}
 
 	@Override
 	public boolean isOpaqueCube(IBlockState iBlockState) {
 		return true;
+	}
+
+	@Override
+	public boolean isFullCube(IBlockState iBlockState) {
+		return false;
 	}
 
 	@Override
