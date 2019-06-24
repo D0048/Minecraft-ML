@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import io.github.d0048.common.MLTab;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -31,6 +30,7 @@ public class MLBlockBase extends Block {
 		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
 		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
 		mlBlockBase.setCreativeTab(MLTab.mlTab);
+		
 	}
 
 	public static void clientInit() {

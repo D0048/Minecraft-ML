@@ -3,6 +3,7 @@ buildscript {
         jcenter()
         //maven { url 'http://repo1.maven.org/maven2' }
         maven { url = "https://files.minecraftforge.net/maven" }
+          flatDir {dirs "libs"}
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -33,15 +34,18 @@ minecraft {
     mappings = "snapshot_20171003"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
-
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
     // https://mvnrepository.com/artifact/org.tensorflow/tensorflow
-    compile group: 'org.tensorflow', name: 'tensorflow', version: '1.1.0-rc2'
-
+    compile group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
+    embed group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -59,7 +63,10 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
 }
-
+//Add dependencies to the JAR
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+}
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version

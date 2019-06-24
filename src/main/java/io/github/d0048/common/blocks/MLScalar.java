@@ -1,8 +1,6 @@
 package io.github.d0048.common.blocks;
 
-import java.awt.List;
-
-import com.google.common.collect.ImmutableList;
+import org.tensorflow.TensorFlow;
 
 import io.github.d0048.MCML;
 import io.github.d0048.common.MLTab;
@@ -21,7 +19,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import scala.xml.PrettyPrinter;
 
 public class MLScalar extends MLBlockBase {
 	public static MLScalar mlScalar;// this holds the unique instance of your block
@@ -34,6 +31,7 @@ public class MLScalar extends MLBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (worldIn.isRemote) {
+			
 			MCML.logger.info("clicked");
 		}
 		worldIn.setBlockState(pos, getStateFromMeta((getMetaFromState(state) + 1) % MCML.scalarResolution));

@@ -1,10 +1,5 @@
 package io.github.d0048;
 
-import com.jcraft.jorbis.Block;
-
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
 public interface IProxy {
 	public void preInit();
 
