@@ -28,6 +28,7 @@ public class MLBlockBase extends Block {
 		ForgeRegistries.BLOCKS.register(mlBlockBase = new MLBlockBase("ml_blockbase", "MCML BlockBase"));
 		mlBlockBaseItemBlock = new ItemBlock(mlBlockBase);
 		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
+		mlBlockBaseItemBlock.setUnlocalizedName(mlBlockBase.getUnlocalizedName());
 		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
 		mlBlockBase.setCreativeTab(MLTab.mlTab);
 		
@@ -42,7 +43,7 @@ public class MLBlockBase extends Block {
 		super(Material.ROCK);
 		this.setRegistryName(registryName);
 		this.setUnlocalizedName(unlocalizedName);
-		this.setLightLevel(1f);
+		this.setLightLevel(0.8f);
 		this.setLightOpacity(1);
 		MinecraftForge.EVENT_BUS.register(this);
 	}

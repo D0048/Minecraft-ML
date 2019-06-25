@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "parent": "block/cube",
+        "model": "minecraft_ml:ml_tensordisplay/ml_tensordisplay_green.obj"
+    },
+    "variants": {
+        "normal": {"y": 0, "x": 0},
+        "inventory": {"parent": "block/cube", "model": "minecraft_ml:ml_tensordisplay/ml_tensordisplay_green.obj","y": 0, "x": 90},
+        "green": {"parent": "block/cube", "model": "minecraft_ml:ml_tensordisplay/ml_tensordisplay_green.obj"},
+        "red": {"parent": "block/cube", "model": "minecraft_ml:ml_tensordisplay/ml_tensordisplay_red.obj"}
+    }
+}
