@@ -2,7 +2,7 @@
     "forge_marker": 1,
     "defaults": {
         "parent": "block/cube",
-        "model": "minecraft_ml:ml_blockbase/ml_blockbase.obj"
+        "model": "minecraft_ml:bad_apple"
     },
     "variants": {
         "normal": {

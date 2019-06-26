@@ -1,0 +1,12 @@
+ {
+    "parent": "block/cube",
+    "textures": {
+        "down": "minecraft_ml:bad_apple",
+        "up": "minecraft_ml:bad_apple",
+        "north": "minecraft_ml:bad_apple",
+        "east": "minecraft_ml:bad_apple",
+        "south": "minecraft_ml:bad_apple",
+        "west": "minecraft_ml:bad_apple",
+        "particle": "blocks/lapis_block"
+    }
+}
