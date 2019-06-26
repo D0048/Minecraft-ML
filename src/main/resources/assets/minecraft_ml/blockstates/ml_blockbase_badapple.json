@@ -1,0 +1,13 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "parent": "block/cube",
+        "model": "minecraft_ml:bad_apple"
+    },
+    "variants": {
+        "normal": {
+            "y": 0, "x": 0
+        },
+        "inventory": [{}]
+    }
+}
