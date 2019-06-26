@@ -30,7 +30,6 @@ public class MLBlockBase extends Block {
 		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
 		mlBlockBaseItemBlock.setUnlocalizedName(mlBlockBase.getUnlocalizedName());
 		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
-		mlBlockBase.setCreativeTab(MLTab.mlTab);
 		
 	}
 
@@ -45,6 +44,7 @@ public class MLBlockBase extends Block {
 		this.setUnlocalizedName(unlocalizedName);
 		this.setLightLevel(0.8f);
 		this.setLightOpacity(1);
+		setCreativeTab(MLTab.mlTab);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

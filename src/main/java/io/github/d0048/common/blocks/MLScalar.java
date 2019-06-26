@@ -35,7 +35,6 @@ public class MLScalar extends MLBlockBase {
 		mlScalarItemBlock.setRegistryName(mlScalar.getRegistryName());
 		mlScalarItemBlock.setUnlocalizedName(mlScalar.getUnlocalizedName());
 		ForgeRegistries.ITEMS.register(mlScalarItemBlock);
-		mlScalar.setCreativeTab(MLTab.mlTab);
 	}
 
 	public static void clientInit() {

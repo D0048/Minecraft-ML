@@ -38,7 +38,6 @@ public class MLTensorDisplay extends MLBlockBase {
 		mlTensorDisplatItemBlock.setRegistryName(mlTensorDisplay.getRegistryName());
 		mlTensorDisplatItemBlock.setUnlocalizedName(mlTensorDisplay.getUnlocalizedName());
 		ForgeRegistries.ITEMS.register(mlTensorDisplatItemBlock);
-		mlTensorDisplay.setCreativeTab(MLTab.mlTab);
 	}
 
 	public static void clientInit() {

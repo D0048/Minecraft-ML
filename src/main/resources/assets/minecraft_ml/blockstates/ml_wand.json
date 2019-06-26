@@ -1,0 +1,11 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "parent": "block/template_torch",
+        "model": "minecraft_ml:ml_wand/ml_wand.obj"
+    },
+    "variants": {
+        "normal": { "model": "minecraft_ml:ml_wand/ml_wand.obj","y": 180, "x": 0},
+        "inventory": { "model": "minecraft_ml:ml_wand/ml_wand.obj","y": 180, "x": 0}
+    }
+}

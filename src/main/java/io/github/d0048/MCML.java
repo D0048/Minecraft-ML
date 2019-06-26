@@ -18,6 +18,8 @@ import io.github.d0048.common.CommandStylus;
 import io.github.d0048.common.blocks.MLBlockBase;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
+import io.github.d0048.common.items.MLItemBase;
+import io.github.d0048.common.items.MLWand;
 
 @Mod(modid = MCML.MODID, name = MCML.NAME, version = MCML.VERSION)
 public class MCML {
@@ -45,6 +47,7 @@ public class MCML {
 		MLBlockBase.commonInit();
 		MLScalar.commonInit();
 		MLTensorDisplay.commonInit();
+		MLWand.commonInit();
 		proxy.preInit();
 	}
 
