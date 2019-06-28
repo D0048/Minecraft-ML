@@ -20,6 +20,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import scala.collection.parallel.ParIterableLike.Max;
 
 public class MLScalar extends MLBlockBase {
 	public static MLScalar mlScalar;// this holds the unique instance of your block
@@ -42,6 +43,12 @@ public class MLScalar extends MLBlockBase {
 				new ModelResourceLocation("minecraft_ml:ml_scalar", "inventory"));
 	}
 
+	public static void placeAt(World world, BlockPos pos, int val) {
+		info("Value " + val + " placed at " + pos);
+		val = Math.min(Math.max(0, val), MCML.scalarResolution - 1);
+		world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
+	}
+
 	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, propertyValue);
@@ -61,9 +68,9 @@ public class MLScalar extends MLBlockBase {
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		worldIn.setBlockState(pos, getStateFromMeta((getMetaFromState(state) + 1) % MCML.scalarResolution));
-		if(worldIn.isRemote)
-		playerIn.sendMessage(
-				new TextComponentString("New State: " + ((getMetaFromState(state) + 1) % MCML.scalarResolution)));
+		if (worldIn.isRemote)
+			playerIn.sendMessage(
+					new TextComponentString("New State: " + ((getMetaFromState(state) + 1) % MCML.scalarResolution)));
 		return true;
 	}
 
@@ -75,6 +82,10 @@ public class MLScalar extends MLBlockBase {
 
 	public MLScalar() {
 		super("ml_scalar", "Scalar");
+	}
+
+	static void info(String s) {
+		MCML.logger.info(s);
 	}
 }
 
