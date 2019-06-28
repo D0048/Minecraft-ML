@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 import org.tensorflow.TensorFlow;
 
 import io.github.d0048.common.CommandStylus;
+import io.github.d0048.common.MLDataCore;
+import io.github.d0048.common.MLDataCoreTF;
 import io.github.d0048.common.blocks.MLBlockBase;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
@@ -27,6 +29,7 @@ public class MCML {
 	public static final String NAME = "Minecraft-ML";
 	public static final String VERSION = "0.1a";
 
+	public static MLDataCore mlDataCore;
 	public static int scalarResolution = 16;
 
 	public static Logger logger;
@@ -44,6 +47,7 @@ public class MCML {
 		MCML.logger.info("--MCML Start Init---");
 		// MCML.logger.info("Tensorflow Version: " + TensorFlow.version());
 		// TODO: Add new
+		mlDataCore = new MLDataCoreTF();
 		MLBlockBase.commonInit();
 		MLScalar.commonInit();
 		MLTensorDisplay.commonInit();
