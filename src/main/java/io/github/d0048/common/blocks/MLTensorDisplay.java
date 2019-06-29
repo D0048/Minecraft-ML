@@ -63,7 +63,6 @@ public class MLTensorDisplay extends MLBlockBase {
 			if (!(playerIn.getActiveItemStack().getItem() instanceof MLWand)) {
 				((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).toggleWritable();
 				((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).setDataID("Display test 0");
-				;
 				playerIn.sendMessage(
 						new TextComponentString("Display is now " + (getMetaFromState(state) == 0 ? "ro" : "rw")));
 				return true;

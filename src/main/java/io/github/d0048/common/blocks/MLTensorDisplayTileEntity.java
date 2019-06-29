@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -81,16 +82,29 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 			}
 		MLScalar.placeAt(getWorld(), edgeLow, 15);// debug
 		MLScalar.placeAt(getWorld(), edgeHigh, 15);// debug
+		markDirty();
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		return super.writeToNBT(compound);
+		super.writeToNBT(compound);
+		compound.setString("dataId", dataID);
+		compound.setIntArray("edgeHigh", new int[] { edgeHigh.getX(), edgeHigh.getY(), edgeHigh.getZ() });
+		compound.setIntArray("edgeLow", new int[] { edgeLow.getX(), edgeLow.getY(), edgeLow.getZ() });
+		markDirty();
+		return compound;
+
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
+		if (compound.hasKey("edgeHigh"))
+			edgeHigh = new BlockPos(compound.getIntArray("edgeHigh")[0], compound.getIntArray("edgeHigh")[1],
+					compound.getIntArray("edgeHigh")[2]);
+		if (compound.hasKey("edgeLow"))
+			edgeLow = new BlockPos(compound.getIntArray("edgeLow")[0], compound.getIntArray("edgeLow")[1],
+					compound.getIntArray("edgeLow")[2]);
 	}
 
 	@Override
