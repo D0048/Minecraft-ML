@@ -13,11 +13,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 	String dataID = "";
 	MLDataWrap dataWrap;
+	int[] displayShape = new int[3];
 	BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = new BlockPos(0, 0, 0);
 	HashMap<BlockPos, Integer> pos2IndexMap = new HashMap<BlockPos, Integer>();
 	HashMap<Integer, BlockPos> index2PosMap = new HashMap<Integer, BlockPos>();
@@ -39,8 +41,6 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 	@Override
 	public void update() {
 		if (curr++ % loop == 0 && dataWrap != null) {
-			// info("Tensor updated at " + this.getPos() + " with state "
-			// +getBlockMetadata());
 		}
 	}
 
@@ -105,6 +105,19 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 		if (compound.hasKey("edgeLow"))
 			edgeLow = new BlockPos(compound.getIntArray("edgeLow")[0], compound.getIntArray("edgeLow")[1],
 					compound.getIntArray("edgeLow")[2]);
+	}
+
+	@Override
+	public String toString() {
+		String ret = TextFormatting.LIGHT_PURPLE + super.toString() + ":\n";
+		ret += TextFormatting.LIGHT_PURPLE + "    - DataID: " + TextFormatting.YELLOW + getDataID()
+				+ TextFormatting.LIGHT_PURPLE + "\n";
+		ret += TextFormatting.LIGHT_PURPLE + "    - DataWrap: " + dataWrap + "\n";
+		ret += TextFormatting.LIGHT_PURPLE + "    - Display Shape: " + TextFormatting.YELLOW
+				+ (dataWrap == null ? -1 : dataWrap.getData().length) + TextFormatting.LIGHT_PURPLE + " reshaped into "
+				+ TextFormatting.YELLOW + Arrays.toString(displayShape) + "\n";
+		return ret;
+
 	}
 
 	@Override

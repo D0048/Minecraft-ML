@@ -36,6 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import scala.swing.TextComponent;
@@ -59,7 +60,7 @@ public class MLWand extends MLItemBase {
 				new ModelResourceLocation(MCML.MODID + ":ml_wand", "inventory"));
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onBlockHarvested(BlockEvent.BreakEvent e) {
 		Item i = e.getPlayer().inventory.getCurrentItem().getItem();
 		World world = e.getWorld();
@@ -75,12 +76,12 @@ public class MLWand extends MLItemBase {
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onRightClick(PlayerInteractEvent.RightClickBlock e) {
 		Item i = e.getEntityPlayer().inventory.getCurrentItem().getItem();
 		World world = e.getWorld();
 		if (i != null && i.equals(mlWand)) {
-			if (!world.isRemote) {
+			if (!world.isRemote && e.getHand() == EnumHand.MAIN_HAND) {
 				// TileEntity te = world.getTileEntity(e.getPos());
 				e.getEntityPlayer().sendMessage(
 						new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selection 2: " + e.getPos()));
@@ -90,19 +91,6 @@ public class MLWand extends MLItemBase {
 			selectionMapRight.put(e.getEntityPlayer(), e.getPos());
 			e.setCanceled(true);
 		}
-	}
-
-	@Override
-	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand,
-			EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (!worldIn.isRemote) {
-			TileEntity te = worldIn.getTileEntity(pos);
-			player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selection 2: " + pos));
-		} else {
-			Minecraft.getMinecraft().world.setBlockState(pos, Blocks.QUARTZ_BLOCK.getDefaultState());
-		}
-		selectionMapRight.put(player, pos);
-		return EnumActionResult.SUCCESS;
 	}
 
 	int effectInterval = 15, currentInterval = 0;
@@ -115,11 +103,11 @@ public class MLWand extends MLItemBase {
 			EntityPlayer player = (EntityPlayer) entityIn;
 			BlockPos[] ss = getPlayerSelection(player);
 			if (ss != null && !ss[0].equals(ss[1])) {
-				Util.surrendBlock(worldIn, EnumParticleTypes.VILLAGER_HAPPY, ss[0], 3);
-				Util.surrendBlock(worldIn, EnumParticleTypes.VILLAGER_HAPPY, ss[1], 3);
-				// Util.fillArea(worldIn, EnumParticleTypes.REDSTONE, ss[0], ss[1], 1);
+				Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, ss[0], 7);
+				Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, ss[1], 7);
+				// Util.fillArea(worldIn, EnumParticleTypes.VILLAGER_HAPPY, ss[0], ss[1], 1);
 				Util.surrendArea(worldIn, EnumParticleTypes.REDSTONE, ss[0], ss[1],
-						(int) (Math.sqrt(ss[0].distanceSq(ss[1]))));
+						(int) (Math.sqrt(ss[0].distanceSq(ss[1])) / 2));
 			}
 		}
 	}

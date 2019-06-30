@@ -11,15 +11,18 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+
 import org.apache.logging.log4j.Logger;
 import org.tensorflow.TensorFlow;
 
-import io.github.d0048.common.CommandStylus;
+import io.github.d0048.common.MLWandCommand;
 import io.github.d0048.common.MLDataCore;
 import io.github.d0048.common.MLDataCoreTF;
 import io.github.d0048.common.blocks.MLBlockBase;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
+import io.github.d0048.common.gui.MLGuiHandler;
 import io.github.d0048.common.items.MLItemBase;
 import io.github.d0048.common.items.MLWand;
 
@@ -60,11 +63,12 @@ public class MCML {
 		proxy.init();
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(MLWand.mlWand);
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, MLGuiHandler.INSTANCE);
 		MCML.logger.info("--MCML End Init---");
 	}
 
 	@EventHandler
 	public void start(FMLServerStartingEvent event) {
-		event.registerServerCommand(CommandStylus.commandStylus = new CommandStylus());
+		event.registerServerCommand(MLWandCommand.commandStylus = new MLWandCommand());
 	}
 }

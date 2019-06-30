@@ -52,7 +52,6 @@ public class Util {
 			world.spawnParticle(effect, x + 1 + dev, y + step * i+ dev*3, z+ dev, 0, 1 + dev / 2, 0);
 			world.spawnParticle(effect, x + dev, y + step * i+ dev*3, z + 1+ dev, 0, 1 + dev / 2, 0);
 			world.spawnParticle(effect, x + 1 + dev, y + step * i+ dev*3, z + 1+ dev, 0, 1 + dev / 2, 0);
-
 		}
 	}
 

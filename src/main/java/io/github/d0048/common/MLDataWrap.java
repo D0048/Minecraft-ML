@@ -2,6 +2,8 @@ package io.github.d0048.common;
 
 import java.util.Arrays;
 
+import net.minecraft.util.text.TextFormatting;
+
 public class MLDataWrap {
 	int[] shape;
 	int[] data;
@@ -30,6 +32,12 @@ public class MLDataWrap {
 		super();
 		this.setShape(shape);
 		this.setData(data);
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " with Shape " + TextFormatting.YELLOW + Arrays.toString(getShape())
+				+ TextFormatting.LIGHT_PURPLE;
 	}
 
 }

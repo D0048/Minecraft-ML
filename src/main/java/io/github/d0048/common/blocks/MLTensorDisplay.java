@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import scala.reflect.internal.Trees.This;
 
 public class MLTensorDisplay extends MLBlockBase {
 	public static MLTensorDisplay mlTensorDisplay;// this holds the unique instance of your block
@@ -70,11 +71,11 @@ public class MLTensorDisplay extends MLBlockBase {
 					new TextComponentString("Display is now " + (getMetaFromState(state) == 0 ? "ro" : "rw")));
 			return true;
 		} else {
-			if (!(item instanceof MLWand)) {
-				info("Opening GUI");
-				Minecraft.getMinecraft().displayGuiScreen(new MLTensorDisplayGui());
-			}
+
 		}
+		// playerIn.openGui(MCML.instance, 0, worldIn, pos.getX(), pos.getY(),
+		// pos.getZ());
+
 		return !(item instanceof MLWand);
 
 	}
@@ -96,6 +97,7 @@ public class MLTensorDisplay extends MLBlockBase {
 	@Nullable
 	public TileEntity createTileEntity(World world, IBlockState state) {
 		return world.isRemote ? null : new MLTensorDisplayTileEntity();
+		// return new MLTensorDisplayTileEntity();
 	}
 
 	@Override
