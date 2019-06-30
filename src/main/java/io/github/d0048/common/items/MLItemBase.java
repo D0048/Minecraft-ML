@@ -23,6 +23,7 @@ public class MLItemBase extends Item {
 	public MLItemBase(String regName, String dispName) {
 		setUnlocalizedName(dispName).setRegistryName(regName).setCreativeTab(MLTab.mlTab).setMaxStackSize(1);
 		ForgeRegistries.ITEMS.register(this);
+		setMaxDamage(0);
 	}
 
 }

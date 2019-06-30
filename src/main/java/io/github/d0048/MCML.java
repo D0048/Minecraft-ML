@@ -59,6 +59,7 @@ public class MCML {
 	public void init(FMLInitializationEvent event) {
 		proxy.init();
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(MLWand.mlWand);
 		MCML.logger.info("--MCML End Init---");
 	}
 
