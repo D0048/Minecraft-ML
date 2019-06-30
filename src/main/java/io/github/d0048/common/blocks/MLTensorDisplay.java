@@ -4,16 +4,19 @@ import javax.annotation.Nullable;
 
 import io.github.d0048.MCML;
 import io.github.d0048.common.MLTab;
+import io.github.d0048.common.gui.MLTensorDisplayGui;
 import io.github.d0048.common.items.MLWand;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -59,17 +62,20 @@ public class MLTensorDisplay extends MLBlockBase {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
 			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		Item item = playerIn.inventory.getCurrentItem().getItem();
 		if (!worldIn.isRemote) {
-			if (!(playerIn.getActiveItemStack().getItem() instanceof MLWand)) {
-				((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).toggleWritable();
-				((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).setDataID("Display test 0");
-				playerIn.sendMessage(
-						new TextComponentString("Display is now " + (getMetaFromState(state) == 0 ? "ro" : "rw")));
-				return true;
+			((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).toggleWritable();
+			((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).setDataID("Display test 0");
+			playerIn.sendMessage(
+					new TextComponentString("Display is now " + (getMetaFromState(state) == 0 ? "ro" : "rw")));
+			return true;
+		} else {
+			if (!(item instanceof MLWand)) {
+				info("Opening GUI");
+				Minecraft.getMinecraft().displayGuiScreen(new MLTensorDisplayGui());
 			}
-			return false;
 		}
-		return !(playerIn.getActiveItemStack().getItem() instanceof MLWand);
+		return !(item instanceof MLWand);
 
 	}
 

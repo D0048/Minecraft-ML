@@ -33,6 +33,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -59,15 +60,35 @@ public class MLWand extends MLItemBase {
 	}
 
 	@SubscribeEvent
-	public void BlockHarvested(BlockEvent.BreakEvent event) {
-		Item i = event.getPlayer().inventory.getCurrentItem().getItem();
+	public void onBlockHarvested(BlockEvent.BreakEvent e) {
+		Item i = e.getPlayer().inventory.getCurrentItem().getItem();
+		World world = e.getWorld();
 		if (i != null && i.equals(mlWand)) {
-			if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
-				event.getPlayer().sendMessage(
-						new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selection 1: " + event.getPos()));
-				selectionMapLeft.put(event.getPlayer(), event.getPos());
+			if (!world.isRemote) {
+				e.getPlayer().sendMessage(
+						new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selection 1: " + e.getPos()));
+			} else {
+				Minecraft.getMinecraft().world.setBlockState(e.getPos(), Blocks.QUARTZ_BLOCK.getDefaultState());
 			}
-			event.setCanceled(true);
+			selectionMapLeft.put(e.getPlayer(), e.getPos());
+			e.setCanceled(true);
+		}
+	}
+
+	@SubscribeEvent
+	public void onRightClick(PlayerInteractEvent.RightClickBlock e) {
+		Item i = e.getEntityPlayer().inventory.getCurrentItem().getItem();
+		World world = e.getWorld();
+		if (i != null && i.equals(mlWand)) {
+			if (!world.isRemote) {
+				// TileEntity te = world.getTileEntity(e.getPos());
+				e.getEntityPlayer().sendMessage(
+						new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selection 2: " + e.getPos()));
+			} else {
+				Minecraft.getMinecraft().world.setBlockState(e.getPos(), Blocks.QUARTZ_BLOCK.getDefaultState());
+			}
+			selectionMapRight.put(e.getEntityPlayer(), e.getPos());
+			e.setCanceled(true);
 		}
 	}
 
@@ -76,11 +97,6 @@ public class MLWand extends MLItemBase {
 			EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
 			TileEntity te = worldIn.getTileEntity(pos);
-			if (te != null) {
-				if (te instanceof MLTensorDisplayTileEntity) {// TensorDisplay action
-				}
-			}
-			// Selection action
 			player.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selection 2: " + pos));
 		} else {
 			Minecraft.getMinecraft().world.setBlockState(pos, Blocks.QUARTZ_BLOCK.getDefaultState());
@@ -98,17 +114,25 @@ public class MLWand extends MLItemBase {
 			currentInterval = 0;
 			EntityPlayer player = (EntityPlayer) entityIn;
 			BlockPos[] ss = getPlayerSelection(player);
-			if (ss != null) {
-				Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, ss[0], 5);
-				Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, ss[1], 5);
+			if (ss != null && !ss[0].equals(ss[1])) {
+				Util.surrendBlock(worldIn, EnumParticleTypes.VILLAGER_HAPPY, ss[0], 3);
+				Util.surrendBlock(worldIn, EnumParticleTypes.VILLAGER_HAPPY, ss[1], 3);
+				// Util.fillArea(worldIn, EnumParticleTypes.REDSTONE, ss[0], ss[1], 1);
+				Util.surrendArea(worldIn, EnumParticleTypes.REDSTONE, ss[0], ss[1],
+						(int) (Math.sqrt(ss[0].distanceSq(ss[1]))));
 			}
 		}
 	}
 
+	public BlockPos[] getPlayerSelectionSorted(EntityPlayer player) {
+		BlockPos[] ss = getPlayerSelection(player);
+		return ss == null ? Util.sortEdges(ss[0], ss[1]) : ss;
+	}
+
 	public BlockPos[] getPlayerSelection(EntityPlayer player) {
 		BlockPos s1 = selectionMapLeft.get(player), s2 = selectionMapRight.get(player);
-		if (s1 != null && s2 != null && !s1.equals(s2)) {
-			return Util.sortEdges(s1, s2);
+		if (s1 != null && s2 != null) {
+			return new BlockPos[] { s1, s2 };
 		}
 		return null;
 	}
