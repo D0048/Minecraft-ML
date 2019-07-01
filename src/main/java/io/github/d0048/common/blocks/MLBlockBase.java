@@ -14,6 +14,7 @@ import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -21,67 +22,71 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class MLBlockBase extends Block {
-	public static MLBlockBase mlBlockBase;// this holds the unique instance of your block
-	public static ItemBlock mlBlockBaseItemBlock;
+    public static MLBlockBase mlBlockBase;// this holds the unique instance of your block
+    public static ItemBlock mlBlockBaseItemBlock;
 
-	public static void commonInit() {
-		ForgeRegistries.BLOCKS.register(mlBlockBase = new MLBlockBase("ml_blockbase", "MCML BlockBase"));
-		mlBlockBaseItemBlock = new ItemBlock(mlBlockBase);
-		mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
-		mlBlockBaseItemBlock.setUnlocalizedName(mlBlockBase.getUnlocalizedName());
-		ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
-		
-	}
+    public static void commonInit() {
+        ForgeRegistries.BLOCKS.register(mlBlockBase = new MLBlockBase("ml_blockbase", "MCML BlockBase"));
+        mlBlockBaseItemBlock = new ItemBlock(mlBlockBase);
+        mlBlockBaseItemBlock.setRegistryName(mlBlockBase.getRegistryName());
+        mlBlockBaseItemBlock.setUnlocalizedName(mlBlockBase.getUnlocalizedName());
+        ForgeRegistries.ITEMS.register(mlBlockBaseItemBlock);
 
-	public static void clientInit() {
-		ModelLoader.setCustomModelResourceLocation(mlBlockBaseItemBlock, 0,
-				new ModelResourceLocation("minecraft_ml:ml_blockbase", "inventory"));
-	}
+    }
 
-	public MLBlockBase(String registryName, String unlocalizedName) {
-		super(Material.ROCK);
-		this.setRegistryName(registryName);
-		this.setUnlocalizedName(unlocalizedName);
-		this.setLightLevel(0.8f);
-		this.setLightOpacity(1);
-		setCreativeTab(MLTab.mlTab);
-		MinecraftForge.EVENT_BUS.register(this);
-	}
+    public static void clientInit() {
+        ModelLoader.setCustomModelResourceLocation(mlBlockBaseItemBlock, 0,
+                new ModelResourceLocation("minecraft_ml:ml_blockbase", "inventory"));
+    }
 
-	@Override
-	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
-		return new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
-	}
+    public MLBlockBase(String registryName, String unlocalizedName) {
+        super(Material.ROCK);
+        this.setRegistryName(registryName);
+        this.setUnlocalizedName(unlocalizedName);
+        this.setLightLevel(0.8f);
+        this.setLightOpacity(1);
+        setCreativeTab(MLTab.mlTab);
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	@Nullable
-	@Override
-	public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
-		return new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
-	}
+    public String getInfoAt(World world, BlockPos pos) {
+        return this.toString();
+    }
 
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
-		return EnumBlockRenderType.MODEL;
-	}
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        return new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
+    }
 
-	@SideOnly(Side.CLIENT)
-	public BlockRenderLayer getBlockLayer() {
-		return BlockRenderLayer.CUTOUT_MIPPED;
-	}
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+        return new AxisAlignedBB(0.25D, 0.25D, 0.25D, 0.75D, 0.75D, 0.75D);
+    }
 
-	@Override
-	public boolean isOpaqueCube(IBlockState iBlockState) {
-		return true;
-	}
+    @Override
+    public EnumBlockRenderType getRenderType(IBlockState iBlockState) {
+        return EnumBlockRenderType.MODEL;
+    }
 
-	@Override
-	public boolean isFullCube(IBlockState iBlockState) {
-		return false;
-	}
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT_MIPPED;
+    }
 
-	@Override
-	public MLBlockBase setCreativeTab(CreativeTabs tab) {
-		super.setCreativeTab(tab);
-		return this;
-	}
+    @Override
+    public boolean isOpaqueCube(IBlockState iBlockState) {
+        return true;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState iBlockState) {
+        return false;
+    }
+
+    @Override
+    public MLBlockBase setCreativeTab(CreativeTabs tab) {
+        super.setCreativeTab(tab);
+        return this;
+    }
 }
