@@ -66,8 +66,9 @@ public class MLTensorDisplay extends MLBlockBase {
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         Item item = playerIn.inventory.getCurrentItem().getItem();
         if (!worldIn.isRemote) {
-            ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).toggleWritable();
-            ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).setDataID("Display test 0");
+            MLTensorDisplayTileEntity display = ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos));
+            if (display.dataWrap == null) display.setDataID("Display test 0");
+            ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).toggleWritable().reDraw();
             playerIn.sendMessage(
                     new TextComponentString("Display is now " + (getMetaFromState(state) == 0 ? "ro" : "rw")));
             return true;
@@ -85,6 +86,8 @@ public class MLTensorDisplay extends MLBlockBase {
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         if (!worldIn.isRemote) {
             ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).Cleanup();
+            EntityPlayer:
+            MLWand.mlWand.deSelectDisplay(((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)));
         }
         super.breakBlock(worldIn, pos, state);
     }

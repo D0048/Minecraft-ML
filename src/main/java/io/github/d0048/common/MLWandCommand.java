@@ -7,9 +7,11 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import io.github.d0048.MCML;
 import io.github.d0048.common.blocks.MLBlockBase;
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
 import io.github.d0048.common.items.MLWand;
+import io.github.d0048.util.Util;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -36,17 +38,17 @@ public class MLWandCommand extends CommandBase {
             EntityPlayer player = (EntityPlayer) sender;
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(player.dimension);
             BlockPos[] selections = MLWand.mlWand.getPlayerSelection(player);
-
             if (args.length >= 1) {
                 switch (args[0]) {
                     case "info":
                         showInfo(server, sender, args, selections, world);
                         return;
                     case "setDataID":
-                        if (args.length >= 2) {
-                            setDataID(server, sender, args, selections, world);
-                            return;
-                        }
+                    case "reshape":
+                        displayAction(args[0], server, sender, args, selections, world);
+                        return;
+                    default:
+                        break;
                 }
             }
         }
@@ -54,27 +56,44 @@ public class MLWandCommand extends CommandBase {
     }
 
     public void showInfo(MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections, World world) {
-        Block blk;
-        if (selections == null || !((blk = world.getBlockState(selections[0]).getBlock()) instanceof MLBlockBase))
+        MLTensorDisplayTileEntity display = MLWand.mlWand.getPlayerDisplaySelection((EntityPlayer) sender);
+        if (display == null)
             sender.sendMessage(new TextComponentString(
                     TextFormatting.RED + "Select a MCML block with your wand first!"));
         else {
-            sender.sendMessage(new TextComponentString(((MLBlockBase) blk).getInfoAt(world, selections[0])));
+            sender.sendMessage(new TextComponentString(display + ""));
         }
     }
 
-    public void setDataID(MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections, World world) {
-        TileEntity display;
-        if (selections == null || (display = world.getTileEntity(selections[0])) == null
-                || !(display instanceof MLTensorDisplayTileEntity))
-            sender.sendMessage(new TextComponentString(
-                    TextFormatting.RED + "Select a Display with your wand first!"));
-        else {
-            if (((MLTensorDisplayTileEntity) display).setDataID(args[1])) {
-                sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Success!"));
-            } else {
-                sender.sendMessage(new TextComponentString(TextFormatting.RED + "Fail, maybe id corresponds to no Data?"));
+    public void displayAction(String action, MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections,
+                              World world) {
+        try {
+            EntityPlayer player = (EntityPlayer) sender;
+            MLTensorDisplayTileEntity display = MLWand.mlWand.getPlayerDisplaySelection(player);
+            if (action.equals("setDataID") && args.length >= 2) {
+                if (display.setDataID(args[1])) {
+                    sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Success!"));
+                } else {
+                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Fail, maybe id corresponds to no Data?"));
+                }
+            } else if (action.equals("reshape")) {
+                selections = Util.sortEdges(selections[0], selections[1]);
+                BlockPos shapePos = args.length >= 4 ?
+                        parseBlockPos(sender, args, 1, false)
+                        : selections[1].subtract(selections[0]).add(1, 1, 1);
+                int[] shape = new int[]{Math.max(0, shapePos.getX()), Math.max(0, shapePos.getY()), Math.max(0, shapePos.getZ())};
+                if (display.setDisplayShape(shape)) {
+                    sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display shape" +
+                            TextFormatting.YELLOW + Arrays.toString(shape) + TextFormatting.LIGHT_PURPLE + " set!"));
+                } else {
+                    sender.sendMessage(new TextComponentString(
+                            TextFormatting.RED + "Rejected as shape " + TextFormatting.YELLOW + Arrays.toString(shape) +
+                                    TextFormatting.RED + "is invalid"));
+                }
             }
+        } catch (Exception e) {
+            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Display action failed: " + e.getMessage()));
+            e.printStackTrace();
         }
     }
 
@@ -93,7 +112,7 @@ public class MLWandCommand extends CommandBase {
                                           @Nullable BlockPos targetPos) {
         switch (args.length) {
             case 1:
-                return Arrays.asList("info", "setDataID", "reshape", "relocate");
+                return Arrays.asList("info", "setDataID", "reshape", "relocate", "canvas");
             default:
                 break;
         }
@@ -103,6 +122,10 @@ public class MLWandCommand extends CommandBase {
     @Override
     public String getName() {
         return "wand";
+    }
+
+    static void info(String s) {
+        MCML.logger.info(s);
     }
 
 }

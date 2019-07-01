@@ -31,9 +31,9 @@ public class Util {
         double x1 = pos1.getX() + 0.5, y1 = pos1.getY() + 0.5, z1 = pos1.getZ() + 0.5;
         double gapx = (pos2.getX() - x1 + 0.5), gapy = (pos2.getY() - y1 + 0.5), gapz = (pos2.getZ() - z1 + 0.5);
         Vec3d[] verteces = new Vec3d[]{new Vec3d(x1, y1, z1), new Vec3d(x1 + gapx, y1, z1),
-                new Vec3d(x1, y1 + gapy, z1), new Vec3d(x1, y1, z1 + gapz), new Vec3d(x1 + gapx, y1 + gapy, z1),
-                new Vec3d(x1, y1 + gapy, z1 + gapz), new Vec3d(x1 + gapx, y1, z1 + gapz),
-                new Vec3d(x1 + gapx, y1 + gapy, z1 + gapz),};
+                                       new Vec3d(x1, y1 + gapy, z1), new Vec3d(x1, y1, z1 + gapz), new Vec3d(x1 + gapx, y1 + gapy, z1),
+                                       new Vec3d(x1, y1 + gapy, z1 + gapz), new Vec3d(x1 + gapx, y1, z1 + gapz),
+                                       new Vec3d(x1 + gapx, y1 + gapy, z1 + gapz),};
         for (Vec3d e0 : verteces) {
             for (Vec3d e1 : verteces) {
                 spawnLine(world, effect, new BlockPos(e0), new BlockPos(e1), intensity);
@@ -48,10 +48,10 @@ public class Util {
         double recstd = 10;
         for (int i = 0; i < intensity; i++) {
             double dev = rand.nextGaussian() / recstd;
-            world.spawnParticle(effect, x + dev, y + step * i + dev * 3, z + dev, -1, 0 + dev / 2, 0);
-            world.spawnParticle(effect, x + 1 + dev, y + step * i + dev * 3, z + dev, -1, 0 + dev / 2, 0);
-            world.spawnParticle(effect, x + dev, y + step * i + dev * 3, z + 1 + dev, -1, 0 + dev / 2, 0);
-            world.spawnParticle(effect, x + 1 + dev, y + step * i + dev * 3, z + 1 + dev, -1, 0 + dev / 2, 0);
+            world.spawnParticle(effect, x + dev, y + step * i + dev * 3, z + dev, 0, 0 + dev / 2, 0);
+            world.spawnParticle(effect, x + 1 + dev, y + step * i + dev * 3, z + dev, 0, 0 + dev / 2, 0);
+            world.spawnParticle(effect, x + dev, y + step * i + dev * 3, z + 1 + dev, 0, 0 + dev / 2, 0);
+            world.spawnParticle(effect, x + 1 + dev, y + step * i + dev * 3, z + 1 + dev, 0, 0 + dev / 2, 0);
         }
     }
 
@@ -78,7 +78,9 @@ public class Util {
         world.spawnParticle(particleType, vec.x, vec.y, vec.z, xSpeed, ySpeed, zSpeed);
     }
 
-    // {low,high}
+    /**
+     * {low,high}
+     **/
     public static BlockPos[] sortEdges(BlockPos[] ss) {
         assert (ss.length == 2);
         return sortEdges(ss[0], ss[1]);
@@ -93,7 +95,19 @@ public class Util {
                         Math.max(s0.getZ(), s1.getZ()))};
     }
 
+    public static int arrCumSum(int[] arr) {
+        int a = 0;
+        for (int i : arr) a += i;
+        return a;
+    }
+    public static int arrCumProduct(int[] arr) {
+        int a = 1;
+        for (int i : arr) a *= i;
+        return a;
+    }
+
     static void info(String s) {
         MCML.logger.info(s);
     }
+
 }

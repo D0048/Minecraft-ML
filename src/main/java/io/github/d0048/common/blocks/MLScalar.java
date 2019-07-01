@@ -47,7 +47,7 @@ public class MLScalar extends MLBlockBase {
     }
 
     public static void placeAt(World world, BlockPos pos, int val) {
-        info("Value " + val + " placed at " + pos);
+        //info("Value " + val + " placed at " + pos);
         val = Math.min(Math.max(0, val), MCML.scalarResolution - 1);
         world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
     }
