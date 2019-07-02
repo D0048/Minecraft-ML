@@ -2,6 +2,7 @@ package io.github.d0048.common.blocks;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.text.StyleConstants.CharacterConstants;
 
@@ -11,11 +12,13 @@ import io.github.d0048.util.Util;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     String dataID = "";
@@ -24,11 +27,9 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     BlockPos edgeLow = edgeHigh = new BlockPos(0, 0, 0), edgeHigh = new BlockPos(0, 0, 0);
     HashMap<BlockPos, Integer> pos2IndexMap = new HashMap<BlockPos, Integer>();
     HashMap<Integer, BlockPos> index2PosMap = new HashMap<Integer, BlockPos>();
-    int loop = 10, curr = 0;
 
     public MLTensorDisplayTileEntity() {
         super();
-        info("New tile entity created");
     }
 
 
@@ -45,29 +46,63 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     }
 
     public boolean setDisplayShape(int[] displayShape) {
-        int[] bk = this.displayShape;
-        this.displayShape = displayShape;
-        if (isDisplayShapeValid()) return true;
-        else {
-            this.displayShape = bk;
+        int[] backup = this.displayShape;
+        try {
+            this.displayShape = displayShape;
+            if (isDisplayShapeValid()) {
+                reDraw();
+                markDirty();
+                return true;
+            } else {
+                throw new Exception("Invalid Display Shape");
+            }
+        } catch (Exception e) {
+            this.displayShape = backup;
+            e.printStackTrace();
+            reDraw();
             return false;
         }
     }
 
-    public MLTensorDisplayTileEntity relocate(BlockPos edgeLow) {
-        Cleanup();
-        this.edgeLow = edgeLow;
-        solveDataWrap();
-        return this;
-    }
-
-    @Override
-    public void update() {
-        if (curr++ % loop == 0 && dataWrap != null) {
-            writeValues();
+    public boolean reroot(BlockPos edgeLow) {
+        BlockPos backup = this.edgeLow;
+        try {
+            Cleanup();
+            this.edgeLow = edgeLow;
+            solveDataWrap();
+            markDirty();
+            return true;
+        } catch (Exception e) {
+            this.edgeLow = backup;
+            e.printStackTrace();
+            return false;
         }
     }
 
+    int loop = 10, curr = 0;
+
+    @Override
+    public void update() {
+        if (curr++ >= loop && dataWrap != null) {
+            writeValues();
+            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow,
+                    (int) (Math.sqrt(getPos().distanceSq(edgeLow)) * 2),
+                    0, 0, 1);
+            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
+                    (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2),
+                    0, 0, 1);
+            //info("Update Display  " + getPos() + "  |  " + edgeHigh);
+            curr = 0;
+        }
+    }
+
+    public MLTensorDisplayTileEntity hint() {
+        //BlockPos vol = edgeHigh.subtract(edgeLow);
+        //Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow.add(vol.getX() / 2, vol.getY() / 2, vol.getZ() / 2),
+        //       (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2), 0, 0, 0);
+        Util.surroundArea(getWorld(), EnumParticleTypes.ENCHANTMENT_TABLE, edgeHigh, edgeLow, 45);
+        return this;
+    }
 
     public MLTensorDisplayTileEntity reDraw() {
         Cleanup().solveDataWrap();
@@ -75,25 +110,34 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     }
 
     public void writeValues() {
-        //TODO
+        //TODO: Not Normalized
+        Set<Integer> indexs = index2PosMap.keySet();
+        for (int i : indexs) {
+            MLScalar.placeAt(getWorld(), index2PosMap.get(i), i);
+        }
     }
 
     MLTensorDisplayTileEntity Cleanup() {
-        for (int i = edgeLow.getX(); i <= edgeHigh.getX(); i++) {
-            for (int j = edgeLow.getY(); j <= edgeHigh.getY(); j++) {
-                for (int k = edgeLow.getZ(); k <= edgeHigh.getZ(); k++) {
-                    getWorld().destroyBlock(new BlockPos(i, j, k), false);
+        if (getWorld() != null)
+            for (int i = edgeLow.getX(); i <= edgeHigh.getX() - 1; i++) {
+                for (int j = edgeLow.getY(); j <= edgeHigh.getY() - 1; j++) {
+                    for (int k = edgeLow.getZ(); k <= edgeHigh.getZ() - 1; k++) {
+                        getWorld().destroyBlock(new BlockPos(i, j, k), false);
+                    }
                 }
             }
-        }
         pos2IndexMap.clear();
         index2PosMap.clear();
-        edgeLow = edgeHigh = this.getPos().add(1, 0, 1);
+        if (isDisplayShapeValid())
+            edgeHigh = edgeLow.add(getDisplayShape()[0], getDisplayShape()[1], getDisplayShape()[2]);
+        else {
+            edgeLow = edgeHigh = this.getPos().add(1, 0, 1);
+        }
         return this;
     }
 
     MLTensorDisplayTileEntity solveDataWrap() {
-        if (dataWrap == null) return this;
+        if (dataWrap == null || getWorld() == null) return this;
 
         int[] shape = getDisplayShape(), data = dataWrap.getData();
         if (!isDisplayShapeValid()) {
@@ -109,9 +153,8 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         for (int i = 0; i < shape[0] || i == 0; i++)
             for (int j = 0; j < shape[1] || j == 0; j++) {
                 for (int k = 0; k < shape[2] || k == 0; k++) {
-                    //info(i + ", " + j + ", " + k);
                     BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);
-                    int index = (i * shape[0] + j) * shape[1] + k, val = data[index];
+                    int index = i * shape[1] * shape[2] + shape[2] * j + k, val = data[index];
                     pos2IndexMap.put(p, index);
                     index2PosMap.put(index, p);
                     MLScalar.placeAt(getWorld(), p, val);
@@ -131,6 +174,8 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     @Override
     public String toString() {
         String ret = TextFormatting.LIGHT_PURPLE + super.toString() + ":\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - Mode: " + TextFormatting.YELLOW + (isWritable() ? "Read/Write" : "Read Only")
+                + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - DataID: " + TextFormatting.YELLOW + getDataID()
                 + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - DataWrap: " + dataWrap + "\n";
@@ -171,6 +216,10 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         }
     }
 
+    public MLTensorDisplayTileEntity setWritable(boolean b) {
+        if (isWritable() != b) toggleWritable();
+        return this;
+    }
 
     public MLTensorDisplayTileEntity toggleWritable() {// flip writable state
         getWorld().setBlockState(getPos(),

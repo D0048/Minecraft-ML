@@ -43,9 +43,8 @@ public class MLWandCommand extends CommandBase {
                     case "info":
                         showInfo(server, sender, args, selections, world);
                         return;
-                    case "setDataID":
-                    case "reshape":
-                        displayAction(args[0], server, sender, args, selections, world);
+                    case "display":
+                        displayAction(args[1], server, sender, args, selections, world);
                         return;
                     default:
                         break;
@@ -56,13 +55,14 @@ public class MLWandCommand extends CommandBase {
     }
 
     public void showInfo(MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections, World world) {
-        MLTensorDisplayTileEntity display = MLWand.mlWand.getPlayerDisplaySelection((EntityPlayer) sender);
-        if (display == null)
+        try {
+            MLBlockBase block = (MLBlockBase) world.getBlockState(selections[0]).getBlock();
+            sender.sendMessage(new TextComponentString(block.getInfoAt(world,selections[0])));
+        } catch (Exception e) {
             sender.sendMessage(new TextComponentString(
-                    TextFormatting.RED + "Select a MCML block with your wand first!"));
-        else {
-            sender.sendMessage(new TextComponentString(display + ""));
+                    TextFormatting.RED + "Select a MCML block with your wand first! " + e.getMessage()));
         }
+
     }
 
     public void displayAction(String action, MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections,
@@ -70,16 +70,17 @@ public class MLWandCommand extends CommandBase {
         try {
             EntityPlayer player = (EntityPlayer) sender;
             MLTensorDisplayTileEntity display = MLWand.mlWand.getPlayerDisplaySelection(player);
-            if (action.equals("setDataID") && args.length >= 2) {
-                if (display.setDataID(args[1])) {
+            if (action.equals("setDataID") && args.length >= 3) {
+                if (display.setDataID(args[2])) {
                     sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Success!"));
                 } else {
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Fail, maybe id corresponds to no Data?"));
                 }
             } else if (action.equals("reshape")) {
-                selections = Util.sortEdges(selections[0], selections[1]);
-                BlockPos shapePos = args.length >= 4 ?
-                        parseBlockPos(sender, args, 1, false)
+                if (selections != null)
+                    selections = Util.sortEdges(selections[0], selections[1]);
+                BlockPos shapePos = args.length >= 5 ?
+                        parseBlockPos(sender, args, 2, false)
                         : selections[1].subtract(selections[0]).add(1, 1, 1);
                 int[] shape = new int[]{Math.max(0, shapePos.getX()), Math.max(0, shapePos.getY()), Math.max(0, shapePos.getZ())};
                 if (display.setDisplayShape(shape)) {
@@ -90,6 +91,36 @@ public class MLWandCommand extends CommandBase {
                             TextFormatting.RED + "Rejected as shape " + TextFormatting.YELLOW + Arrays.toString(shape) +
                                     TextFormatting.RED + "is invalid"));
                 }
+            } else if (action.equals("reroot")) {
+                BlockPos pos = args.length >= 5 ?
+                        parseBlockPos(sender, args, 2, false)
+                        : selections[1];
+                if (display.reroot(pos)) {
+                    sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display lower edge" +
+                            TextFormatting.YELLOW + pos + TextFormatting.LIGHT_PURPLE + " set!"));
+                } else {
+                    sender.sendMessage(new TextComponentString(
+                            TextFormatting.RED + "Failed to reroot as " + TextFormatting.YELLOW + pos +
+                                    TextFormatting.RED + "is invalid"));
+                }
+            } else if (action.equals("relocate")) {//Both reshape and reroot
+                if (selections != null)
+                    selections = Util.sortEdges(selections[0], selections[1]);
+                BlockPos shapePos = selections[1].subtract(selections[0]).add(1, 1, 1);
+                int[] shape = new int[]{Math.max(0, shapePos.getX()), Math.max(0, shapePos.getY()), Math.max(0, shapePos.getZ())};
+                if (display.setDisplayShape(shape) && display.reroot(selections[0])) {
+                    sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Relocate into" +
+                            TextFormatting.YELLOW + Arrays.toString(shape) + TextFormatting.LIGHT_PURPLE + " at " +
+                            TextFormatting.YELLOW + selections[0]));
+                } else {
+                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Could not relocate into" +
+                            TextFormatting.YELLOW + Arrays.toString(shape) + TextFormatting.RED + " at " +
+                            TextFormatting.YELLOW + selections[0]));
+
+                }
+            } else if (action.equals("toggleWrite")) {
+                if (args.length >= 3) display.setWritable(parseBoolean(args[2]));
+                else display.toggleWritable();
             }
         } catch (Exception e) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Display action failed: " + e.getMessage()));
@@ -112,7 +143,10 @@ public class MLWandCommand extends CommandBase {
                                           @Nullable BlockPos targetPos) {
         switch (args.length) {
             case 1:
-                return Arrays.asList("info", "setDataID", "reshape", "relocate", "canvas");
+                return prase_option(args[0], "info","display");
+            case 2:
+                return prase_option(args[1], "setDataID", "reshape", "reroot", "relocate",
+                        "canvas", "toggleWrite");
             default:
                 break;
         }
@@ -122,6 +156,12 @@ public class MLWandCommand extends CommandBase {
     @Override
     public String getName() {
         return "wand";
+    }
+
+    static List<String> prase_option(String input, String... options) {
+        List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
+        l.removeIf(n -> (!n.contains(input)));
+        return l;
     }
 
     static void info(String s) {

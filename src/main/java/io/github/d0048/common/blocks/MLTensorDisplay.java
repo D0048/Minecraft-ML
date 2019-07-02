@@ -67,19 +67,13 @@ public class MLTensorDisplay extends MLBlockBase {
         Item item = playerIn.inventory.getCurrentItem().getItem();
         if (!worldIn.isRemote) {
             MLTensorDisplayTileEntity display = ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos));
-            if (display.dataWrap == null) display.setDataID("Display test 0");
-            ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).toggleWritable().reDraw();
-            playerIn.sendMessage(
-                    new TextComponentString("Display is now " + (getMetaFromState(state) == 0 ? "ro" : "rw")));
+            display.reDraw();
+            playerIn.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display re-rendered!"));
             return true;
         } else {
 
         }
-        // playerIn.openGui(MCML.instance, 0, worldIn, pos.getX(), pos.getY(),
-        // pos.getZ());
-
-        return !(item instanceof MLWand);
-
+        return true;
     }
 
     @Override
@@ -101,7 +95,7 @@ public class MLTensorDisplay extends MLBlockBase {
     @Nullable
     public TileEntity createTileEntity(World world, IBlockState state) {
         return world.isRemote ? null : new MLTensorDisplayTileEntity();
-        // return new MLTensorDisplayTileEntity();
+        //return new MLTensorDisplayTileEntity();
     }
 
     @Override

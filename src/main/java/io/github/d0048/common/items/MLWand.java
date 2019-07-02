@@ -75,8 +75,8 @@ public class MLWand extends MLItemBase {
             selectionMapLeft.put(e.getPlayer(), e.getPos());
 
             TileEntity te = world.getTileEntity(e.getPos());
-            if (te != null && te instanceof MLTensorDisplayTileEntity) {
-                selectionMapDisplay.put(e.getPlayer(), (MLTensorDisplayTileEntity) te);
+            if (te instanceof MLTensorDisplayTileEntity) {
+                selectionMapDisplay.put(e.getPlayer(), ((MLTensorDisplayTileEntity) te).hint());
                 e.getPlayer().sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selected Display:"));
                 e.getPlayer().sendMessage(new TextComponentString(te + ""));
             }
@@ -113,14 +113,14 @@ public class MLWand extends MLItemBase {
             BlockPos[] ss = getPlayerSelection(player);
             MLTensorDisplayTileEntity display = getPlayerDisplaySelection(player);
             if (ss != null && !ss[0].equals(ss[1])) {
-                Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, ss[0], 7);
-                Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, ss[1], 7);
+                Util.surrondBlock(worldIn, EnumParticleTypes.REDSTONE, ss[0], 7);
+                Util.surrondBlock(worldIn, EnumParticleTypes.REDSTONE, ss[1], 7);
                 // Util.fillArea(worldIn, EnumParticleTypes.VILLAGER_HAPPY, ss[0], ss[1], 1);
-                Util.surrendArea(worldIn, EnumParticleTypes.REDSTONE, ss[0], ss[1],
+                Util.surroundArea(worldIn, EnumParticleTypes.REDSTONE, ss[0], ss[1],
                         (int) (Math.sqrt(ss[0].distanceSq(ss[1])) / 2));
             }
             if (display != null) {
-                Util.surrendBlock(worldIn, EnumParticleTypes.REDSTONE, display.getPos(), 7);
+                Util.surrondBlock(worldIn, EnumParticleTypes.REDSTONE, display.getPos(), 7);
             }
         }
     }
