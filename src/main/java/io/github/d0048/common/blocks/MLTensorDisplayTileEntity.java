@@ -144,9 +144,6 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         for (BlockPos p : indexs) {
             double value = MLScalar.valueAt(getWorld(), p);
             double deNormedValue = value / MCML.scalarResolution * (max - min) + min;
-            info(Arrays.toString(new double[]{
-                    value, MCML.scalarResolution, max, min, deNormedValue
-            }));
             values[pos2IndexMap.get(p)] = deNormedValue;
         }
     }
