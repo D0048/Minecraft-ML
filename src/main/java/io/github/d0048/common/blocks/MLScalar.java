@@ -52,6 +52,10 @@ public class MLScalar extends MLBlockBase {
         world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
     }
 
+    public static int valueAt(World world, BlockPos pos) {
+        return mlScalar.getMetaFromState(world.getBlockState(pos));
+    }
+
     @Override
     protected BlockStateContainer createBlockState() {
         return new BlockStateContainer(this, propertyValue);

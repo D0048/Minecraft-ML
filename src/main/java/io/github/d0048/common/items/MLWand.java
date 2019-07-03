@@ -165,7 +165,6 @@ public class MLWand extends MLItemBase {
                 }
             }
         }
-        //}
         return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(handIn));
     }
 

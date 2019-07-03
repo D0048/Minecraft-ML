@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraft.block.Block;
 
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.apache.commons.lang3.Range;
 
 public class MLWandCommand extends CommandBase {
     public static MLWandCommand commandStylus;
@@ -121,6 +122,9 @@ public class MLWandCommand extends CommandBase {
             } else if (action.equals("toggleWrite")) {
                 if (args.length >= 3) display.setWritable(parseBoolean(args[2]));
                 else display.toggleWritable();
+            } else if (action.equals("normalize")) {
+                if (args.length >= 4) display.setNormalizationRange(Range.between(parseDouble(args[2]), parseDouble(args[3])));
+                else display.normalize();
             }
         } catch (Exception e) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Display action failed: " + e.getMessage()));
@@ -143,9 +147,9 @@ public class MLWandCommand extends CommandBase {
                                           @Nullable BlockPos targetPos) {
         switch (args.length) {
             case 1:
-                return prase_option(args[0], "info", "display", "canvas");
+                return parse_option(args[0], "info", "display", "canvas");
             case 2:
-                return prase_option(args[1], "setDataID", "reshape", "reroot", "relocate", "normalize", "toggleWrite");
+                return parse_option(args[1], "setDataID", "reshape", "reroot", "relocate", "normalize", "toggleWrite");
             default:
                 break;
         }
@@ -157,7 +161,7 @@ public class MLWandCommand extends CommandBase {
         return "wand";
     }
 
-    static List<String> prase_option(String input, String... options) {
+    static List<String> parse_option(String input, String... options) {
         List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
         l.removeIf(n -> (!n.contains(input)));
         return l;

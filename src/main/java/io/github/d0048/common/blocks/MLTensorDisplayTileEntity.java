@@ -98,7 +98,10 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     @Override
     public void update() {
         if (curr++ >= loop && dataWrap != null) {
-            writeValues();
+            if (isWritable())
+                readValues();
+            else
+                writeValues();
             Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow,
                     (int) (Math.sqrt(getPos().distanceSq(edgeLow)) * 2),
                     0, 0, 1);
@@ -127,8 +130,24 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 
         for (int i : indexs) {
             double value = values[i];
-            int normedvalue = (int) ((Math.min(max, Math.max(min, value)) - min) / (max - min) * MCML.scalarResolution);
-            MLScalar.placeAt(getWorld(), index2PosMap.get(i), normedvalue);
+            int normedValue = (int) ((Math.min(max, Math.max(min, value)) - min) / (max - min) * MCML.scalarResolution);
+            MLScalar.placeAt(getWorld(), index2PosMap.get(i), normedValue);
+        }
+    }
+
+    public void readValues() {
+        if (getWorld() == null || dataWrap == null) return;
+        Set<BlockPos> indexs = pos2IndexMap.keySet();
+        double[] values = dataWrap.getData();
+        double min = getNormalizationRange().getMinimum(), max = getNormalizationRange().getMaximum();
+
+        for (BlockPos p : indexs) {
+            double value = MLScalar.valueAt(getWorld(), p);
+            double deNormedValue = value / MCML.scalarResolution * (max - min) + min;
+            info(Arrays.toString(new double[]{
+                    value, MCML.scalarResolution, max, min, deNormedValue
+            }));
+            values[pos2IndexMap.get(p)] = deNormedValue;
         }
     }
 
@@ -184,7 +203,7 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 
     boolean isDisplayShapeValid() {
         if (dataWrap != null)
-            return Util.arrCumProduct(getDisplayShape()) < dataWrap.getData().length;
+            return Util.arrCumProduct(getDisplayShape()) <= dataWrap.getData().length;
         else return false;
     }
 
