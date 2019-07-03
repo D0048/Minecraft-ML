@@ -1,7 +1,4 @@
-package io.github.d0048.common;
-
-import io.github.d0048.common.blocks.MLTensorDisplay;
-import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
+package io.github.d0048.databackend;
 
 public abstract class MLDataCore {
 	public enum BackEndType {
