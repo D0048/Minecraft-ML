@@ -1,8 +1,6 @@
 package io.github.d0048.common.blocks;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 import javax.swing.text.StyleConstants.CharacterConstants;
 
@@ -19,6 +17,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.Range;
 
 public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     String dataID = "";
@@ -27,6 +27,7 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     BlockPos edgeLow = edgeHigh = new BlockPos(0, 0, 0), edgeHigh = new BlockPos(0, 0, 0);
     HashMap<BlockPos, Integer> pos2IndexMap = new HashMap<BlockPos, Integer>();
     HashMap<Integer, BlockPos> index2PosMap = new HashMap<Integer, BlockPos>();
+    Range<Double> normalizationRange = Range.between(-1D, 1D);
 
     public MLTensorDisplayTileEntity() {
         super();
@@ -64,6 +65,19 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         }
     }
 
+    public MLTensorDisplayTileEntity normalize() {
+        if (dataWrap != null) {
+            setNormalizationRange(Util.arrRange(dataWrap.getData()));
+        }
+        return this;
+    }
+
+    public void setNormalizationRange(Range<Double> newRange) {
+        info("Normalizing from " + this.normalizationRange + " into " + newRange);
+        this.normalizationRange = newRange;
+        writeValues();
+    }
+
     public boolean reroot(BlockPos edgeLow) {
         BlockPos backup = this.edgeLow;
         try {
@@ -91,29 +105,30 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
             Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
                     (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2),
                     0, 0, 1);
-            //info("Update Display  " + getPos() + "  |  " + edgeHigh);
             curr = 0;
         }
     }
 
     public MLTensorDisplayTileEntity hint() {
-        //BlockPos vol = edgeHigh.subtract(edgeLow);
-        //Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow.add(vol.getX() / 2, vol.getY() / 2, vol.getZ() / 2),
-        //       (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2), 0, 0, 0);
-        Util.surroundArea(getWorld(), EnumParticleTypes.ENCHANTMENT_TABLE, edgeHigh, edgeLow, 45);
+        Util.surroundArea(getWorld(), EnumParticleTypes.ENCHANTMENT_TABLE, edgeHigh, edgeLow, 55);
         return this;
     }
 
     public MLTensorDisplayTileEntity reDraw() {
-        Cleanup().solveDataWrap();
+        Cleanup().normalize().solveDataWrap();
         return this;
     }
 
     public void writeValues() {
-        //TODO: Not Normalized
+        if (getWorld() == null || dataWrap == null) return;
         Set<Integer> indexs = index2PosMap.keySet();
+        double[] values = dataWrap.getData();
+        double min = getNormalizationRange().getMinimum(), max = getNormalizationRange().getMaximum();
+
         for (int i : indexs) {
-            MLScalar.placeAt(getWorld(), index2PosMap.get(i), i);
+            double value = values[i];
+            int normedvalue = (int) ((Math.min(max, Math.max(min, value)) - min) / (max - min) * MCML.scalarResolution);
+            MLScalar.placeAt(getWorld(), index2PosMap.get(i), normedvalue);
         }
     }
 
@@ -139,7 +154,8 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     MLTensorDisplayTileEntity solveDataWrap() {
         if (dataWrap == null || getWorld() == null) return this;
 
-        int[] shape = getDisplayShape(), data = dataWrap.getData();
+        int[] shape = getDisplayShape();
+        double[] data = dataWrap.getData();
         if (!isDisplayShapeValid()) {
             MCML.logger.warn("Display shape too large, use original instead!");
             shape = dataWrap.getShape();
@@ -154,12 +170,13 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
             for (int j = 0; j < shape[1] || j == 0; j++) {
                 for (int k = 0; k < shape[2] || k == 0; k++) {
                     BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);
-                    int index = i * shape[1] * shape[2] + shape[2] * j + k, val = data[index];
+                    int index = i * shape[1] * shape[2] + shape[2] * j + k;// val = data[index];
                     pos2IndexMap.put(p, index);
                     index2PosMap.put(index, p);
-                    MLScalar.placeAt(getWorld(), p, val);
+                    //MLScalar.placeAt(getWorld(), p, val);
                 }
             }
+        writeValues();
         //MLScalar.placeAt(getWorld(), edgeLow, 15);// debug
         //MLScalar.placeAt(getWorld(), edgeHigh, 15);// debug
         return this;
@@ -181,8 +198,9 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         ret += TextFormatting.LIGHT_PURPLE + "    - DataWrap: " + dataWrap + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Display Shape: " + TextFormatting.YELLOW
                 + (dataWrap == null ? -1 : dataWrap.getData().length) + TextFormatting.LIGHT_PURPLE + " reshaped into "
-                + TextFormatting.YELLOW + Arrays.toString(displayShape) + TextFormatting.LIGHT_PURPLE + " which is " +
-                TextFormatting.YELLOW + (isDisplayShapeValid() ? "valid" : "invalid") + TextFormatting.YELLOW + "\n";
+                + TextFormatting.YELLOW + Arrays.toString(displayShape) + " | " + getNormalizationRange() +
+                TextFormatting.LIGHT_PURPLE + " which is " + TextFormatting.YELLOW + (isDisplayShapeValid() ? "valid" : "invalid") +
+                TextFormatting.YELLOW + "\n";
         return ret;
 
     }
@@ -194,6 +212,8 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         compound.setIntArray("edgeHigh", new int[]{edgeHigh.getX(), edgeHigh.getY(), edgeHigh.getZ()});
         compound.setIntArray("edgeLow", new int[]{edgeLow.getX(), edgeLow.getY(), edgeLow.getZ()});
         compound.setIntArray("displayShape", displayShape);
+        compound.setDouble("rangeMax", getNormalizationRange().getMaximum());
+        compound.setDouble("rangeMin", getNormalizationRange().getMinimum());
         markDirty();
         return compound;
 
@@ -214,6 +234,14 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         if (compound.hasKey("displayShape")) {
             setDisplayShape(compound.getIntArray("displayShape"));
         }
+        double max = 1, min = -1;
+        if (compound.hasKey("rangeMax")) {
+            max = (compound.getDouble("rangeMax"));
+        }
+        if (compound.hasKey("rangeMin")) {
+            min = (compound.getDouble("rangeMin"));
+        }
+        setNormalizationRange(Range.between(min, max));
     }
 
     public MLTensorDisplayTileEntity setWritable(boolean b) {
@@ -236,6 +264,10 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
     @Override
     public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
         return false;
+    }
+
+    public Range<Double> getNormalizationRange() {
+        return normalizationRange;
     }
 
     @Override

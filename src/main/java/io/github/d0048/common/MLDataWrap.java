@@ -6,7 +6,7 @@ import net.minecraft.util.text.TextFormatting;
 
 public class MLDataWrap {
     int[] shape;
-    int[] data;
+    double[] data;
 
     public int[] getShape() {
         return shape;
@@ -20,15 +20,15 @@ public class MLDataWrap {
         this.shape = shape;
     }
 
-    public int[] getData() {
+    public double[] getData() {
         return data;
     }
 
-    public void setData(int[] data) {
+    public void setData(double[] data) {
         this.data = data;
     }
 
-    public MLDataWrap(int[] shape, int[] data) {
+    public MLDataWrap(int[] shape, double[] data) {
         super();
         this.setShape(shape);
         this.setData(data);

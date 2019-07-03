@@ -57,7 +57,7 @@ public class MLWandCommand extends CommandBase {
     public void showInfo(MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections, World world) {
         try {
             MLBlockBase block = (MLBlockBase) world.getBlockState(selections[0]).getBlock();
-            sender.sendMessage(new TextComponentString(block.getInfoAt(world,selections[0])));
+            sender.sendMessage(new TextComponentString(block.getInfoAt(world, selections[0])));
         } catch (Exception e) {
             sender.sendMessage(new TextComponentString(
                     TextFormatting.RED + "Select a MCML block with your wand first! " + e.getMessage()));
@@ -143,10 +143,9 @@ public class MLWandCommand extends CommandBase {
                                           @Nullable BlockPos targetPos) {
         switch (args.length) {
             case 1:
-                return prase_option(args[0], "info","display");
+                return prase_option(args[0], "info", "display", "canvas");
             case 2:
-                return prase_option(args[1], "setDataID", "reshape", "reroot", "relocate",
-                        "canvas", "toggleWrite");
+                return prase_option(args[1], "setDataID", "reshape", "reroot", "relocate", "normalize", "toggleWrite");
             default:
                 break;
         }

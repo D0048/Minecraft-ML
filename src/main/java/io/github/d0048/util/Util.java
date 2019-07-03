@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import org.apache.commons.lang3.Range;
 
 public class Util {
 
@@ -128,6 +129,15 @@ public class Util {
         int a = 1;
         for (int i : arr) a *= i;
         return a;
+    }
+
+    public static <Double> Range arrRange(double[] a) {
+        double min = a[0], max = a[0];
+        for (double i : a) {
+            if (i < min) min = i;
+            if (i > max) max = i;
+        }
+        return Range.between(min, max);
     }
 
     static void info(String s) {
