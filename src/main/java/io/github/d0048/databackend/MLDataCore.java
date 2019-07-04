@@ -29,6 +29,10 @@ public abstract class MLDataCore {
 
     abstract public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException;
 
+    abstract public String getUsage(ICommandSender sender);
+
+    abstract public List<String> parse_option(String arg);
+
     public static float[] toFloatArray(double[] arr) {
         if (arr == null) return null;
         int n = arr.length;
@@ -39,7 +43,6 @@ public abstract class MLDataCore {
         return ret;
     }
 
-    abstract public List<String> parse_option(String arg);
 
     public static void copyToDoubleArray(float[] farr, double[] darr) {
         if (farr == null || darr == null) return;
@@ -48,5 +51,6 @@ public abstract class MLDataCore {
             darr[i] = farr[i];
         }
     }
+
 
 }

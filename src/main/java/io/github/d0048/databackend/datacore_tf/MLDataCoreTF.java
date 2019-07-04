@@ -88,6 +88,10 @@ public class MLDataCoreTF extends MLDataCore {
         return Util.parse_option(arg, "loadModel", "inquire", "enable", "disable");
     }
 
+    public String getUsage(ICommandSender sender) {
+        return "TF Core Usage : \n";
+    }
+
     @Override
     public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         info(Arrays.toString(args));
@@ -95,9 +99,11 @@ public class MLDataCoreTF extends MLDataCore {
         switch (args[0]) {
             case "enable":
                 setActive(true);
+                sender.sendMessage(new TextComponentString(toString()));
                 break;
             case "disable":
                 setActive(false);
+                sender.sendMessage(new TextComponentString(toString()));
                 break;
             case "inquire":
                 sender.sendMessage(new TextComponentString(toString()));
@@ -109,6 +115,7 @@ public class MLDataCoreTF extends MLDataCore {
                         dir += args[i];
                     }
                     setModelDir(dir);
+                    sender.sendMessage(new TextComponentString(toString()));
                     sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Loaded " + TextFormatting.YELLOW + dir));
                 } catch (Exception e) {
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Failed on " + TextFormatting.YELLOW + dir));
@@ -248,7 +255,8 @@ public class MLDataCoreTF extends MLDataCore {
 
     @Override
     public String toString() {
-        String ret = TextFormatting.LIGHT_PURPLE + super.toString() + ":\n";
+        String ret = TextFormatting.LIGHT_PURPLE + "TensorFlow Datacore " + TextFormatting.LIGHT_PURPLE + TensorFlow.version() +
+                TextFormatting.LIGHT_PURPLE + " :\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Status: " + TextFormatting.YELLOW + (isActive ? "Enabled" : "Dormant") + "|" +
                 backend.getState().toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";

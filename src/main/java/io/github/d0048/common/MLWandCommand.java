@@ -49,6 +49,7 @@ public class MLWandCommand extends CommandBase {
                         return;
                     case "datacore":
                         MCML.mlDataCore.handleCommand(server, sender, Arrays.copyOfRange(args, 1, 100));
+                        return;
                     default:
                         break;
                 }
@@ -146,7 +147,7 @@ public class MLWandCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return null;
+        return "Usage TODO\n" + MCML.mlDataCore.getUsage(sender);
     }
 
     @Override

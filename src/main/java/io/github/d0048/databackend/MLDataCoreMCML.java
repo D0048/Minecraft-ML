@@ -39,6 +39,10 @@ public class MLDataCoreMCML extends MLDataCore {
 
     }
 
+    public String getUsage(ICommandSender sender) {
+        return "MCML Core Usage : \n";
+    }
+
     @Override
     public MLDataWrap registerDataForID(String id) {
         if (!dataMap.containsKey(id))
