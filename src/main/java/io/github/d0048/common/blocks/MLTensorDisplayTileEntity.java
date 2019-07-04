@@ -3,6 +3,7 @@ package io.github.d0048.common.blocks;
 import java.util.*;
 
 import io.github.d0048.MCML;
+import io.github.d0048.MLConfig;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.util.Util;
 import net.minecraft.block.state.IBlockState;
@@ -129,7 +130,7 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 
         for (int i : indexs) {
             double value = values[i];
-            int normedValue = (int) ((Math.min(max, Math.max(min, value)) - min) / (max - min) * MCML.scalarResolution);
+            int normedValue = (int) ((Math.min(max, Math.max(min, value)) - min) / (max - min) * MLConfig.scalarResolution);
             MLScalar.placeAt(getWorld(), index2PosMap.get(i), normedValue);
         }
         MCML.mlDataCore.writeDataForID(getDataID());
@@ -143,7 +144,7 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 
         for (BlockPos p : indexs) {
             double value = MLScalar.valueAt(getWorld(), p);
-            double deNormedValue = value / MCML.scalarResolution * (max - min) + min;
+            double deNormedValue = value / MLConfig.scalarResolution * (max - min) + min;
             values[pos2IndexMap.get(p)] = deNormedValue;
         }
     }
@@ -193,8 +194,6 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
                 }
             }
         writeValues();
-        //MLScalar.placeAt(getWorld(), edgeLow, 15);// debug
-        //MLScalar.placeAt(getWorld(), edgeHigh, 15);// debug
         return this;
     }
 

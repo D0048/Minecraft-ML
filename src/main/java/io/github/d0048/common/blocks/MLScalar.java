@@ -1,5 +1,6 @@
 package io.github.d0048.common.blocks;
 
+import io.github.d0048.MLConfig;
 import net.minecraft.util.text.TextFormatting;
 import org.tensorflow.TensorFlow;
 
@@ -29,7 +30,7 @@ public class MLScalar extends MLBlockBase {
     public static MLScalar mlScalar;// this holds the unique instance of your block
     public static ItemBlock mlScalarItemBlock;
 
-    public static IProperty<Integer> propertyValue = PropertyInteger.create("value", 0, MCML.scalarResolution - 1);
+    public static IProperty<Integer> propertyValue = PropertyInteger.create("value", 0, MLConfig.scalarResolution - 1);
     public static IStateMapper valueMapper;
 
     public static void commonInit() {
@@ -48,7 +49,7 @@ public class MLScalar extends MLBlockBase {
 
     public static void placeAt(World world, BlockPos pos, int val) {
         //info("Value " + val + " placed at " + pos);
-        val = Math.min(Math.max(0, val), MCML.scalarResolution - 1);
+        val = Math.min(Math.max(0, val), MLConfig.scalarResolution - 1);
         world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
     }
 
@@ -74,17 +75,17 @@ public class MLScalar extends MLBlockBase {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        worldIn.setBlockState(pos, getStateFromMeta((getMetaFromState(state) + 1) % MCML.scalarResolution));
+        worldIn.setBlockState(pos, getStateFromMeta((getMetaFromState(state) + 1) % MLConfig.scalarResolution));
         if (worldIn.isRemote)
             playerIn.sendMessage(
-                    new TextComponentString("New State: " + ((getMetaFromState(state) + 1) % MCML.scalarResolution)));
+                    new TextComponentString("New State: " + ((getMetaFromState(state) + 1) % MLConfig.scalarResolution)));
         return true;
     }
 
     public void setValue(World worldIn, BlockPos pos, int val, int lower, int upper) {
         if (val > upper || val < lower || upper < lower)
             return;
-        worldIn.setBlockState(pos, getStateFromMeta((int) ((double) val / (upper - lower) * MCML.scalarResolution)));
+        worldIn.setBlockState(pos, getStateFromMeta((int) ((double) val / (upper - lower) * MLConfig.scalarResolution)));
     }
 
     public MLScalar() {

@@ -1,10 +1,14 @@
-package io.github.d0048.databackend;
+package io.github.d0048.databackend.datacore_mcml;
 
 import io.github.d0048.MCML;
+import io.github.d0048.databackend.MLDataCore;
+import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.util.Util;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextFormatting;
+import org.tensorflow.TensorFlow;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +38,6 @@ public class MLDataCoreMCML extends MLDataCore {
         }
     }
 
-    @Override
-    public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-
-    }
-
-    public String getUsage(ICommandSender sender) {
-        return "MCML Core Usage : \n";
-    }
 
     @Override
     public MLDataWrap registerDataForID(String id) {
@@ -57,10 +53,33 @@ public class MLDataCoreMCML extends MLDataCore {
 
     @Override
     public MLDataWrap writeDataForID(String id) {
-        if (!backend.isAlive()) backend.start();
+        if (!backend.isAlive()) (backend = new Thread(() -> backendThread())).start();
         return null;
     }
 
+    @Override
+    public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+
+    }
+
+    public List<String> parse_option(String arg) {
+        return Util.parse_option(arg, "loadModel", "inquire", "enable", "disable");
+    }
+
+    public String getUsage(ICommandSender sender) {
+        return "MCML Core Usage : \n";
+    }
+
+    @Override
+    public String toString() {
+        String ret = TextFormatting.LIGHT_PURPLE + "MCML Datacore " + TextFormatting.LIGHT_PURPLE + MCML.VERSION +
+                TextFormatting.LIGHT_PURPLE + " :\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - Status: " + TextFormatting.YELLOW + backend.getState().toString()
+                + TextFormatting.LIGHT_PURPLE + "\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - Data: " + TextFormatting.YELLOW + dataMap.toString()
+                + TextFormatting.LIGHT_PURPLE + "\n";
+        return ret;
+    }
 
     static double[] whiteData(int size) {
         double[] datatmp = new double[size];
@@ -68,10 +87,6 @@ public class MLDataCoreMCML extends MLDataCore {
             datatmp[i] = 0;
         }
         return datatmp;
-    }
-
-    public List<String> parse_option(String arg) {
-        return Util.parse_option(arg, "loadModel", "inquire", "enable", "disable");
     }
 
     static void info(String s) {

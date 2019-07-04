@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import io.github.d0048.MCML;
+import io.github.d0048.MLConfig;
 import io.github.d0048.common.MLTab;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
@@ -131,10 +132,11 @@ public class MLWand extends MLItemBase {
     int paintInterval = 5, paintLoop = 0;
     Vec3i b1 = new Vec3i(1, 0, 0), b2 = new Vec3i(0, 1, 0), b3 = new Vec3i(0, 0, 1),
             b4 = new Vec3i(-1, 0, 0), b5 = new Vec3i(0, -1, 0), b6 = new Vec3i(0, 0, -1);
-    IBlockState ink = MLScalar.mlScalar.getStateFromMeta(15);
+    IBlockState ink = MLScalar.mlScalar.getStateFromMeta(MLConfig.scalarResolution - 1);
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) {
+        info("" + MLConfig.scalarResolution);
         if (!world.isRemote) {
             Vec3d posVec = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
             Vec3d lookVec = player.getLookVec();

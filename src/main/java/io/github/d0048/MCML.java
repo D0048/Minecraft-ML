@@ -1,7 +1,11 @@
 package io.github.d0048;
 
+import io.github.d0048.databackend.MLDataCore.BackEndType;
+import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
+import io.github.d0048.databackend.datacore_tf.MLDataCoreTF;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -15,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.d0048.common.MLWandCommand;
 import io.github.d0048.databackend.MLDataCore;
-import io.github.d0048.databackend.datacore_tf.MLDataCoreTF;
 import io.github.d0048.common.blocks.MLBlockBase;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
@@ -28,31 +31,30 @@ public class MCML {
     public static final String NAME = "Minecraft-ML";
     public static final String VERSION = "0.1a";
 
-
-    @Config.Name("Resolution of Scalars")
-    @Config.Comment({
-                            "The resolution used to display mono-value scalars in scalar blocks",
-                    })
-    @Config.RangeInt(min = 1, max = 16)
-    public static int scalarResolution = 16;
-
     public static Logger logger;
     @Mod.Instance(MCML.MODID)
     public static MCML instance;
     @SidedProxy(clientSide = "io.github.d0048.client.ClientProxy", serverSide = "io.github.d0048.ServerProxy")
     public static IProxy proxy;
-    public static Configuration config;
 
     public static MLDataCore mlDataCore;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger = event.getModLog();
-        config = new Configuration(event.getSuggestedConfigurationFile());
+        ConfigManager.sync(MCML.MODID, Config.Type.INSTANCE);
         // Common Init
         MCML.logger.info("--MCML Start Init---");
         // TODO: Add new
-        mlDataCore = new MLDataCoreTF();
+        switch (MLConfig.backendType) {
+            case TF:
+                mlDataCore = new MLDataCoreTF();
+                break;
+            default:
+            case MCML:
+                mlDataCore = new MLDataCoreMCML();
+                break;
+        }
         MLBlockBase.commonInit();
         MLScalar.commonInit();
         MLTensorDisplay.commonInit();
