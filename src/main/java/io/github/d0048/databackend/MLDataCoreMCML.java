@@ -23,7 +23,6 @@ public class MLDataCoreMCML extends MLDataCore {
 
     public void backendThread() {
         info("MCML Backend is now up and running!");
-        while (true) {
             MLDataWrap m1, m2, m3;
             try {
                 if ((m1 = dataMap.get("m1")) != null && (m2 = dataMap.get("m2")) != null && (m3 = dataMap.get("m3")) != null) {
@@ -35,7 +34,6 @@ public class MLDataCoreMCML extends MLDataCore {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
     }
 
     @Override
@@ -45,6 +43,7 @@ public class MLDataCoreMCML extends MLDataCore {
 
     @Override
     public MLDataWrap writeDataForID(String id) {
+        if(!backend.isAlive())backend.start();
         return null;
     }
 

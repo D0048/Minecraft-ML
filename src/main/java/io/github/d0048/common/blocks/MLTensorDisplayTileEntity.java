@@ -128,6 +128,7 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
             int normedValue = (int) ((Math.min(max, Math.max(min, value)) - min) / (max - min) * MCML.scalarResolution);
             MLScalar.placeAt(getWorld(), index2PosMap.get(i), normedValue);
         }
+        MCML.mlDataCore.writeDataForID(getDataID());
     }
 
     public void readValues() {
