@@ -36,7 +36,7 @@ public class MLDataWrap {
 
     @Override
     public String toString() {
-        return super.toString() + " with Shape " + TextFormatting.YELLOW + Arrays.toString(getShape())
+        return "Data Wrap" + " of shape " + TextFormatting.YELLOW + Arrays.toString(getShape())
                 + TextFormatting.LIGHT_PURPLE;
     }
 

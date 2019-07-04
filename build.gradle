@@ -45,7 +45,7 @@ dependencies {
     //compile "some.group:artifact:version"
     // https://mvnrepository.com/artifact/org.tensorflow/tensorflow
     compile group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
-    //embed group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
+    embed group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env

@@ -1,5 +1,7 @@
 package io.github.d0048.util;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import io.github.d0048.MCML;
@@ -142,6 +144,12 @@ public class Util {
 
     static void info(String s) {
         MCML.logger.info(s);
+    }
+
+    public static List<String> parse_option(String input, String... options) {
+        List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
+        l.removeIf(n -> (!n.contains(input)));
+        return l;
     }
 
 }

@@ -47,6 +47,8 @@ public class MLWandCommand extends CommandBase {
                     case "display":
                         displayAction(args[1], server, sender, args, selections, world);
                         return;
+                    case "datacore":
+                        MCML.mlDataCore.handleCommand(server, sender, Arrays.copyOfRange(args, 1, 100));
                     default:
                         break;
                 }
@@ -122,9 +124,14 @@ public class MLWandCommand extends CommandBase {
             } else if (action.equals("toggleWrite")) {
                 if (args.length >= 3) display.setWritable(parseBoolean(args[2]));
                 else display.toggleWritable();
+                sender.sendMessage(new TextComponentString(
+                        TextFormatting.LIGHT_PURPLE + "Display now" + TextFormatting.YELLOW + (display.isWritable() ? "rw" : "ro")));
             } else if (action.equals("normalize")) {
                 if (args.length >= 4) display.setNormalizationRange(Range.between(parseDouble(args[2]), parseDouble(args[3])));
                 else display.normalize();
+                sender.sendMessage(new TextComponentString(
+                        TextFormatting.LIGHT_PURPLE + "Display now between" + TextFormatting.YELLOW +
+                                display.getNormalizationRange()));
             }
         } catch (Exception e) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Display action failed: " + e.getMessage()));
@@ -147,9 +154,14 @@ public class MLWandCommand extends CommandBase {
                                           @Nullable BlockPos targetPos) {
         switch (args.length) {
             case 1:
-                return parse_option(args[0], "info", "display", "canvas");
+                return Util.parse_option(args[0], "info", "display", "datacore", "canvas");
             case 2:
-                return parse_option(args[1], "setDataID", "reshape", "reroot", "relocate", "normalize", "toggleWrite");
+                switch (args[0]) {
+                    case "display":
+                        return Util.parse_option(args[1], "setDataID", "reshape", "reroot", "relocate", "normalize", "toggleWrite");
+                    case "datacore":
+                        return MCML.mlDataCore.parse_option(args[1]);
+                }
             default:
                 break;
         }
@@ -159,12 +171,6 @@ public class MLWandCommand extends CommandBase {
     @Override
     public String getName() {
         return "wand";
-    }
-
-    static List<String> parse_option(String input, String... options) {
-        List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
-        l.removeIf(n -> (!n.contains(input)));
-        return l;
     }
 
     static void info(String s) {

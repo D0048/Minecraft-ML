@@ -62,7 +62,11 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
 
     public MLTensorDisplayTileEntity normalize() {
         if (dataWrap != null) {
-            setNormalizationRange(Util.arrRange(dataWrap.getData()));
+            Range r = Util.arrRange(dataWrap.getData());
+            if (!r.getMaximum().equals(r.getMinimum()))
+                setNormalizationRange(r);
+            else
+                setNormalizationRange(Range.between(-1D, 1D));
         }
         return this;
     }
