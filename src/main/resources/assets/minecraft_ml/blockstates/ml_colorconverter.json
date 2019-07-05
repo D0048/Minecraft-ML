@@ -1,0 +1,11 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "parent": "block/cube",
+        "model": "minecraft_ml:ml_tensordisplay/ml_colorconverter.obj"
+    },
+    "variants": {
+        "normal": {"y": 0, "x": 0},
+        "inventory": {"parent": "block/cube", "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj","y": 0, "x": 90}
+    }
+}
