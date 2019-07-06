@@ -3,7 +3,7 @@ buildscript {
         jcenter()
         //maven { url 'http://repo1.maven.org/maven2' }
         maven { url = "https://files.minecraftforge.net/maven" }
-          flatDir {dirs "libs"}
+          flatDir {dirs "./libs"}
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -46,6 +46,15 @@ dependencies {
     // https://mvnrepository.com/artifact/org.tensorflow/tensorflow
     compile group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
     //embed group: 'org.tensorflow', name: 'tensorflow', version: '1.13.1'
+    //compile "org.nd4j:nd4j-native-platform:1.0.0-beta4"
+    //compile "org.deeplearning4j:deeplearning4j-core:1.0.0-beta4"
+    //embed "org.nd4j:nd4j-native-platform:1.0.0-beta4"
+    //embed "org.deeplearning4j:deeplearning4j-core:1.0.0-beta4"
+    
+    compile fileTree(dir: 'libs', includes: ['*.jar'])
+    embed fileTree(dir: 'libs', includes: ['*.jar'])
+    
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env

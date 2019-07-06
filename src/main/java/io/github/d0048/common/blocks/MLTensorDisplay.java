@@ -1,28 +1,19 @@
 package io.github.d0048.common.blocks;
 
-import javax.annotation.Nullable;
-
 import io.github.d0048.MCML;
-import io.github.d0048.common.MLTab;
-import io.github.d0048.common.gui.MLTensorDisplayGui;
 import io.github.d0048.common.items.MLWand;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.renderer.texture.ITickable;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -30,11 +21,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import scala.reflect.internal.Trees.This;
+
+import javax.annotation.Nullable;
 
 public class MLTensorDisplay extends MLBlockBase {
     public static MLTensorDisplay mlTensorDisplay;// this holds the unique instance of your block
-    public static ItemBlock mlTensorDisplatItemBlock;
+    public static ItemBlock mlTensorDisplayItemBlock;
 
     public static IProperty<Boolean> propertyWritable = PropertyBool.create("writable");
 
@@ -50,14 +42,14 @@ public class MLTensorDisplay extends MLBlockBase {
                         : new ModelResourceLocation("minecraft_ml:ml_tensordisplay", "red");
             }
         });
-        mlTensorDisplatItemBlock = new ItemBlock(mlTensorDisplay);
-        mlTensorDisplatItemBlock.setRegistryName(mlTensorDisplay.getRegistryName());
-        mlTensorDisplatItemBlock.setUnlocalizedName(mlTensorDisplay.getUnlocalizedName());
-        ForgeRegistries.ITEMS.register(mlTensorDisplatItemBlock);
+        mlTensorDisplayItemBlock = new ItemBlock(mlTensorDisplay);
+        mlTensorDisplayItemBlock.setRegistryName(mlTensorDisplay.getRegistryName());
+        mlTensorDisplayItemBlock.setUnlocalizedName(mlTensorDisplay.getUnlocalizedName());
+        ForgeRegistries.ITEMS.register(mlTensorDisplayItemBlock);
     }
 
     public static void clientInit() {
-        ModelLoader.setCustomModelResourceLocation(mlTensorDisplatItemBlock, 0,
+        ModelLoader.setCustomModelResourceLocation(mlTensorDisplayItemBlock, 0,
                 new ModelResourceLocation("minecraft_ml:ml_tensordisplay", "inventory"));
     }
 
@@ -70,8 +62,6 @@ public class MLTensorDisplay extends MLBlockBase {
             display.reDraw();
             playerIn.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display re-rendered!"));
             return true;
-        } else {
-
         }
         return true;
     }
@@ -80,7 +70,6 @@ public class MLTensorDisplay extends MLBlockBase {
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         if (!worldIn.isRemote) {
             ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).Cleanup();
-            EntityPlayer:
             MLWand.mlWand.deSelectDisplay(((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)));
         }
         super.breakBlock(worldIn, pos, state);
@@ -120,9 +109,4 @@ public class MLTensorDisplay extends MLBlockBase {
     public MLTensorDisplay() {
         super("ml_tensordisplay", "TensorDisplay");
     }
-
-    static void info(String s) {
-        MCML.logger.info(s);
-    }
-
 }

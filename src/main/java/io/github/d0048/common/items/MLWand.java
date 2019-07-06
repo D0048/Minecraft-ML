@@ -8,6 +8,7 @@ import java.util.List;
 import io.github.d0048.MCML;
 import io.github.d0048.MLConfig;
 import io.github.d0048.common.MLTab;
+import io.github.d0048.common.blocks.MLColorConverterTileEntity;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
@@ -84,7 +85,6 @@ public class MLWand extends MLItemBase {
                 e.getPlayer().sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Selected Display:"));
                 e.getPlayer().sendMessage(new TextComponentString(te + ""));
             }
-
             e.setCanceled(true);
         }
     }
@@ -136,11 +136,10 @@ public class MLWand extends MLItemBase {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) {
-        info("" + MLConfig.scalarResolution);
         if (!world.isRemote) {
             Vec3d posVec = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
             Vec3d lookVec = player.getLookVec();
-            BlockPos pointedPos = player.rayTrace(30, 0f).getBlockPos();
+            BlockPos pointedPos = player.rayTrace(50, 0f).getBlockPos();
             if (player.getPosition().distanceSq(pointedPos) >= 25 && world.getBlockState(pointedPos).getBlock() == MLScalar.mlScalar) {
                 player.sendStatusMessage(
                         new TextComponentString(TextFormatting.LIGHT_PURPLE + "" + TextFormatting.BOLD + "Drawing: " + pointedPos),

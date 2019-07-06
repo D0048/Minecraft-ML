@@ -3,6 +3,7 @@ package io.github.d0048.client;
 import io.github.d0048.IProxy;
 import io.github.d0048.MCML;
 import io.github.d0048.common.blocks.MLBlockBase;
+import io.github.d0048.common.blocks.MLColorConverter;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplay;
 import io.github.d0048.common.items.MLItemBase;
@@ -17,8 +18,8 @@ public class ClientProxy implements IProxy {
 		MLBlockBase.clientInit();
 		MLScalar.clientInit();
 		MLTensorDisplay.clientInit();
-		
 		MLWand.clientInit();
+		MLColorConverter.clientInit();
 	}
 
 	@Override

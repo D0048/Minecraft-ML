@@ -2,6 +2,7 @@ package io.github.d0048.common.blocks;
 
 import javax.annotation.Nullable;
 
+import io.github.d0048.MCML;
 import io.github.d0048.common.MLTab;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -97,6 +98,10 @@ public class MLBlockBase extends Block {
     @Override
     public boolean isFullCube(IBlockState iBlockState) {
         return false;
+    }
+
+    static void info(String s) {
+        MCML.logger.info(s);
     }
 
 }

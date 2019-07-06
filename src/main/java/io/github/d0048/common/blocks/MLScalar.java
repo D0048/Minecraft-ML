@@ -35,7 +35,13 @@ public class MLScalar extends MLBlockBase {
 
     public static void commonInit() {
         ForgeRegistries.BLOCKS.register(mlScalar = new MLScalar());
-        ModelLoader.setCustomStateMapper(mlScalar, valueMapper = new ValueStateMapper());
+        ModelLoader.setCustomStateMapper(mlScalar, valueMapper = new StateMapperBase() {
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                int val = state.getValue(MLScalar.propertyValue).intValue();
+                return new ModelResourceLocation("minecraft_ml:ml_scalar", "value_" + val);
+            }
+        });
         mlScalarItemBlock = new ItemBlock(mlScalar);
         mlScalarItemBlock.setRegistryName(mlScalar.getRegistryName());
         mlScalarItemBlock.setUnlocalizedName(mlScalar.getUnlocalizedName());
@@ -91,21 +97,9 @@ public class MLScalar extends MLBlockBase {
     public MLScalar() {
         super("ml_scalar", "Scalar");
     }
-
-    static void info(String s) {
-        MCML.logger.info(s);
-    }
-
+    
     public String getInfoAt(World world, BlockPos pos) {
         String ret = TextFormatting.LIGHT_PURPLE + toString() + " of value: " + TextFormatting.YELLOW + world.getBlockState(pos);
         return ret;
-    }
-}
-
-class ValueStateMapper extends StateMapperBase {
-    @Override
-    protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-        int val = state.getValue(MLScalar.propertyValue).intValue();
-        return new ModelResourceLocation("minecraft_ml:ml_scalar", "value_" + val);
     }
 }

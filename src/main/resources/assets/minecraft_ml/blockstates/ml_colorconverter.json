@@ -1,11 +1,15 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "parent": "block/cube",
+        "parent": "block/orientable",
         "model": "minecraft_ml:ml_tensordisplay/ml_colorconverter.obj"
     },
     "variants": {
-        "normal": {"y": 0, "x": 0},
-        "inventory": {"parent": "block/cube", "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj","y": 0, "x": 90}
+        "normal": {"parent": "block/orientable", "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj","y": 0, "x": 0},
+        "inventory": {"parent": "block/orientable", "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj","y": 180, "x": 90},
+        "south": { "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj", "y": 90 },
+        "west":  { "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj", "y": 180 },
+        "north": { "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj", "y": 270 },
+        "east":  { "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj", "y": 0 }
     }
 }

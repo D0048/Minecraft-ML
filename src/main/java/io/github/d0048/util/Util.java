@@ -1,13 +1,20 @@
 package io.github.d0048.util;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import io.github.d0048.MCML;
+import io.github.d0048.MLConfig;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.Range;
@@ -150,6 +157,57 @@ public class Util {
         List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
         l.removeIf(n -> (!n.contains(input)));
         return l;
+    }
+
+    public static void playerBashExecAsync(MinecraftServer server, ICommandSender sender, String[] args) {
+        if (args.length == 0) {
+            playerBashExecAsync(server, sender, new String[]{"uname -a"});
+            return;
+        }
+        String cmd = "";
+        for (String s : args) cmd += s + " ";
+        final String finalcmd = cmd;
+        sender.sendMessage(new TextComponentString(TextFormatting.BLUE + "" + TextFormatting.BOLD + "==|EXEC: " + cmd + " |=="));
+        new Thread(() -> executeBashCommand(finalcmd, sender)).start();
+    }
+
+    public static void executeBashCommand(String command, ICommandSender sender) {
+        boolean success = false;
+        System.out.println("Executing BASH command:\n   " + command);
+        String[] commands = {"bash", "-c", command};
+        try {
+            Process p = Runtime.getRuntime().exec(commands);
+            p.waitFor();
+            BufferedReader b = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            while ((line = b.readLine()) != null) {
+                System.out.println(line);
+                if (sender != null) sender.sendMessage(new TextComponentString(TextFormatting.BLUE + line));
+            }
+            b.close();
+        } catch (Exception e) {
+            System.err.println("Failed to execute bash with command: " + command);
+            if (sender != null) {
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + "Failed to execute bash with command: " + command));
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + e.getMessage()));
+            }
+            e.printStackTrace();
+        }
+        if (sender != null) sender.sendMessage(new TextComponentString(TextFormatting.BLUE + "" + TextFormatting.BOLD + "==|EXEC " +
+                "END|=="));
+    }
+
+    public static String rgb2Hex(int[] rgb) {
+        String color = "#";
+        for (int i : rgb) {
+            color += String.format("%02X", inRange(256 - (int) (i * (256D / MLConfig.scalarResolution)), 0, 255));
+        }
+        info(color);
+        return color.length() == 7 ? color : "#FF0000";
+    }
+
+    public static int inRange(int x, int upper, int lower) {
+        return Math.min(Math.max(x, Math.min(upper, lower)), Math.max(upper, lower) );
     }
 
 }

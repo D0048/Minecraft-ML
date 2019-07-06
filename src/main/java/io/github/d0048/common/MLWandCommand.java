@@ -9,8 +9,10 @@ import javax.annotation.Nullable;
 
 import io.github.d0048.MCML;
 import io.github.d0048.common.blocks.MLBlockBase;
+import io.github.d0048.common.blocks.MLColorConverterTileEntity;
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
 import io.github.d0048.common.items.MLWand;
+import io.github.d0048.util.ColorUtil;
 import io.github.d0048.util.Util;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -41,6 +43,9 @@ public class MLWandCommand extends CommandBase {
             BlockPos[] selections = MLWand.mlWand.getPlayerSelection(player);
             if (args.length >= 1) {
                 switch (args[0]) {
+                    case "shell":
+                        Util.playerBashExecAsync(server, sender, Arrays.copyOfRange(args, 1, args.length));
+                        return;
                     case "info":
                         showInfo(server, sender, args, selections, world);
                         return;
@@ -48,7 +53,7 @@ public class MLWandCommand extends CommandBase {
                         displayAction(args[1], server, sender, args, selections, world);
                         return;
                     case "datacore":
-                        MCML.mlDataCore.handleCommand(server, sender, Arrays.copyOfRange(args, 1, 100));
+                        MCML.mlDataCore.handleCommand(server, sender, Arrays.copyOfRange(args, 1, args.length));
                         return;
                     default:
                         break;
@@ -60,11 +65,16 @@ public class MLWandCommand extends CommandBase {
 
     public void showInfo(MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections, World world) {
         try {
-            MLBlockBase block = (MLBlockBase) world.getBlockState(selections[0]).getBlock();
-            sender.sendMessage(new TextComponentString(block.getInfoAt(world, selections[0])));
+            try {
+                MLBlockBase block = (MLBlockBase) world.getBlockState(selections[0]).getBlock();
+                sender.sendMessage(new TextComponentString(block.getInfoAt(world, selections[0])+""));
+            } catch (Exception e) {
+                sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Color: " +
+                        ColorUtil.getColorFromState(world.getBlockState(selections[0]))));
+            }
         } catch (Exception e) {
             sender.sendMessage(new TextComponentString(
-                    TextFormatting.RED + "Select a MCML block with your wand first! " + e.getMessage()));
+                    TextFormatting.RED + "Select a block with your wand first! " + e.getMessage()));
         }
 
     }
@@ -155,7 +165,7 @@ public class MLWandCommand extends CommandBase {
                                           @Nullable BlockPos targetPos) {
         switch (args.length) {
             case 1:
-                return Util.parse_option(args[0], "info", "display", "datacore", "canvas");
+                return Util.parse_option(args[0], "info", "display", "datacore", "canvas", "shell");
             case 2:
                 switch (args[0]) {
                     case "display":

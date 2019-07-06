@@ -1,26 +1,24 @@
 package io.github.d0048.common.blocks;
 
-import java.util.*;
-
 import io.github.d0048.MCML;
 import io.github.d0048.MLConfig;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.util.Util;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import org.apache.commons.lang3.Range;
 
-public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
+
+public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     String dataID = "";
     MLDataWrap dataWrap;
     int[] displayShape = new int[3];
-    BlockPos edgeLow = edgeHigh = new BlockPos(0, 0, 0), edgeHigh = new BlockPos(0, 0, 0);
+    BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
     HashMap<BlockPos, Integer> pos2IndexMap = new HashMap<BlockPos, Integer>();
     HashMap<Integer, BlockPos> index2PosMap = new HashMap<Integer, BlockPos>();
     Range<Double> normalizationRange = Range.between(-1D, 1D);
@@ -276,28 +274,13 @@ public class MLTensorDisplayTileEntity extends TileEntity implements ITickable {
         return this.getBlockMetadata() == 1;
     }
 
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-        return false;
-    }
-
     public Range<Double> getNormalizationRange() {
         return normalizationRange;
-    }
-
-    @Override
-    public void onLoad() {
-        info("Display loaded at " + this.getPos());
     }
 
     public int[] getDisplayShape() {
         return displayShape;
     }
-
-    static void info(String s) {
-        MCML.logger.info(s);
-    }
-
 
     public String getDataID() {
         return dataID;

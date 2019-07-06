@@ -1,5 +1,6 @@
 package io.github.d0048;
 
+import io.github.d0048.common.blocks.MLColorConverter;
 import io.github.d0048.databackend.MLDataCore.BackEndType;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 import io.github.d0048.databackend.datacore_tf.MLDataCoreTF;
@@ -59,6 +60,7 @@ public class MCML {
         MLScalar.commonInit();
         MLTensorDisplay.commonInit();
         MLWand.commonInit();
+        MLColorConverter.commonInit();
         proxy.preInit();
     }
 

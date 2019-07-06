@@ -24,7 +24,7 @@ public class MLDataCoreMCML extends MLDataCore {
     }
 
     public void backendThread() {
-        info("MCML Backend is now up and running!");
+        //info("MCML Backend is now up and running!");
         MLDataWrap m1, m2, m3;
         try {
             if ((m1 = dataMap.get("m1")) != null && (m2 = dataMap.get("m2")) != null && (m3 = dataMap.get("m3")) != null) {
@@ -42,7 +42,7 @@ public class MLDataCoreMCML extends MLDataCore {
     @Override
     public MLDataWrap registerDataForID(String id) {
         if (!dataMap.containsKey(id))
-            dataMap.put(id, new MLDataWrap(new int[]{100}, whiteData(100)));
+            dataMap.put(id, new MLDataWrap(new int[]{1000}, whiteData(1000)));
         return getDataForID(id);
     }
 
