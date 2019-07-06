@@ -7,11 +7,9 @@ import java.util.List;
 
 import io.github.d0048.MCML;
 import io.github.d0048.MLConfig;
+import io.github.d0048.common.MLBrush;
 import io.github.d0048.common.MLTab;
-import io.github.d0048.common.blocks.MLColorConverterTileEntity;
-import io.github.d0048.common.blocks.MLScalar;
-import io.github.d0048.common.blocks.MLTensorDisplay;
-import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
+import io.github.d0048.common.blocks.*;
 import io.github.d0048.util.Util;
 import net.minecraft.block.state.BlockStateBase;
 import net.minecraft.block.state.IBlockState;
@@ -36,6 +34,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.b3d.B3DModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -50,6 +49,8 @@ public class MLWand extends MLItemBase {
     HashMap<EntityPlayer, BlockPos> selectionMapLeft = new HashMap<EntityPlayer, BlockPos>();
     HashMap<EntityPlayer, BlockPos> selectionMapRight = new HashMap<EntityPlayer, BlockPos>();
     HashMap<EntityPlayer, MLTensorDisplayTileEntity> selectionMapDisplay = new HashMap<EntityPlayer, MLTensorDisplayTileEntity>();
+    HashMap<EntityPlayer, MLBrush> player2BrushMap = new HashMap<EntityPlayer, MLBrush>();
+    MLBrush brush=new MLBrush();
 
     public MLWand(String regName, String dispName) {
         super(regName, dispName);
@@ -129,46 +130,6 @@ public class MLWand extends MLItemBase {
         }
     }
 
-    int paintInterval = 5, paintLoop = 0;
-    Vec3i b1 = new Vec3i(1, 0, 0), b2 = new Vec3i(0, 1, 0), b3 = new Vec3i(0, 0, 1),
-            b4 = new Vec3i(-1, 0, 0), b5 = new Vec3i(0, -1, 0), b6 = new Vec3i(0, 0, -1);
-    IBlockState ink = MLScalar.mlScalar.getStateFromMeta(MLConfig.scalarResolution - 1);
-
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) {
-        if (!world.isRemote) {
-            Vec3d posVec = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-            Vec3d lookVec = player.getLookVec();
-            BlockPos pointedPos = player.rayTrace(50, 0f).getBlockPos();
-            if (player.getPosition().distanceSq(pointedPos) >= 25 && world.getBlockState(pointedPos).getBlock() == MLScalar.mlScalar) {
-                player.sendStatusMessage(
-                        new TextComponentString(TextFormatting.LIGHT_PURPLE + "" + TextFormatting.BOLD + "Drawing: " + pointedPos),
-                        true);
-                BlockPos pos;// Although extremely ugly, but for the sake of performance...
-                world.setBlockState(pointedPos, ink);
-                if (world.getBlockState(pos = pointedPos.add(b1)).getBlock() == MLScalar.mlScalar) {
-                    world.setBlockState(pos, ink);
-                }
-                if (world.getBlockState(pos = pointedPos.add(b2)).getBlock() == MLScalar.mlScalar) {
-                    world.setBlockState(pos, ink);
-                }
-                if (world.getBlockState(pos = pointedPos.add(b3)).getBlock() == MLScalar.mlScalar) {
-                    world.setBlockState(pos, ink);
-                }
-                if (world.getBlockState(pos = pointedPos.add(b4)).getBlock() == MLScalar.mlScalar) {
-                    world.setBlockState(pos, ink);
-                }
-                if (world.getBlockState(pos = pointedPos.add(b5)).getBlock() == MLScalar.mlScalar) {
-                    world.setBlockState(pos, ink);
-                }
-                if (world.getBlockState(pos = pointedPos.add(b6)).getBlock() == MLScalar.mlScalar) {
-                    world.setBlockState(pos, ink);
-                }
-            }
-        }
-        return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(handIn));
-    }
-
     public BlockPos[] getPlayerSelectionSorted(EntityPlayer player) {
         BlockPos[] ss = getPlayerSelection(player);
         return ss == null ? Util.sortEdges(ss[0], ss[1]) : ss;
@@ -188,6 +149,36 @@ public class MLWand extends MLItemBase {
 
     public void deSelectDisplay(MLTensorDisplayTileEntity display) {
         selectionMapDisplay.values().remove(display);
+    }
+
+    Vec3i b1 = new Vec3i(1, 0, 0), b2 = new Vec3i(0, 1, 0), b3 = new Vec3i(0, 0, 1),
+            b4 = new Vec3i(-1, 0, 0), b5 = new Vec3i(0, -1, 0), b6 = new Vec3i(0, 0, -1);
+    IBlockState ink = MLScalar.mlScalar.getStateFromMeta(MLConfig.scalarResolution - 1);
+
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand handIn) {
+        if (!world.isRemote) {
+            BlockPos pointedPos = player.rayTrace(40, 0f).getBlockPos();
+            if (player.getPosition().distanceSq(pointedPos) >= 25) {
+                player.sendStatusMessage(
+                        new TextComponentString(TextFormatting.LIGHT_PURPLE + "" + TextFormatting.BOLD + "Drawing: " + pointedPos),
+                        true);
+                //MLBrush brush = player2BrushMap.get(player);
+                //if (brush == null) player2BrushMap.put(player, brush = new MLBrush());
+                brush.nextPoint(world, pointedPos);
+            }
+        }
+        return new ActionResult<ItemStack>(EnumActionResult.PASS, player.getHeldItem(handIn));
+    }
+
+    public void setPlayer2Brush(EntityPlayer p, MLBrush b) {
+        player2BrushMap.put(p, b);
+        brush=b;
+    }
+
+    public MLBrush getPlayer2Brush(EntityPlayer p) {
+        //return player2BrushMap.get(p);
+        return brush;
     }
 
     static void info(String s) {

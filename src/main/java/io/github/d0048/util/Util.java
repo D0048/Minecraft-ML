@@ -2,12 +2,15 @@ package io.github.d0048.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import io.github.d0048.MCML;
 import io.github.d0048.MLConfig;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
@@ -128,6 +131,15 @@ public class Util {
                         Math.max(s0.getZ(), s1.getZ()))};
     }
 
+    public static void fillArea(BlockPos[] ss, World world, IBlockState state) {
+        ss = sortEdges(ss);
+        BlockPos pos1 = ss[0], pos2 = ss[1];
+        for (int i = ss[0].getX(); i <= ss[1].getX(); i++)
+            for (int j = ss[0].getY(); j <= ss[1].getY(); j++)
+                for (int k = ss[0].getZ(); k <= ss[1].getZ(); k++)
+                    world.setBlockState(new BlockPos(i, j, k), state);
+    }
+
     public static int arrCumSum(int[] arr) {
         int a = 0;
         for (int i : arr) a += i;
@@ -155,8 +167,17 @@ public class Util {
 
     public static List<String> parse_option(String input, String... options) {
         List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
-        l.removeIf(n -> (!n.contains(input)));
         return l;
+    }
+
+    public static List<String> completeBlockName(String input) {
+        List<String> list = new ArrayList<String>();
+        for (Object block : Block.REGISTRY) {
+            String name = Block.REGISTRY.getNameForObject((Block) block).toString();
+            list.add(name);
+        }
+        list.removeIf(n -> (!n.contains(input)));
+        return list;
     }
 
     public static void playerBashExecAsync(MinecraftServer server, ICommandSender sender, String[] args) {
@@ -188,26 +209,30 @@ public class Util {
         } catch (Exception e) {
             System.err.println("Failed to execute bash with command: " + command);
             if (sender != null) {
-                sender.sendMessage(new TextComponentString(TextFormatting.RED + "Failed to execute bash with command: " + command));
+                sender.sendMessage(
+                        new TextComponentString(TextFormatting.RED + "Failed to execute bash with command: " + command));
                 sender.sendMessage(new TextComponentString(TextFormatting.RED + e.getMessage()));
             }
             e.printStackTrace();
         }
-        if (sender != null) sender.sendMessage(new TextComponentString(TextFormatting.BLUE + "" + TextFormatting.BOLD + "==|EXEC " +
-                "END|=="));
+        if (sender != null)
+            sender.sendMessage(new TextComponentString(TextFormatting.BLUE + "" + TextFormatting.BOLD + "==|EXEC " +
+                    "END|=="));
     }
 
     public static String rgb2Hex(int[] rgb) {
         String color = "#";
         for (int i : rgb) {
-            color += String.format("%02X", inRange(256 - (int) (i * (256D / MLConfig.scalarResolution)), 0, 255));
+            color += String.format("%02X", inRange(256 - i, 0, 255));
         }
-        info(color);
         return color.length() == 7 ? color : "#FF0000";
     }
 
     public static int inRange(int x, int upper, int lower) {
-        return Math.min(Math.max(x, Math.min(upper, lower)), Math.max(upper, lower) );
+        return Math.min(Math.max(x, Math.min(upper, lower)), Math.max(upper, lower));
     }
 
+    public static void main(String[] args) {
+        completeBlockName("mi");
+    }
 }

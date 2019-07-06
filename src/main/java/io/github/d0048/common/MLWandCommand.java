@@ -10,13 +10,16 @@ import javax.annotation.Nullable;
 import io.github.d0048.MCML;
 import io.github.d0048.common.blocks.MLBlockBase;
 import io.github.d0048.common.blocks.MLColorConverterTileEntity;
+import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
 import io.github.d0048.common.items.MLWand;
 import io.github.d0048.util.ColorUtil;
 import io.github.d0048.util.Util;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
@@ -52,6 +55,8 @@ public class MLWandCommand extends CommandBase {
                     case "display":
                         displayAction(args[1], server, sender, args, selections, world);
                         return;
+                    case "canvas":
+                        canvasAction(server, sender, Arrays.copyOfRange(args, 1, args.length), selections, world);
                     case "datacore":
                         MCML.mlDataCore.handleCommand(server, sender, Arrays.copyOfRange(args, 1, args.length));
                         return;
@@ -67,7 +72,7 @@ public class MLWandCommand extends CommandBase {
         try {
             try {
                 MLBlockBase block = (MLBlockBase) world.getBlockState(selections[0]).getBlock();
-                sender.sendMessage(new TextComponentString(block.getInfoAt(world, selections[0])+""));
+                sender.sendMessage(new TextComponentString(block.getInfoAt(world, selections[0]) + ""));
             } catch (Exception e) {
                 sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Color: " +
                         ColorUtil.getColorFromState(world.getBlockState(selections[0]))));
@@ -76,7 +81,6 @@ public class MLWandCommand extends CommandBase {
             sender.sendMessage(new TextComponentString(
                     TextFormatting.RED + "Select a block with your wand first! " + e.getMessage()));
         }
-
     }
 
     public void displayAction(String action, MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections,
@@ -150,6 +154,26 @@ public class MLWandCommand extends CommandBase {
         }
     }
 
+    public void canvasAction(MinecraftServer server, ICommandSender sender, String[] args, BlockPos[] selections, World world) {
+        try {
+            info(Arrays.toString(args));
+            if (args[0].equals("fill")) {
+                Block b = Block.getBlockFromName(args[1]);
+                int val = 0;
+                if (args.length >= 3) val = parseInt(args[2]);
+                IBlockState state = (b == MLScalar.mlScalar) ? MLScalar.mlScalar.getStateFromMeta(val) : b.getDefaultState();
+                Util.fillArea(selections, world, state);
+            } else if (args[0].equals("ink")) {
+                if (args.length >= 5) MLWand.mlWand.setPlayer2Brush((EntityPlayer) sender, new MLBrush(parseInt(args[1]),
+                        parseInt(args[2]), parseInt(args[3]), parseInt(args[4])));
+                sender.sendMessage(new TextComponentString(MLWand.mlWand.getPlayer2Brush((EntityPlayer) sender).toString()));
+            }
+        } catch (Exception e) {
+            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Canvas action failed: " + e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
     public void printHelp(MinecraftServer server, ICommandSender sender, String[] args) {
         sender.sendMessage(new TextComponentString(TextFormatting.RED + "Incorrect Usage!"));
         sender.sendMessage(new TextComponentString(getUsage(sender)));
@@ -172,11 +196,19 @@ public class MLWandCommand extends CommandBase {
                         return Util.parse_option(args[1], "setDataID", "reshape", "reroot", "relocate", "normalize", "toggleWrite");
                     case "datacore":
                         return MCML.mlDataCore.parse_option(args[1]);
+                    case "canvas":
+                        return Util.parse_option(args[1], "fill", "ink");
+                }
+            case 3:
+                switch (args[1]) {
+                    case "fill":
+                        return Util.completeBlockName(args[2]);
                 }
             default:
                 break;
         }
         return Collections.<String>emptyList();
+
     }
 
     @Override

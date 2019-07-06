@@ -91,11 +91,11 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         }
     }
 
-    int loop = 10, curr = 0;
+    int loop = MLConfig.tensorDisplayRefreshInterval;
 
     @Override
     public void update() {
-        if (curr++ >= loop && dataWrap != null) {
+        if (loop-- < 0 && dataWrap != null) {
             if (isWritable())
                 readValues();
             else
@@ -106,7 +106,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
                     (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2),
                     0, 0, 1);
-            curr = 0;
+            loop = MLConfig.tensorDisplayRefreshInterval;
         }
     }
 
@@ -141,7 +141,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         double min = getNormalizationRange().getMinimum(), max = getNormalizationRange().getMaximum();
 
         for (BlockPos p : indexs) {
-            double value = MLScalar.valueAt(getWorld(), p);
+            double value = MLScalar.getValueAt(getWorld(), p);
             double deNormedValue = value / MLConfig.scalarResolution * (max - min) + min;
             values[pos2IndexMap.get(p)] = deNormedValue;
         }

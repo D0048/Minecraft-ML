@@ -53,15 +53,6 @@ public class MLScalar extends MLBlockBase {
                 new ModelResourceLocation("minecraft_ml:ml_scalar", "inventory"));
     }
 
-    public static void placeAt(World world, BlockPos pos, int val) {
-        //info("Value " + val + " placed at " + pos);
-        val = Math.min(Math.max(0, val), MLConfig.scalarResolution - 1);
-        world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
-    }
-
-    public static int valueAt(World world, BlockPos pos) {
-        return mlScalar.getMetaFromState(world.getBlockState(pos));
-    }
 
     @Override
     protected BlockStateContainer createBlockState() {
@@ -88,18 +79,33 @@ public class MLScalar extends MLBlockBase {
         return true;
     }
 
-    public void setValue(World worldIn, BlockPos pos, int val, int lower, int upper) {
-        if (val > upper || val < lower || upper < lower)
-            return;
-        worldIn.setBlockState(pos, getStateFromMeta((int) ((double) val / (upper - lower) * MLConfig.scalarResolution)));
-    }
 
     public MLScalar() {
         super("ml_scalar", "Scalar");
     }
-    
+
     public String getInfoAt(World world, BlockPos pos) {
         String ret = TextFormatting.LIGHT_PURPLE + toString() + " of value: " + TextFormatting.YELLOW + world.getBlockState(pos);
         return ret;
+    }
+
+    public static void setValue(World worldIn, BlockPos pos, int val) {
+        if (worldIn.getBlockState(pos).getBlock() != mlScalar)
+            return;
+        placeAt(worldIn, pos, val);
+    }
+
+    public static void placeAt(World world, BlockPos pos, int val) {
+        //info("Value " + val + " placed at " + pos);
+        val = Math.min(Math.max(0, val), MLConfig.scalarResolution - 1);
+        world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
+    }
+
+    public static int getValueAt(World world, BlockPos pos) {
+        IBlockState state;
+        if ((state = world.getBlockState(pos)).getBlock() == mlScalar) {
+            return mlScalar.getMetaFromState(state);
+        }
+        return -1;
     }
 }

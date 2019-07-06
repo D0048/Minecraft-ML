@@ -17,6 +17,20 @@ public class MLConfig {
     @Config.RequiresMcRestart
     public static int scalarResolution = 16;
 
+    @Config.Name("Refresh Interval of Color Converter")
+    @Config.Comment({
+                            "How many ticks to wait before refreshing, lower is faster.",
+                    })
+    @Config.RangeInt(min = 1, max = 100)
+    public static int colorConverterRefershInterval = 5;
+
+    @Config.Name("Refresh Interval of Tensor Display")
+    @Config.Comment({
+                            "How many ticks to wait before refreshing, lower is faster.",
+                    })
+    @Config.RangeInt(min = 1, max = 100)
+    public static int tensorDisplayRefreshInterval = 10;
+
     @Config.Name("Data core Type")
     @Config.Comment({
                             "The backend used for computations",

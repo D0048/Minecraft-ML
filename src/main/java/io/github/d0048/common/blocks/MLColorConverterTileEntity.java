@@ -38,25 +38,31 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         super.readFromNBT(compound);
     }
 
+    int loop = MLConfig.colorConverterRefershInterval;
+
     @Override
     public void update() {
-        BlockPos pos = getPos();
-        World world = getWorld();
-        try {
-            int r = MLScalar.mlScalar.getMetaFromState(getWorld().getBlockState(pos.add(0, -1, 0)));
-            int g = MLScalar.mlScalar.getMetaFromState(getWorld().getBlockState(pos.add(0, -2, 0)));
-            int b = MLScalar.mlScalar.getMetaFromState(getWorld().getBlockState(pos.add(0, -3, 0)));
-            String color=Util.rgb2Hex(new int[]{r, g, b});
-            info(color);
-            ItemStack stack = ColorUtil.getBlockFromColor(color).first();
-            ItemBlock ib = (ItemBlock) stack.getItem();
-            IBlockState state =
-                    ib.getBlock().getStateForPlacement(world, pos, EnumFacing.DOWN, .5f, .5f, .5f, stack.getMetadata(), null);
-            world.setBlockState(pos.add(0, 1, 0), state);
-            info(state+"");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (loop-- < 0) {
+            BlockPos pos = getPos();
+            World world = getWorld();
+            try {
+                int r =
+                        (int) (MLScalar.getValueAt(getWorld(), pos.add(0, -1, 0)) * (256D / MLConfig.scalarResolution));
+                int g =
+                        (int) (MLScalar.getValueAt(getWorld(), pos.add(0, -2, 0)) * (256D / MLConfig.scalarResolution));
+                int b =
+                        (int) (MLScalar.getValueAt(getWorld(), pos.add(0, -3, 0)) * (256D / MLConfig.scalarResolution));
+                String color = Util.rgb2Hex(new int[]{r, g, b});
+                ItemStack stack = ColorUtil.getBlockFromColor(color).first();
+                ItemBlock ib = (ItemBlock) stack.getItem();
+                IBlockState state =
+                        ib.getBlock().getStateForPlacement(world, pos, EnumFacing.DOWN, .5f, .5f, .5f, stack.getMetadata(), null);
+                //state = ColorUtil.getGlassFromColor(new Color(r, g, b));
+                world.setBlockState(pos.add(0, 1, 0), Blocks.WOOL.getStateFromMeta(15));// Black
+                world.setBlockState(pos.add(0, 2, 0), state);
+            } catch (Exception e) {
+            }
+            loop = MLConfig.colorConverterRefershInterval;
         }
     }
-
 }
