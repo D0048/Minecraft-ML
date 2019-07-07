@@ -31,7 +31,7 @@ public class MLBrush {
     }
 
     void paintLayer(World world, BlockPos pos, int val) {
-        int v = (int) (((double) val) / (255 * 3) * MLConfig.scalarResolution);
+        int v = (int) (((double) val) / (255 ) * MLConfig.scalarResolution);
         Iterable<BlockPos> poss = BlockPos.getAllInBox(pos.add(radius, 0, radius), pos.add(-radius, 0, -radius));
         poss.forEach(p -> {
             if (p.distanceSq(pos) <= radius * radius) MLScalar.setValue(world, p, v);

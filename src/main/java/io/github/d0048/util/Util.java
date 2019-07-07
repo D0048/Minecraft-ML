@@ -167,6 +167,7 @@ public class Util {
 
     public static List<String> parse_option(String input, String... options) {
         List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
+        l.removeIf(n -> (!n.contains(input)));
         return l;
     }
 
@@ -223,7 +224,7 @@ public class Util {
     public static String rgb2Hex(int[] rgb) {
         String color = "#";
         for (int i : rgb) {
-            color += String.format("%02X", inRange(256 - i, 0, 255));
+            color += String.format("%02X", inRange(i, 0, 255));
         }
         return color.length() == 7 ? color : "#FF0000";
     }
