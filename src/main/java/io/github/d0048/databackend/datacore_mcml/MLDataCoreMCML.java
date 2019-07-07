@@ -8,7 +8,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextFormatting;
-import org.tensorflow.TensorFlow;
 
 import java.util.HashMap;
 import java.util.List;
