@@ -1,12 +1,19 @@
 package io.github.d0048.databackend.datacore_mcml.mcmlisp;
 
+import io.github.d0048.MCML;
+import io.github.d0048.databackend.MLDataCore;
+import io.github.d0048.databackend.MLDataWrap;
+import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Stack;
 
 public class Parser {
     public static Molecule parse(String input) throws IllegalAccessException {
-        if (input.contains("(")&&!isParenthesisMatch(input)) throw new IllegalAccessException("Syntax: Parenthesis mismatch");
+        if (input.contains("(") && !isParenthesisMatch(input)) throw new IllegalAccessException("Syntax: Parenthesis mismatch");
         return new Molecule(input);
     }
 
@@ -32,6 +39,8 @@ public class Parser {
     }
 
     public static void main(String[] args) throws Exception {
+        MCML.mlDataCore=new MLDataCoreMCML();
+        Evaluater.init();
         //REPL
         InputStreamReader in = new InputStreamReader(System.in);
         BufferedReader br = new BufferedReader(in);
@@ -39,10 +48,18 @@ public class Parser {
             try {
                 System.out.print("MCMLisp REPL> ");
                 String a = br.readLine();
-                System.out.println(parse(a) + "");
+                Molecule m = parse(a);
+                System.out.println(m + "");
+                MLDataWrap data=m.evaluate();
+                System.out.println(data);
+                System.out.println(Arrays.toString(data.getData()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    static void info(String s) {
+        MLDataCoreMCML.logger.info(s);
     }
 }

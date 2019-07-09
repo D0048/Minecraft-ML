@@ -11,28 +11,25 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MLDataCoreMCML extends MLDataCore {
     HashMap<String, MLDataWrap> dataMap = new HashMap<String, MLDataWrap>();
     Thread backend;
+    public static Logger logger = Logger.getLogger("MCMLisp");
 
     public MLDataCoreMCML() {
         super(BackEndType.MCML);
-        backend = new Thread(() -> backendThread());
-        backend.start();
+        (backend = new Thread(() -> backendThread())).start();
     }
 
     public void backendThread() {
-        //info("MCML Backend is now up and running!");
-        MLDataWrap m1, m2, m3;
+        info("MCML Backend is now up and running!");
         try {
-            if ((m1 = dataMap.get("m1")) != null && (m2 = dataMap.get("m2")) != null && (m3 = dataMap.get("m3")) != null) {
-                for (int i = 0; i < Math.min(Math.min(m1.getData().length, m2.getData().length), m3.getData().length); i++) {
-                    m3.getData()[i] = m1.getData()[i] * m2.getData()[i];
-                }
-            }
+
             Thread.sleep(200);
         } catch (Exception e) {
+            info("MCML Backend experience a problem: ");
             e.printStackTrace();
         }
     }
@@ -40,21 +37,34 @@ public class MLDataCoreMCML extends MLDataCore {
 
     @Override
     public MLDataWrap registerDataForID(String id) {
+        id = id.trim();
+        try {
+            Double.parseDouble(id.trim());
+        } catch (Exception e) {
+        }
+        try {
+            MLDataWrap.fromString(id);
+        } catch (Exception e) {
+        }
         if (!dataMap.containsKey(id))
-            dataMap.put(id, new MLDataWrap(new int[]{1000}, whiteData(1000)));
+            dataMap.put(id, MLDataWrap.whiteData(1000));
         return getDataForID(id);
     }
 
     @Override
     public MLDataWrap getDataForID(String id) {
+        id = id.trim();
+        try {
+            return MLDataWrap.sameValue(1, Double.parseDouble(id.trim()));
+        } catch (Exception e) {
+        }
+        try {
+            return MLDataWrap.fromString(id);
+        } catch (Exception e) {
+        }
         return dataMap.get(id);
     }
 
-    @Override
-    public MLDataWrap writeDataForID(String id) {
-        if (!backend.isAlive()) (backend = new Thread(() -> backendThread())).start();
-        return null;
-    }
 
     @Override
     public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -80,15 +90,14 @@ public class MLDataCoreMCML extends MLDataCore {
         return ret;
     }
 
-    static double[] whiteData(int size) {
-        double[] datatmp = new double[size];
-        for (int i = 0; i < datatmp.length; i++) {
-            datatmp[i] = 0;
-        }
-        return datatmp;
+    @Override
+    public MLDataWrap writeDataForID(String id) {
+        /*id = id.trim();
+        if (!backend.isAlive()) (backend = new Thread(() -> backendThread())).start();*/
+        return null;
     }
 
     static void info(String s) {
-        MCML.logger.info(s);
+        logger.info(s);
     }
 }

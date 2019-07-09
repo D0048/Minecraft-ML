@@ -1,6 +1,10 @@
 package io.github.d0048.databackend.datacore_mcml.mcmlisp;
 
-import sun.rmi.runtime.Log;
+import io.github.d0048.MCML;
+import io.github.d0048.databackend.MLDataCore;
+import io.github.d0048.databackend.MLDataWrap;
+import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
+import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.OPBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +18,8 @@ public class Molecule {
     public Molecule(String fullStr) {
         fullStr = fullStr.replaceAll("( +)", " ").trim();
         this.fullStr = fullStr.startsWith("(") && fullStr.endsWith(")") ? fullStr.substring(1, fullStr.length() - 1) : fullStr;
-        info("Start parsing: " + this.fullStr);
-        if (fullStr.contains("(")) parse();
+        //info("Start parsing: " + this.fullStr);
+        if (fullStr.contains("(")&&fullStr.contains(" ")) parse();
     }
 
     void parse() {
@@ -32,11 +36,18 @@ public class Molecule {
             }
             if ((c == ' ' || i == fullStr.length() - 1) && stack.size() == 0) {
                 tokens.add(new Molecule(token.trim()));
-                info("add " + token);
                 token = "";
             }
         }
-        //if (!getOP().isAtom()) throw new IllegalArgumentException("First element must be an atom");
+        if (!getOP().isAtom()) throw new IllegalArgumentException("First element must be an atom");
+    }
+
+    public MLDataWrap evaluate() {
+        if (isAtom()) {
+            return MCML.mlDataCore.getDataForID(fullStr);
+        } else {
+            return Evaluater.performOP(getOP().getFullStr(), getArgs(), false);
+        }
     }
 
     @Override
@@ -72,9 +83,8 @@ public class Molecule {
         return tokens.size() == 0;
     }
 
-    static Logger logger = Logger.getLogger("MCMLisp");
 
     static void info(String s) {
-        logger.info(s);
+        MLDataCoreMCML.logger.info(s);
     }
 }

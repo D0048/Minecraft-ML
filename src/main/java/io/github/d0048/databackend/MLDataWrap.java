@@ -2,11 +2,14 @@ package io.github.d0048.databackend;
 
 import java.util.Arrays;
 
+import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
+import io.github.d0048.util.Util;
 import net.minecraft.util.text.TextFormatting;
 
 public class MLDataWrap {
     int[] shape;
     double[] data;
+
 
     public int[] getShape() {
         return shape;
@@ -26,18 +29,49 @@ public class MLDataWrap {
 
     public void setData(double[] data) {
         this.data = data;
+        if (Util.arrCumProduct(getShape()) < data.length) setShape(new int[]{data.length});
     }
 
     public MLDataWrap(int[] shape, double[] data) {
-        super();
         this.setShape(shape);
         this.setData(data);
+    }
+
+    public MLDataWrap(double[] data) {
+        this.setShape(new int[]{data.length});
+        this.setData(data);
+    }
+
+    public static MLDataWrap sameValue(int size, double val) {
+        double[] datatmp = new double[size];
+        for (int i = 0; i < datatmp.length; i++) {
+            datatmp[i] = val;
+        }
+        return new MLDataWrap(datatmp);
+    }
+
+    public static MLDataWrap whiteData(int size) {
+        return sameValue(size, 0);
+    }
+
+    public static MLDataWrap fromString(String str) {
+        str = str.trim();
+        String[] strArgs = str.substring(1, str.length() - 1).trim().split("\\s*,\\s*");
+        double[] buffer = new double[strArgs.length];
+        for (int i = 0; i < strArgs.length; i++) {
+            buffer[i] = Double.parseDouble(strArgs[i]);
+        }
+        return new MLDataWrap(buffer);
     }
 
     @Override
     public String toString() {
         return "Data Wrap" + " of shape " + TextFormatting.YELLOW + Arrays.toString(getShape())
                 + TextFormatting.LIGHT_PURPLE;
+    }
+
+    static void info(String s) {
+        MLDataCoreMCML.logger.info(s);
     }
 
 }
