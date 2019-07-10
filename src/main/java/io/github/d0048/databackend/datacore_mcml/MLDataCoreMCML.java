@@ -36,6 +36,7 @@ public class MLDataCoreMCML extends MLDataCore {
     }
 
     public void backendThread() {
+        if (MCML.logger == null) return;
         info("MCML Backend is now up and running!");
         try {
             while (true) {
@@ -73,7 +74,7 @@ public class MLDataCoreMCML extends MLDataCore {
             if (!washedID[3].equals("")) {// define an alias with =
                 aliasMap.put(washedID[3], washedID[0]);
             }
-            if (dataMap.keySet().contains(washedID[0]) || aliasMap.keySet().contains(washedID[3])) {
+            if (dataMap.keySet().contains(washedID[0])) {
                 System.out.println("This id is already registered, remove first: " + washedID[0] + " | " + washedID[3]);
                 return;
             }
@@ -106,17 +107,29 @@ public class MLDataCoreMCML extends MLDataCore {
 
     @Override
     public MLDataWrap getDataForID(String id) {
+        String internalID = washID2Internal(id)[0];
+        //System.out.println("get " + internalID);
+        while (aliasMap.get(internalID) != null) {
+            //System.out.println("Internal Lookup: " + internalID + " -> " + aliasMap.get(internalID));
+            internalID = aliasMap.get(internalID);
+        }
+        MLDataWrap ret = test4Const(internalID);
+        return ret == null ? dataMap.get(internalID) : ret;
+    }
+
+    @Override
+    public void unregisterID(String id) {
         String[] washedID = washID2Internal(id);
-        washedID[0] = aliasMap.get(washedID[0]) != null ? aliasMap.get(washedID[0]) : washedID[0];
-        MLDataWrap ret = test4Const(washedID[0]);
-        return ret == null ? dataMap.get(washedID[0]) : ret;
+        dataMap.remove(washedID[0]);
+        aliasMap.remove(washedID[0]);
+        aliasMap.remove(washedID[3]);
     }
 
     private String[] washID2Internal(String id) {//[name,shape,type]
         String[] ret = new String[4];
         String[] typeSplit = id.split("\\|"), shapeSplit = typeSplit[0].split("@"), aliasSplit =
                 shapeSplit[0].split("=");
-        ret[3] = aliasSplit.length > 1 ? aliasSplit[0] : "";
+        ret[3] = aliasSplit.length > 1 ? aliasSplit[0].trim() : "";
         ret[0] = aliasSplit.length > 1 ? aliasSplit[1].trim() : aliasSplit[0].trim();// name/expression
         if (ret[0].startsWith("(")) ret[0] = ret[0].substring(1, ret[0].length() - 1);
         ret[1] = shapeSplit.length > 1 ? shapeSplit[1].trim() : "[1]";//shape
@@ -136,13 +149,6 @@ public class MLDataCoreMCML extends MLDataCore {
         return null;
     }
 
-    @Override
-    public void unregisterID(String id) {
-        String[] washedID = washID2Internal(id);
-        dataMap.remove(washedID[0]);
-        aliasMap.remove(washedID[0]);
-        aliasMap.remove(washedID[3]);
-    }
 
     @Override
     public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -169,6 +175,8 @@ public class MLDataCoreMCML extends MLDataCore {
         ret += TextFormatting.LIGHT_PURPLE + "    - Status: " + TextFormatting.YELLOW + backend.getState().toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Data: " + TextFormatting.YELLOW + dataMap.toString()
+                + TextFormatting.LIGHT_PURPLE + "\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - Alias: " + TextFormatting.YELLOW + aliasMap.toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";
         return ret;
     }
