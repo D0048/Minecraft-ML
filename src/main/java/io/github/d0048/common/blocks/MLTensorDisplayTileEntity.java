@@ -16,7 +16,6 @@ import java.util.Set;
 
 public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     String dataID = "";
-    MLDataWrap dataWrap;
     int[] displayShape = new int[3];
     BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
     HashMap<BlockPos, Integer> pos2IndexMap = new HashMap<BlockPos, Integer>();
@@ -28,15 +27,39 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
 
-    public boolean setDataID(String dataID) {
+    int loop = MLConfig.tensorDisplayRefreshInterval;
+
+    @Override
+    public void update() {
+        if (loop-- < 0 && getDataWrap() != null) {
+            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow,
+                    (int) (Math.sqrt(getPos().distanceSq(edgeLow)) * 2),
+                    0, 0, 1);
+            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
+                    (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2),
+                    0, 0, 1);
+            loop = MLConfig.tensorDisplayRefreshInterval;
+        }
+        if (loop % 2 == 1) {
+            if (isWritable())
+                readValues();
+            else
+                writeValues();
+        }
+    }
+
+    public MLDataWrap getDataWrap() {
+        return MCML.mlDataCore.getDataForID(dataID);
+    }
+
+    public boolean setDataID(String dataID) throws Exception {
         markDirty();
         this.dataID = dataID;
-        if ((dataWrap = MCML.mlDataCore.registerDataForID(dataID)) != null) {
-            displayShape = dataWrap.getShape().clone();
+        if ((MCML.mlDataCore.registerDataForID(dataID)) != null) {
+            displayShape = getDataWrap().getShape().clone();
             return true;
         } else {
-            info("DataID not found");
-            return false;
+            throw new IllegalArgumentException("Data ID not found");
         }
     }
 
@@ -60,8 +83,8 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public MLTensorDisplayTileEntity normalize() {
-        if (dataWrap != null) {
-            Range r = Util.arrRange(dataWrap.getData());
+        if (getDataWrap() != null) {
+            Range r = Util.arrRange(getDataWrap().getData());
             if (!r.getMaximum().equals(r.getMinimum()))
                 setNormalizationRange(r);
             else
@@ -91,25 +114,6 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         }
     }
 
-    int loop = MLConfig.tensorDisplayRefreshInterval;
-
-    @Override
-    public void update() {
-        if (loop-- < 0 && dataWrap != null) {
-            if (isWritable())
-                readValues();
-            else
-                writeValues();
-            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow,
-                    (int) (Math.sqrt(getPos().distanceSq(edgeLow)) * 2),
-                    0, 0, 1);
-            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
-                    (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2),
-                    0, 0, 1);
-            loop = MLConfig.tensorDisplayRefreshInterval;
-        }
-    }
-
     public MLTensorDisplayTileEntity hint() {
         Util.surroundArea(getWorld(), EnumParticleTypes.ENCHANTMENT_TABLE, edgeHigh, edgeLow, 55);
         return this;
@@ -121,9 +125,9 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public void writeValues() {
-        if (getWorld() == null || dataWrap == null) return;
+        if (getWorld() == null || getDataWrap() == null) return;
         Set<Integer> indexs = index2PosMap.keySet();
-        double[] values = dataWrap.getData();
+        double[] values = getDataWrap().getData();
         double min = getNormalizationRange().getMinimum(), max = getNormalizationRange().getMaximum();
 
         for (int i : indexs) {
@@ -135,9 +139,9 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public void readValues() {
-        if (getWorld() == null || dataWrap == null) return;
+        if (getWorld() == null || getDataWrap() == null) return;
         Set<BlockPos> indexs = pos2IndexMap.keySet();
-        double[] values = dataWrap.getData();
+        double[] values = getDataWrap().getData();
         double min = getNormalizationRange().getMinimum(), max = getNormalizationRange().getMaximum();
 
         for (BlockPos p : indexs) {
@@ -167,13 +171,13 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     MLTensorDisplayTileEntity solveDataWrap() {
-        if (dataWrap == null || getWorld() == null) return this;
+        if (getDataWrap() == null || getWorld() == null) return this;
 
         int[] shape = getDisplayShape();
-        double[] data = dataWrap.getData();
+        double[] data = getDataWrap().getData();
         if (!isDisplayShapeValid()) {
             MCML.logger.warn("Display shape too large, use original instead!");
-            shape = dataWrap.getShape();
+            shape = getDataWrap().getShape();
         }
         if (shape.length > 3)
             MCML.logger.warn("Displaying a tensor larger than 3D, only first 3 used!");
@@ -196,8 +200,8 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     boolean isDisplayShapeValid() {
-        if (dataWrap != null)
-            return Util.arrCumProduct(getDisplayShape()) <= dataWrap.getData().length;
+        if (getDataWrap() != null)
+            return Util.arrCumProduct(getDisplayShape()) <= getDataWrap().getData().length;
         else return false;
     }
 
@@ -208,9 +212,9 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                 + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - DataID: " + TextFormatting.YELLOW + getDataID()
                 + TextFormatting.LIGHT_PURPLE + "\n";
-        ret += TextFormatting.LIGHT_PURPLE + "    - DataWrap: " + dataWrap + "\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - DataWrap: " + getDataWrap() + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Display Shape: " + TextFormatting.YELLOW
-                + (dataWrap == null ? -1 : dataWrap.getData().length) + TextFormatting.LIGHT_PURPLE + " reshaped into "
+                + (getDataWrap() == null ? -1 : getDataWrap().getData().length) + TextFormatting.LIGHT_PURPLE + " reshaped into "
                 + TextFormatting.YELLOW + Arrays.toString(displayShape) + " | " + getNormalizationRange() +
                 TextFormatting.LIGHT_PURPLE + " which is " + TextFormatting.YELLOW + (isDisplayShapeValid() ? "valid" : "invalid") +
                 TextFormatting.YELLOW + "\n";
@@ -242,7 +246,12 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             edgeLow = new BlockPos(compound.getIntArray("edgeLow")[0], compound.getIntArray("edgeLow")[1],
                     compound.getIntArray("edgeLow")[2]);
         if (compound.hasKey("dataID")) {
-            setDataID(compound.getString("dataID"));
+            try {
+                setDataID(compound.getString("dataID"));
+            } catch (Exception e) {
+                info("Malformed DataID: " + compound.getString("dataID"));
+                MCML.logger.error(e);
+            }
         }
         if (compound.hasKey("displayShape")) {
             setDisplayShape(compound.getIntArray("displayShape"));

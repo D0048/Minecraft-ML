@@ -54,7 +54,7 @@ public class MLDataWrap {
         return sameValue(size, 0);
     }
 
-    public static MLDataWrap fromString(String str) {
+    public static MLDataWrap fromStringValue(String str) {
         str = str.trim();
         String[] strArgs = str.substring(1, str.length() - 1).trim().split("\\s*,\\s*");
         double[] buffer = new double[strArgs.length];
@@ -62,6 +62,17 @@ public class MLDataWrap {
             buffer[i] = Double.parseDouble(strArgs[i]);
         }
         return new MLDataWrap(buffer);
+    }
+
+    public static MLDataWrap fromStringShape(String str) {
+        str = str.trim();
+        String[] strArgs = str.substring(1, str.length() - 1).trim().split("\\s*,\\s*");
+        int[] sizeBuffer = new int[strArgs.length];
+        for (int i = 0; i < strArgs.length; i++) {
+            sizeBuffer[i] = Integer.parseInt(strArgs[i]);
+        }
+        double[] buffer = new double[Util.arrCumProduct(sizeBuffer)];
+        return new MLDataWrap(sizeBuffer, buffer);
     }
 
     @Override

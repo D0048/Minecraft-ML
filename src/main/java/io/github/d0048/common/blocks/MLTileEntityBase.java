@@ -16,7 +16,7 @@ public abstract class MLTileEntityBase extends TileEntity implements ITickable {
 
     @Override
     public void onLoad() {
-        info("Display loaded at " + this.getPos());
+
     }
 
     static void info(String s) {

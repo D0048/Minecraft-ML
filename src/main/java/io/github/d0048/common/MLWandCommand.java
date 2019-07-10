@@ -89,7 +89,9 @@ public class MLWandCommand extends CommandBase {
             EntityPlayer player = (EntityPlayer) sender;
             MLTensorDisplayTileEntity display = MLWand.mlWand.getPlayerDisplaySelection(player);
             if (action.equals("setDataID") && args.length >= 3) {
-                if (display.setDataID(args[2])) {
+                String id = "";
+                for (int i = 2; i < args.length; i++) id += " " + args[i];
+                if (display.setDataID(id)) {
                     sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Success!"));
                 } else {
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Fail, maybe id corresponds to no Data?"));

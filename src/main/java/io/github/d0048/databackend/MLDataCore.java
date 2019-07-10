@@ -19,7 +19,7 @@ public abstract class MLDataCore {
         backend = b;
     }
 
-    abstract public MLDataWrap registerDataForID(String id); // Register what to read/write
+    abstract public MLDataWrap registerDataForID(String id) throws Exception; // Register what to read/write
 
     abstract public MLDataWrap getDataForID(String id); // Read
 

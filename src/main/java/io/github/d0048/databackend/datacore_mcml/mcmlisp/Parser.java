@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.Stack;
 
 public class Parser {
-    public static Molecule parse(String input) throws IllegalAccessException {
-        if (input.contains("(") && !isParenthesisMatch(input)) throw new IllegalAccessException("Syntax: Parenthesis mismatch");
+    public static Molecule parse(String input) throws Exception {
+        if (input.contains("(") && !isParenthesisMatch(input)) throw new Exception("Syntax: Parenthesis mismatch");
         return new Molecule(input);
     }
 
