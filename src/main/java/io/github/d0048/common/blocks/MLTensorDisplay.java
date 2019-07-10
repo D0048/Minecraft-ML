@@ -69,7 +69,7 @@ public class MLTensorDisplay extends MLBlockBase {
     @Override
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
         if (!worldIn.isRemote) {
-            ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).Cleanup();
+            ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)).Cleanup().unregisterID();
             MLWand.mlWand.deSelectDisplay(((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos)));
         }
         super.breakBlock(worldIn, pos, state);

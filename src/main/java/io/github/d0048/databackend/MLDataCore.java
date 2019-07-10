@@ -20,6 +20,7 @@ public abstract class MLDataCore {
     }
 
     abstract public MLDataWrap registerDataForID(String id) throws Exception; // Register what to read/write
+    abstract public void unregisterID(String id);// Write
 
     abstract public MLDataWrap getDataForID(String id); // Read
 

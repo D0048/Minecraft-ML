@@ -18,28 +18,18 @@ public class Parser {
     }
 
     static boolean isParenthesisMatch(String str) {
-        Stack<Character> stack = new Stack<Character>();
-        char c;
-
-        for (int i = 0; i < str.length(); i++) {
-            c = str.charAt(i);
-            if (c == '(' || c == '{')
-                stack.push(c);
-            else if (stack.empty())
-                return false;
-            else if (c == ')') {
-                if (stack.pop() != '(')
-                    return false;
-            } else if (c == '}') {
-                if (stack.pop() != '{')
-                    return false;
-            }
+        String bone = str.replaceAll("[^\\)\\(\\}\\{\\[\\]]", "");
+        int lastlen = bone.length();
+        while (lastlen != 0) {
+            bone = bone.replace("{}", "").replace("[]", "").replace("()", "");
+            if (bone.length() == lastlen) return false;
+            lastlen=bone.length();
         }
-        return stack.empty();
+        return true;
     }
 
     public static void main(String[] args) throws Exception {
-        MCML.mlDataCore=new MLDataCoreMCML();
+        MCML.mlDataCore = new MLDataCoreMCML();
         Evaluater.init();
         //REPL
         InputStreamReader in = new InputStreamReader(System.in);
@@ -50,7 +40,8 @@ public class Parser {
                 String a = br.readLine();
                 Molecule m = parse(a);
                 System.out.println(m + "");
-                MLDataWrap data=m.evaluate();
+                //MLDataWrap data = MCML.mlDataCore.registerDataForID(a);
+                MLDataWrap data = m.evaluate();
                 System.out.println(data);
                 System.out.println(Arrays.toString(data.getData()));
             } catch (Exception e) {

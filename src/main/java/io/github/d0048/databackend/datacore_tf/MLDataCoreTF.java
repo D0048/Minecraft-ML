@@ -93,7 +93,6 @@ public class MLDataCoreTF extends MLDataCore {
 
     @Override
     public void handleCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        info(Arrays.toString(args));
         if (args.length == 0) return;
         switch (args[0]) {
             case "enable":
@@ -154,6 +153,11 @@ public class MLDataCoreTF extends MLDataCore {
                 break;
         }
         return getDataForID(id_whole);
+    }
+
+    @Override
+    public void unregisterID(String id) {
+        
     }
 
     @Override

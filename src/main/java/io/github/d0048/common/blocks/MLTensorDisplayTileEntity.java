@@ -40,11 +40,16 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                     0, 0, 1);
             loop = MLConfig.tensorDisplayRefreshInterval;
         }
-        if (loop % 2 == 1) {
-            if (isWritable())
-                readValues();
-            else
-                writeValues();
+        try {
+            if (loop % 2 == 1) {
+                if (isWritable())
+                    readValues();
+                else
+                    writeValues();
+            }
+        } catch (Exception e) {
+            MCML.logger.error("Failed to update value");
+            MCML.logger.error(e);
         }
     }
 
@@ -52,14 +57,22 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         return MCML.mlDataCore.getDataForID(dataID);
     }
 
-    public boolean setDataID(String dataID) throws Exception {
-        markDirty();
-        this.dataID = dataID;
-        if ((MCML.mlDataCore.registerDataForID(dataID)) != null) {
-            displayShape = getDataWrap().getShape().clone();
-            return true;
-        } else {
-            throw new IllegalArgumentException("Data ID not found");
+    public boolean setDataID(String dataID) {
+        try {
+            markDirty();
+            this.dataID = dataID;
+            if ((MCML.mlDataCore.registerDataForID(dataID)) != null) {
+                if (Util.arrCumProduct(displayShape) != Util.arrCumProduct(getDataWrap().getShape()))
+                    displayShape = getDataWrap().getShape().clone();
+                solveDataWrap();
+                return true;
+            } else {
+                throw new IllegalArgumentException("Data ID not found");
+            }
+        } catch (Exception e) {
+            info("Error setting dataID of \"" + dataID + "\" due to " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -120,7 +133,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public MLTensorDisplayTileEntity reDraw() {
-        Cleanup().normalize().solveDataWrap();
+        Cleanup().solveDataWrap();
         return this;
     }
 
@@ -167,6 +180,11 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         else {
             edgeLow = edgeHigh = this.getPos().add(1, 0, 1);
         }
+        return this;
+    }
+
+    MLTensorDisplayTileEntity unregisterID() {
+        MCML.mlDataCore.unregisterID(getDataID());
         return this;
     }
 

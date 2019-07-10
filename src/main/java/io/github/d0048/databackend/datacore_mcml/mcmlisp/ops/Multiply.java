@@ -11,32 +11,24 @@ public class Multiply extends OPBase {
         this.numArgs = Range.between(2, 100);
     }
 
+
     @Override
     public MLDataWrap runRaw(List<MLDataWrap> args) {
         checkArguments(args);
-        MLDataWrap product = args.get(0);
+        int maxLen = args.get(0).getData().length;
         for (int i = 1; i < args.size(); i++) {
-            product = add(args.get(i), product);
+            maxLen = Math.max(maxLen, args.get(i).getData().length);
         }
-        return product;
-    }
-
-    private MLDataWrap add(MLDataWrap a1, MLDataWrap dst) {
-        MLDataWrap tmp = a1;
-        if (a1.getData().length > dst.getData().length) {
-            a1 = dst;
-            dst = tmp;
+        MLDataWrap ret = MLDataWrap.sameValue(maxLen, 1);
+        for (MLDataWrap dw : args) {
+            if (dw.getData().length == 1) {
+                for (int i = 0; i < maxLen; i++) ret.getData()[i] *= dw.getData()[0];
+            } else {
+                for (int i = 0; i < dw.getData().length; i++) {
+                    ret.getData()[i] *= dw.getData()[i];
+                }
+            }
         }
-        int retLen = Math.max(a1.getData().length, dst.getData().length);
-        double[] dstData = dst.getData();
-        if (dstData.length < retLen) {
-            double[] buffer = new double[retLen];
-            for (int i = 0; i < dstData.length; i++) buffer[i] = dstData[i];
-            dst.setData(dstData = buffer);
-        }
-        for (int i = 0; i < retLen; i++) {
-            dstData[i] *= a1.getData()[Math.min(a1.getData().length - 1, i)];
-        }
-        return dst;
+        return ret;
     }
 }

@@ -19,7 +19,7 @@ public class Molecule {
         fullStr = fullStr.replaceAll("( +)", " ").trim();
         this.fullStr = fullStr.startsWith("(") && fullStr.endsWith(")") ? fullStr.substring(1, fullStr.length() - 1) : fullStr;
         //info("Start parsing: " + this.fullStr);
-        if (fullStr.contains("(")&&fullStr.contains(" ")) parse();
+        if (fullStr.contains(" ")) parse();
     }
 
     void parse() {
