@@ -60,6 +60,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     public boolean setDataID(String dataID) {
         try {
             markDirty();
+            Cleanup().unregisterID();
             this.dataID = dataID;
             if ((MCML.mlDataCore.registerDataForID(dataID)) != null) {
                 if (Util.arrCumProduct(displayShape) != Util.arrCumProduct(getDataWrap().getShape()))

@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.Range;
+import scala.Int;
 
 public class Util {
 
@@ -169,6 +170,36 @@ public class Util {
         List<String> l = new java.util.ArrayList<>(Arrays.asList(options));
         l.removeIf(n -> (!n.contains(input)));
         return l;
+    }
+
+    public static double[] parseDoubleArr(String str, boolean force) {
+        if (force) {
+            str = str.replaceAll("[^,1234567890\\.]", "");
+        } else {
+            str = str.replace(" ", "");
+            if (str.startsWith("[")) str = str.substring(1, str.length() - 1);
+        }
+        String[] strArgs = str.split(",");
+        double[] buffer = new double[strArgs.length];
+        for (int i = 0; i < strArgs.length; i++) {
+            buffer[i] = Double.parseDouble(strArgs[i]);
+        }
+        return buffer;
+    }
+
+    public static int[] parseIntArr(String str, boolean force) {
+        if (force) {
+            str = str.replaceAll("[^,1234567890\\.]", "");
+        } else {
+            str = str.replace(" ", "");
+            if (str.startsWith("[")) str = str.substring(1, str.length() - 1);
+        }
+        String[] strArgs = str.split(",");
+        int[] buffer = new int[strArgs.length];
+        for (int i = 0; i < strArgs.length; i++) {
+            buffer[i] = Integer.parseInt(strArgs[i]);
+        }
+        return buffer;
     }
 
     public static List<String> completeBlockName(String input) {

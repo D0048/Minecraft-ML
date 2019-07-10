@@ -7,7 +7,6 @@ import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -40,8 +39,8 @@ public class Parser {
                 String a = br.readLine();
                 Molecule m = parse(a);
                 System.out.println(m + "");
-                //MLDataWrap data = MCML.mlDataCore.registerDataForID(a);
-                MLDataWrap data = m.evaluate();
+                MLDataWrap data = MCML.mlDataCore.registerDataForID(a);
+                //MLDataWrap data = m.evaluate();
                 System.out.println(data);
                 System.out.println(Arrays.toString(data.getData()));
             } catch (Exception e) {

@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 public class MLDataCoreMCML extends MLDataCore {
     ConcurrentHashMap<String, MLDataWrap> dataMap = new ConcurrentHashMap<String, MLDataWrap>();
+    ConcurrentHashMap<String, String> aliasMap = new ConcurrentHashMap<String, String>();
     Thread backend;
     public static Logger logger = Logger.getLogger("MCMLisp");
 
@@ -61,13 +62,21 @@ public class MLDataCoreMCML extends MLDataCore {
     }
 
     /**
-     * ID Rule: name@[optional_shape]|type
-     * e.g x.png|file or (+ x 1)|eval or (x@[28,28,3])|eval
+     * ID Rule: [optional_alias_name]=name@[optional_shape]|type
+     * e.g x.png|file or (+ x 1)|eval or (x@[28,28,3])|eval or a=b
      * types supported: eval,file
      **/
     public void decodeID(String id) throws Exception {
         try {
-            String[] washedID = washID2Internal(id);
+            String[] washedID = washID2Internal(id);//[name,shape,type,alias]
+            System.out.println("Registering: " + Arrays.toString(washedID));
+            if (!washedID[3].equals("")) {// define an alias with =
+                aliasMap.put(washedID[3], washedID[0]);
+            }
+            if (dataMap.keySet().contains(washedID[0]) || aliasMap.keySet().contains(washedID[3])) {
+                System.out.println("This id is already registered, remove first: " + washedID[0] + " | " + washedID[3]);
+                return;
+            }
             if (washedID[2].equals("eval")) {// Default to eval OR or eval type
                 if (test4Const(washedID[0]) != null) {
                     System.out.println("No need to register constant: " + washedID[0]);
@@ -75,10 +84,10 @@ public class MLDataCoreMCML extends MLDataCore {
                 }
                 if (Parser.parse(washedID[0]).isAtom()) {
                     info("atom");
-                    dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1]));
+                    dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1], true));
                 } else {
                     info("non atom");
-                    dataMap.put(washedID[0],  MLDataWrap.fromStringShape(washedID[1])); // non-atom, evaluate on the go
+                    dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1], true)); // non-atom, evaluate on the go
                 }
             } else if (washedID[2].equals("file"))
                 throw new OperationNotSupportedException("Loading from file TODO");
@@ -98,13 +107,17 @@ public class MLDataCoreMCML extends MLDataCore {
     @Override
     public MLDataWrap getDataForID(String id) {
         String[] washedID = washID2Internal(id);
+        washedID[0] = aliasMap.get(washedID[0]) != null ? aliasMap.get(washedID[0]) : washedID[0];
         MLDataWrap ret = test4Const(washedID[0]);
         return ret == null ? dataMap.get(washedID[0]) : ret;
     }
 
     private String[] washID2Internal(String id) {//[name,shape,type]
-        String[] ret = new String[3], typeSplit = id.split("\\|"), shapeSplit = typeSplit[0].split("@");
-        ret[0] = shapeSplit[0].trim();// name/expression
+        String[] ret = new String[4];
+        String[] typeSplit = id.split("\\|"), shapeSplit = typeSplit[0].split("@"), aliasSplit =
+                shapeSplit[0].split("=");
+        ret[3] = aliasSplit.length > 1 ? aliasSplit[0] : "";
+        ret[0] = aliasSplit.length > 1 ? aliasSplit[1].trim() : aliasSplit[0].trim();// name/expression
         if (ret[0].startsWith("(")) ret[0] = ret[0].substring(1, ret[0].length() - 1);
         ret[1] = shapeSplit.length > 1 ? shapeSplit[1].trim() : "[1]";//shape
         ret[2] = typeSplit.length > 1 ? typeSplit[1].trim() : "eval";//type
@@ -125,7 +138,10 @@ public class MLDataCoreMCML extends MLDataCore {
 
     @Override
     public void unregisterID(String id) {
-        dataMap.remove(id);
+        String[] washedID = washID2Internal(id);
+        dataMap.remove(washedID[0]);
+        aliasMap.remove(washedID[0]);
+        aliasMap.remove(washedID[3]);
     }
 
     @Override

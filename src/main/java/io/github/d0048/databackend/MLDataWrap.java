@@ -54,27 +54,13 @@ public class MLDataWrap {
         return sameValue(size, 0);
     }
 
-    public static MLDataWrap fromStringValue(String str) {
-        return fromStringValue(str, true);
-    }
-
     public static MLDataWrap fromStringValue(String str, boolean force) {
-        str = str.trim();
-        String[] strArgs = str.substring(1, str.length() - 1).trim().split("\\s*,\\s*");
-        double[] buffer = new double[strArgs.length];
-        for (int i = 0; i < strArgs.length; i++) {
-            buffer[i] = Double.parseDouble(force ? strArgs[i].replaceAll("[^123456789\\.]", "") : strArgs[i]);
-        }
+        double[] buffer = Util.parseDoubleArr(str, force);
         return new MLDataWrap(buffer);
     }
 
-    public static MLDataWrap fromStringShape(String str) {
-        str = str.trim();
-        String[] strArgs = str.substring(1, str.length() - 1).trim().split("\\s*,\\s*");
-        int[] sizeBuffer = new int[strArgs.length];
-        for (int i = 0; i < strArgs.length; i++) {
-            sizeBuffer[i] = Integer.parseInt(strArgs[i].replaceAll("[^123456789\\.]", ""));
-        }
+    public static MLDataWrap fromStringShape(String str, boolean force) {
+        int[] sizeBuffer = Util.parseIntArr(str, force);
         double[] buffer = new double[Util.arrCumProduct(sizeBuffer)];
         return new MLDataWrap(sizeBuffer, buffer);
     }

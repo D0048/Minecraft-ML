@@ -1,8 +1,9 @@
-import os;os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-from tensorflow.examples.tutorials.mnist import input_data
-import tensorflow as tf
-
 from tensorflow.python.saved_model import builder as saved_model_builder
+import tensorflow as tf
+from tensorflow.examples.tutorials.mnist import input_data
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 
 tf.reset_default_graph()
 
