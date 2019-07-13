@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 
 import io.github.d0048.MCML;
-import io.github.d0048.MLConfig;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
@@ -21,7 +20,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.Range;
-import scala.Int;
 
 public class Util {
 
@@ -255,12 +253,12 @@ public class Util {
     public static String rgb2Hex(int[] rgb) {
         String color = "#";
         for (int i : rgb) {
-            color += String.format("%02X", inRange(i, 0, 255));
+            color += String.format("%02X", clipIntoRange(i, 0, 255));
         }
         return color.length() == 7 ? color : "#FF0000";
     }
 
-    public static int inRange(int x, int upper, int lower) {
+    public static int clipIntoRange(int x, int upper, int lower) {
         return Math.min(Math.max(x, Math.min(upper, lower)), Math.max(upper, lower));
     }
 
