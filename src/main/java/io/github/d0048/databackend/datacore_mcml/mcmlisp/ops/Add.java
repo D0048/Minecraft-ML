@@ -30,4 +30,10 @@ public class Add extends OPBase {
         }
         return ret;
     }
+
+
+    @Override
+    public String getUsage() {
+        return "Adding data along their size: \n    ("+getName()+" data_1 data_2 ... data_n)";
+    }
 }

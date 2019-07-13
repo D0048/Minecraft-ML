@@ -31,13 +31,19 @@ public class MLConfig {
     @Config.RangeInt(min = 1, max = 100)
     public static int tensorDisplayRefreshInterval = 10;
 
-    @Config.Name("Data core Type")
+    @Config.Name("Data Core Type")
     @Config.Comment({
                             "The backend used for computations",
                     })
     @Config.RequiresMcRestart
     public static MLDataCore.BackEndType backendType = MLDataCore.BackEndType.MCML;
 
+    @Config.Name("Data Core Update Frequency")
+    @Config.Comment({
+                            "How many milliseconds between each backend refresh, 0 for on-demand",
+                    })
+    @Config.RangeInt(min = 0, max = 100000)
+    public static int backendUpdateInterval = 200;
 
     // Handler below ------------------------------------------------------------------------------------------------------
     @Mod.EventBusSubscriber

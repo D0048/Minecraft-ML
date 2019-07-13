@@ -31,6 +31,8 @@ public abstract class OPBase {
                 '}';
     }
 
+    public abstract String getUsage();
+
     public String getName() {
         return name;
     }

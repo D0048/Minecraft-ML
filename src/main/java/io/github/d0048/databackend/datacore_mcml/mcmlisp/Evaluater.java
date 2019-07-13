@@ -6,6 +6,7 @@ import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.Add;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.Multiply;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.OPBase;
+import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.Slice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class Evaluater {
     public static void init() {
         registerOP(new Add());
         registerOP(new Multiply());
+        registerOP(new Slice());
     }
 
     static void registerOP(OPBase op) {

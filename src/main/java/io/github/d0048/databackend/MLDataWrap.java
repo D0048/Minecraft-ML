@@ -23,6 +23,30 @@ public class MLDataWrap {
         this.shape = shape;
     }
 
+    public double getData(int[] index) {
+        int indexInternal = 0;
+        for (int i = 0; i < index.length; i++) {
+            int shapesum = 1;
+            for (int j = i; j < getShape().length; j++) {
+                shapesum *= getShape()[j];
+            }
+            indexInternal += index[i] * shapesum;
+        }
+        return getData()[indexInternal];
+    }
+
+    public void setData(int[] index, double val) {
+        int indexInternal = 0;
+        for (int i = 0; i < index.length; i++) {
+            int shapesum = 1;
+            for (int j = i; j < getShape().length; j++) {
+                shapesum *= getShape()[j];
+            }
+            indexInternal += index[i] * shapesum;
+        }
+        getData()[indexInternal] = val;
+    }
+
     public double[] getData() {
         return data;
     }
@@ -73,6 +97,10 @@ public class MLDataWrap {
 
     static void info(String s) {
         MLDataCoreMCML.logger.info(s);
+    }
+
+    public MLDataWrap clone() {
+        return new MLDataWrap(getShape(), getData());
     }
 
 }

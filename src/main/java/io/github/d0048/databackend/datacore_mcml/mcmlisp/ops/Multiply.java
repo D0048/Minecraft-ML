@@ -31,4 +31,9 @@ public class Multiply extends OPBase {
         }
         return ret;
     }
+
+    @Override
+    public String getUsage() {
+        return "Multiplying data along their size: \n    ("+getName()+" data_1 data_2 ... data_n)";
+    }
 }

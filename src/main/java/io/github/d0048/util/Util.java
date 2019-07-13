@@ -174,7 +174,7 @@ public class Util {
 
     public static double[] parseDoubleArr(String str, boolean force) {
         if (force) {
-            str = str.replaceAll("[^,1234567890\\.]", "");
+            str = str.replaceAll("[^,\\-1234567890\\.]", "");
         } else {
             str = str.replace(" ", "");
             if (str.startsWith("[")) str = str.substring(1, str.length() - 1);
@@ -189,7 +189,7 @@ public class Util {
 
     public static int[] parseIntArr(String str, boolean force) {
         if (force) {
-            str = str.replaceAll("[^,1234567890\\.]", "");
+            str = str.replaceAll("[^,\\-1234567890\\.]", "");
         } else {
             str = str.replace(" ", "");
             if (str.startsWith("[")) str = str.substring(1, str.length() - 1);

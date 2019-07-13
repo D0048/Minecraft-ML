@@ -1,6 +1,7 @@
 package io.github.d0048.databackend.datacore_mcml;
 
 import io.github.d0048.MCML;
+import io.github.d0048.MLConfig;
 import io.github.d0048.databackend.MLDataCore;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.Evaluater;
@@ -40,6 +41,7 @@ public class MLDataCoreMCML extends MLDataCore {
         info("MCML Backend is now up and running!");
         try {
             while (true) {
+                Thread.sleep(MLConfig.backendUpdateInterval);
                 Set<String> ids = dataMap.keySet();
                 for (String id : ids) {
                     Molecule m = null;
@@ -54,7 +56,6 @@ public class MLDataCoreMCML extends MLDataCore {
                         e.printStackTrace();
                     }
                 }
-                Thread.sleep(1200);
             }
         } catch (Exception e) {
             info("MCML Backend experience a problem: ");
