@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Add extends OPBase {
     public Add() {
-        this.name = "+";
-        this.numArgs = Range.between(2, 100);
+        setName("+");
+        setNumArgs(Range.between(2, 100));
     }
 
     @Override
@@ -36,4 +36,5 @@ public class Add extends OPBase {
     public String getUsage() {
         return "Adding data along their size: \n    ("+getName()+" data_1 data_2 ... data_n)";
     }
+
 }

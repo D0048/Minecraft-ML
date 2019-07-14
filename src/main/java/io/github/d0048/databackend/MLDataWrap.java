@@ -16,9 +16,9 @@ public class MLDataWrap {
     }
 
     public void setShape(int[] shape) {
-        while (shape.length < 3) {
+        if (shape.length < 1) {
             shape = Arrays.copyOf(shape, shape.length + 1);
-            shape[shape.length - 1] = 1;
+            shape[shape.length - 1] = 0;
         }
         this.shape = shape;
     }

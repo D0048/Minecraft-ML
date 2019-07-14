@@ -64,7 +64,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             this.dataID = dataID.trim();
             if ((MCML.mlDataCore.registerDataForID(dataID)) != null) {
                 if (Util.arrCumProduct(displayShape) != Util.arrCumProduct(getDataWrap().getShape()))
-                    displayShape = getDataWrap().getShape().clone();
+                    setDisplayShape(getDataWrap().getShape().clone());
                 solveDataWrap();
                 return true;
             } else {
@@ -197,6 +197,10 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         if (!isDisplayShapeValid()) {
             MCML.logger.warn("Display shape too large, use original instead!");
             shape = getDataWrap().getShape();
+            while (shape.length < 3) { //pad to 3D
+                shape = Arrays.copyOf(shape, shape.length + 1);
+                shape[shape.length - 1] = 1;
+            }
         }
         if (shape.length > 3)
             MCML.logger.warn("Displaying a tensor larger than 3D, only first 3 used!");
@@ -307,7 +311,12 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public int[] getDisplayShape() {
-        return displayShape;
+        int[] shape= Util.arrCumProduct(displayShape) != 0 ? displayShape : getDataWrap().getShape();
+        while (shape.length < 3) { //pad to 3D
+            shape = Arrays.copyOf(shape, shape.length + 1);
+            shape[shape.length - 1] = 1;
+        }
+        return shape;
     }
 
     public String getDataID() {

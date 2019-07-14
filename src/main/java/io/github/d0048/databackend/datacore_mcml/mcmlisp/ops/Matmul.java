@@ -7,9 +7,9 @@ import org.apache.commons.lang3.Range;
 import java.util.Arrays;
 import java.util.List;
 
-public class Reshape extends OPBase {
-    public Reshape() {
-        setName("reshape");
+public class Matmul extends OPBase {
+    public Matmul() {
+        setName("matmul");
         setNumArgs(Range.between(2, 2));
     }
 
@@ -27,7 +27,6 @@ public class Reshape extends OPBase {
 
     @Override
     public String getUsage() {
-        return "Reshape data: \n    (" + getName() + " [new_shape])";
+        return "Multiply matix: \n    (" + getName() + " [new_shape])";
     }
-
 }

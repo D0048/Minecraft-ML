@@ -18,6 +18,7 @@ public abstract class OPBase {
     }
 
     public MLDataWrap run(List<Molecule> args) throws Exception {
+        checkArguments(args);
         return runRaw(Evaluater.evaluateAll(args));
     }
 

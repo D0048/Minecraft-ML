@@ -8,8 +8,8 @@ import java.util.List;
 
 public class Slice extends OPBase {
     public Slice() {
-        this.name = "slice";
-        this.numArgs = Range.between(3, 3);
+        setName("slice");
+        setNumArgs(Range.between(3, 3));
     }
 
     @Override
@@ -36,7 +36,6 @@ public class Slice extends OPBase {
         for (int i = start; i < end; i++) {
             buffer.getData()[i - start] = src.getData()[i];
         }
-        System.out.println("! " + buffer.toString());
         return buffer;
     }
 
@@ -45,4 +44,5 @@ public class Slice extends OPBase {
         //return "Slice data along their length: \n    (" + getName() + " [shape_from_inclusive] [shape_to_exclusive])";
         return "Slice data: \n    (" + getName() + " [index_from_inclusive] [index_to_exclusive])";
     }
+
 }
