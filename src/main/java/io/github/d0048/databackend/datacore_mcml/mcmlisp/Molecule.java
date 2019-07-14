@@ -42,7 +42,7 @@ public class Molecule {
         if (!getOP().isAtom()) throw new IllegalArgumentException("First element must be an atom");
     }
 
-    public MLDataWrap evaluate() {
+    public MLDataWrap evaluate() throws Exception {
         if (isAtom()) {
             return MCML.mlDataCore.getDataForID(fullStr);
         } else {

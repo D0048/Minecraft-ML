@@ -17,11 +17,11 @@ public abstract class OPBase {
             throw new IllegalArgumentException("Got " + args.size() + " elements but expecting " + numArgs);
     }
 
-    public MLDataWrap run(List<Molecule> args) {
+    public MLDataWrap run(List<Molecule> args) throws Exception {
         return runRaw(Evaluater.evaluateAll(args));
     }
 
-    abstract public MLDataWrap runRaw(List<MLDataWrap> args);
+    abstract public MLDataWrap runRaw(List<MLDataWrap> args) throws Exception;
 
     @Override
     public String toString() {

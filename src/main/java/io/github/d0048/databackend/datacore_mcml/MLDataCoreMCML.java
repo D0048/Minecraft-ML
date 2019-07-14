@@ -130,7 +130,7 @@ public class MLDataCoreMCML extends MLDataCore {
         String[] ret = new String[4];
         String[] typeSplit = id.split("\\|"), shapeSplit = typeSplit[0].split("@"), aliasSplit =
                 shapeSplit[0].split("=");
-        ret[3] = aliasSplit.length > 1 ? aliasSplit[0].trim() : "";
+        ret[3] = aliasSplit.length > 1 ? aliasSplit[0].trim() : "";// alias name
         ret[0] = aliasSplit.length > 1 ? aliasSplit[1].trim() : aliasSplit[0].trim();// name/expression
         if (ret[0].startsWith("(")) ret[0] = ret[0].substring(1, ret[0].length() - 1);
         ret[1] = shapeSplit.length > 1 ? shapeSplit[1].trim() : "[1]";//shape

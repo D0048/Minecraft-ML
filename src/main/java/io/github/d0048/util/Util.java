@@ -262,6 +262,12 @@ public class Util {
         return Math.min(Math.max(x, Math.min(upper, lower)), Math.max(upper, lower));
     }
 
+    public static int[] double2IntArray(double[] arr) {
+        int[] buffer = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) buffer[i] = (int) arr[i];
+        return buffer;
+    }
+
     public static void main(String[] args) {
         completeBlockName("mi");
     }

@@ -16,7 +16,7 @@ public class Slice extends OPBase {
     public MLDataWrap runRaw(List<MLDataWrap> args) {
         MLDataWrap src = args.get(0);
         int start = (int) args.get(1).getData()[0], end = (int) args.get(2).getData()[0];
-        if (end < 0) end = src.getData().length;
+        if (end < 0) end = src.getData().length + end + 1;
         if (start == end) {
             end += 1;
         } else if (start > end) {
@@ -24,7 +24,7 @@ public class Slice extends OPBase {
             start = end;
             end = tmp;
         }
-        start = Util.clipIntoRange(start, 0, src.getData().length);
+        start = Util.clipIntoRange(start, 0, src.getData().length - 1);
         end = Util.clipIntoRange(end, 1, src.getData().length);
         /*
         Range validRange = Range.between(0, src.getData().length), sliceRange = Range.between(start, end);

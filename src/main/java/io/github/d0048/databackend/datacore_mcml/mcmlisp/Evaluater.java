@@ -3,10 +3,7 @@ package io.github.d0048.databackend.datacore_mcml.mcmlisp;
 import io.github.d0048.MCML;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
-import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.Add;
-import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.Multiply;
-import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.OPBase;
-import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.Slice;
+import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +16,7 @@ public class Evaluater {
         registerOP(new Add());
         registerOP(new Multiply());
         registerOP(new Slice());
+        registerOP(new Reshape());
     }
 
     static void registerOP(OPBase op) {
@@ -34,13 +32,13 @@ public class Evaluater {
         return opMap.get(name);
     }
 
-    public static MLDataWrap performOP(String op, List<Molecule> args, boolean useCache) {
+    public static MLDataWrap performOP(String op, List<Molecule> args, boolean useCache) throws Exception {
         MLDataWrap ret = getOP(op).run(args);
         //TODO: Implement caching
         return ret;
     }
 
-    public static List<MLDataWrap> evaluateAll(List<Molecule> args) {
+    public static List<MLDataWrap> evaluateAll(List<Molecule> args) throws Exception {
         List<MLDataWrap> datas = new ArrayList<MLDataWrap>();
         for (Molecule m : args) {
             datas.add(m.evaluate());
