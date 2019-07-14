@@ -2,10 +2,7 @@ package io.github.d0048.util;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import io.github.d0048.MCML;
 import net.minecraft.block.Block;
@@ -174,7 +171,7 @@ public class Util {
         if (force) {
             str = str.replaceAll("[^,\\-1234567890\\.]", "");
         } else {
-            str = str.replace(" ", "");
+            str = str.replace(" ", "").replace("[", "").replace("]", "");
             if (str.startsWith("[")) str = str.substring(1, str.length() - 1);
         }
         String[] strArgs = str.split(",");
@@ -186,6 +183,8 @@ public class Util {
     }
 
     public static int[] parseIntArr(String str, boolean force) {
+        return double2IntArray(parseDoubleArr(str, force));
+        /*
         if (force) {
             str = str.replaceAll("[^,\\-1234567890\\.]", "");
         } else {
@@ -197,8 +196,44 @@ public class Util {
         for (int i = 0; i < strArgs.length; i++) {
             buffer[i] = Integer.parseInt(strArgs[i]);
         }
-        return buffer;
+        return buffer;*/
     }
+
+    /**
+     * Parse shape of matrix, e.g: [[1,0,0][0,1,0][0,0,1]]
+     *
+     * @param str
+     * @return
+     */
+    public static int[] parseArrShape(String str) {
+        if (str.startsWith("[")) str = str.substring(1, str.length() - 1);
+        //str = str.replaceAll("[^,\\]\\[]", "");
+        if (!str.contains("[")) {
+            //System.out.println("shape of " + str + " :" + (str.split(",").length));
+            return new int[]{str.split(",").length};
+        }
+        int partCount = 0, cutpos = 0;
+        Stack<Character> stack = new Stack<Character>();
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == '[') {
+                stack.push(c);
+            } else if (c == ']') {
+                stack.pop();
+                if (stack.empty()) {
+                    partCount++;
+                    cutpos = cutpos == 0 ? i : cutpos;
+                }
+            }
+        }
+        int[] subShape = parseArrShape(str.substring(0, cutpos + 1));
+        int[] shape = new int[subShape.length + 1];
+        System.arraycopy(subShape, 0, shape, 1, subShape.length);
+        shape[0] = partCount;
+        //System.out.println("shape of " + str + " :" +Arrays.toString(shape));
+        return shape;
+    }
+
 
     public static List<String> completeBlockName(String input) {
         List<String> list = new ArrayList<String>();

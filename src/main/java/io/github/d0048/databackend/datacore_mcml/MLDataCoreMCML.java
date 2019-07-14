@@ -146,6 +146,7 @@ public class MLDataCoreMCML extends MLDataCore {
         try {//check is constant
             return MLDataWrap.fromStringValue(constantString, false);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

@@ -27,7 +27,7 @@ public class MLDataWrap {
         int indexInternal = 0;
         for (int i = 0; i < index.length; i++) {
             int shapesum = 1;
-            for (int j = i; j < getShape().length-1; j++) {
+            for (int j = i; j < getShape().length - 1; j++) {
                 shapesum *= getShape()[j];
             }
             indexInternal += index[i] * shapesum;
@@ -80,8 +80,10 @@ public class MLDataWrap {
     }
 
     public static MLDataWrap fromStringValue(String str, boolean force) {
+        //TODO: matrix support
         double[] buffer = Util.parseDoubleArr(str, force);
-        return new MLDataWrap(buffer);
+        int[] shape = Util.parseArrShape(str);
+        return new MLDataWrap(shape, buffer);
     }
 
     public static MLDataWrap fromStringShape(String str, boolean force) {
