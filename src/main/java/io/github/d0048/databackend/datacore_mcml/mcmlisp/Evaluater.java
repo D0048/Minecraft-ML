@@ -17,6 +17,7 @@ public class Evaluater {
         registerOP(new Multiply());
         registerOP(new Slice());
         registerOP(new Reshape());
+        registerOP(new Matmul());
     }
 
     static void registerOP(OPBase op) {
