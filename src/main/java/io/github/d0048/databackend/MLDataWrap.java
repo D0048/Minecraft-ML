@@ -1,5 +1,7 @@
 package io.github.d0048.databackend;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
@@ -40,7 +42,7 @@ public class MLDataWrap {
         int indexInternal = 0;
         for (int i = 0; i < index.length; i++) {
             int shapesum = 1;
-            for (int j = i; j < getShape().length; j++) {
+            for (int j = i; j < getShape().length - 1; j++) {
                 shapesum *= getShape()[j];
             }
             indexInternal += index[i] * shapesum;
@@ -90,6 +92,20 @@ public class MLDataWrap {
         int[] sizeBuffer = Util.parseIntArr(str, force);
         double[] buffer = new double[Util.arrCumProduct(sizeBuffer)];
         return new MLDataWrap(sizeBuffer, buffer);
+    }
+
+    public static MLDataWrap fromBufferedImage(BufferedImage img) {
+        int[] size = new int[]{img.getWidth(), img.getHeight(), 3};
+        double[] buffer = new double[img.getWidth() * img.getHeight() * 3];
+        MLDataWrap ret = new MLDataWrap(size, buffer);
+        for (int i = size[0]; i < size[0]; i++)
+            for (int j = size[0]; j < size[0]; j++) {
+                Color color = new Color(img.getRGB(i, j));
+                ret.setData(new int[]{i, j, 0}, color.getRed());
+                ret.setData(new int[]{i, j, 1}, color.getGreen());
+                ret.setData(new int[]{i, j, 2}, color.getBlue());
+            }
+        return ret;
     }
 
     @Override

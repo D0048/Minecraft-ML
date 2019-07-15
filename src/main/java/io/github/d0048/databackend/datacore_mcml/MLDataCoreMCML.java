@@ -146,7 +146,6 @@ public class MLDataCoreMCML extends MLDataCore {
         try {//check is constant
             return MLDataWrap.fromStringValue(constantString, false);
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -176,9 +175,12 @@ public class MLDataCoreMCML extends MLDataCore {
                 TextFormatting.LIGHT_PURPLE + " :\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Status: " + TextFormatting.YELLOW + backend.getState().toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";
-        ret += TextFormatting.LIGHT_PURPLE + "    - Data: " + TextFormatting.YELLOW + dataMap.toString()
+        ret += TextFormatting.LIGHT_PURPLE + "    - Data: " + dataMap.toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Alias: " + TextFormatting.YELLOW + aliasMap.toString()
+                + TextFormatting.LIGHT_PURPLE + "\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - OPs Avail: " + TextFormatting.YELLOW + Evaluater.opMap.toString().replace("},",
+                "}\n")
                 + TextFormatting.LIGHT_PURPLE + "\n";
         return ret;
     }

@@ -18,6 +18,7 @@ public class Evaluater {
         registerOP(new Slice());
         registerOP(new Reshape());
         registerOP(new Matmul());
+        registerOP(new FromImageFile());
     }
 
     static void registerOP(OPBase op) {

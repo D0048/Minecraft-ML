@@ -224,7 +224,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
 
     boolean isDisplayShapeValid() {
         if (getDataWrap() != null)
-            return Util.arrCumProduct(getDisplayShape()) <= getDataWrap().getData().length;
+            return Util.arrCumProduct(getDisplayShape()) <= Util.arrCumProduct(getDataWrap().getShape());
         else return false;
     }
 
