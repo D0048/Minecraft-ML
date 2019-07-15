@@ -47,6 +47,7 @@ public class MLDataWrap {
             }
             indexInternal += index[i] * shapesum;
         }
+        //System.out.println(Arrays.toString(index) + " -> " + indexInternal);
         getData()[indexInternal] = val;
     }
 
@@ -95,15 +96,15 @@ public class MLDataWrap {
     }
 
     public static MLDataWrap fromBufferedImage(BufferedImage img) {
-        int[] size = new int[]{img.getWidth(), img.getHeight(), 3};
-        double[] buffer = new double[img.getWidth() * img.getHeight() * 3];
+        int[] size = new int[]{img.getWidth(), 3, img.getHeight()};
+        double[] buffer = new double[Util.arrCumProduct(size)];
         MLDataWrap ret = new MLDataWrap(size, buffer);
-        for (int i = size[0]; i < size[0]; i++)
-            for (int j = size[0]; j < size[0]; j++) {
+        for (int i = 0; i < size[0]; i++)
+            for (int j = 0; j < size[2]; j++) {
                 Color color = new Color(img.getRGB(i, j));
-                ret.setData(new int[]{i, j, 0}, color.getRed());
-                ret.setData(new int[]{i, j, 1}, color.getGreen());
-                ret.setData(new int[]{i, j, 2}, color.getBlue());
+                ret.setData(new int[]{i, 0, j}, color.getRed());
+                ret.setData(new int[]{i, 1, j}, color.getGreen());
+                ret.setData(new int[]{i, 2, j}, color.getBlue());
             }
         return ret;
     }

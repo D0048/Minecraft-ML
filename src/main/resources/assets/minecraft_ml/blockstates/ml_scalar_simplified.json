@@ -1,0 +1,50 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "parent": "block/cube",
+        "model": "cube_all",
+        "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_0"}    },
+        "variants": {
+            "nan": {
+                "y": 0, "x": 0
+            },
+            "normal": {
+                "y": 0, "x": 0
+            },
+            "inventory": {
+                "y": 0, "x": 0
+            },
+            "value_0": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_0"}},
+            "value_1": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_1"}},
+            "value_2": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_2"}},
+            "value_3": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_3"}},
+            "value_4": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_4"}},
+            "value_5": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_5"}},
+            "value_6": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_6"}},
+            "value_7": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_7"}},
+            "value_8": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_8"}},
+            "value_9": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_9"}},
+            "value_10": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_10"}},
+            "value_11": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_11"}},
+            "value_12": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_12"}},
+            "value_13": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_13"}},
+            "value_14": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_14"}},
+            "value_15": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_15"}},
+            "value_16": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_16"}},
+            "value_17": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_17"}},
+            "value_18": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_18"}},
+            "value_19": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_19"}},
+            "value_20": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_20"}},
+            "value_21": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_21"}},
+            "value_22": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_22"}},
+            "value_23": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_23"}},
+            "value_24": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_24"}},
+            "value_25": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_25"}},
+            "value_26": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_26"}},
+            "value_27": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_27"}},
+            "value_28": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_28"}},
+            "value_29": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_29"}},
+            "value_30": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_30"}},
+            "value_31": {"parent": "block/cube", "textures": {"all": "minecraft_ml:ml_scalar_values_minimum/ml_scalar_value_31"}}
+        }
+}

@@ -1,5 +1,6 @@
 package io.github.d0048.common.blocks;
 
+import io.github.d0048.MLConfig;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -27,13 +28,14 @@ public class MLColorConverter extends MLBlockBase {
     public static void commonInit() {
         ForgeRegistries.BLOCKS.register(mlColorConverter = new MLColorConverter());
         GameRegistry.registerTileEntity(MLColorConverterTileEntity.class,
-                new ModelResourceLocation("minecraft_ml:ml_colorconverter", "normal"));
+                new ModelResourceLocation("minecraft_ml:ml_colorconverter" + (MLConfig.HQ_MODEL ? "" : "_simplified"),
+                        "normal"));
         // Nonstandard naming, too lazy to change...
         ModelLoader.setCustomStateMapper(mlColorConverter, new StateMapperBase() {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                MLBlockBase.info(state.getValue(FACING).toString());
-                return new ModelResourceLocation("minecraft_ml:ml_colorconverter", state.getValue(FACING).toString());
+                return new ModelResourceLocation("minecraft_ml:ml_colorconverter" + (MLConfig.HQ_MODEL ? "" : "_simplified"),
+                        state.getValue(FACING).toString());
             }
         });
         mlColorConvertItemBlock = new ItemBlock(mlColorConverter);
@@ -44,7 +46,8 @@ public class MLColorConverter extends MLBlockBase {
 
     public static void clientInit() {
         ModelLoader.setCustomModelResourceLocation(mlColorConvertItemBlock, 0,
-                new ModelResourceLocation("minecraft_ml:ml_colorconverter", "inventory"));
+                new ModelResourceLocation("minecraft_ml:ml_colorconverter" + (MLConfig.HQ_MODEL ? "" : "_simplified"),
+                        "inventory"));
     }
 
     @Nullable

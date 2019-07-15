@@ -39,7 +39,7 @@ public class MLScalar extends MLBlockBase {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
                 int val = state.getValue(MLScalar.propertyValue).intValue();
-                return new ModelResourceLocation("minecraft_ml:ml_scalar", "value_" + val);
+                return new ModelResourceLocation("minecraft_ml:ml_scalar" + (MLConfig.HQ_MODEL ? "" : "_simplified"), "value_" + val);
             }
         });
         mlScalarItemBlock = new ItemBlock(mlScalar);

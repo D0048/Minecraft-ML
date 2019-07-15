@@ -44,6 +44,12 @@ public class MLConfig {
                     })
     @Config.RangeInt(min = 0, max = 100000)
     public static int backendUpdateInterval = 200;
+    @Config.Name("High Quality Models")
+    @Config.Comment({
+                            "Use high-quality 3D models. They are fantastic but requires a beefy computer.",
+                    })
+    @Config.RequiresMcRestart
+    public static boolean HQ_MODEL = false;
 
     // Handler below ------------------------------------------------------------------------------------------------------
     @Mod.EventBusSubscriber

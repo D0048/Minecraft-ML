@@ -3,6 +3,7 @@ package io.github.d0048.common.blocks;
 import javax.annotation.Nullable;
 
 import io.github.d0048.MCML;
+import io.github.d0048.MLConfig;
 import io.github.d0048.common.MLTab;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -87,7 +88,7 @@ public class MLBlockBase extends Block {
 
     @Override
     public boolean isOpaqueCube(IBlockState iBlockState) {
-        return false;
+        return !MLConfig.HQ_MODEL;
     }
 
     @Override
