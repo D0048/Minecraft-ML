@@ -1,5 +1,6 @@
 package io.github.d0048;
 
+import io.github.d0048.common.blocks.MLColorConverterTileEntity;
 import io.github.d0048.databackend.MLDataCore;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -21,14 +22,14 @@ public class MLConfig {
     @Config.Comment({
                             "How many ticks to wait before refreshing, lower is faster.",
                     })
-    @Config.RangeInt(min = 1, max = 100)
+    @Config.RangeInt(min = 1, max = 10000)
     public static int colorConverterRefershInterval = 5;
 
     @Config.Name("Refresh Interval of Tensor Display")
     @Config.Comment({
                             "How many ticks to wait before refreshing, lower is faster.",
                     })
-    @Config.RangeInt(min = 1, max = 100)
+    @Config.RangeInt(min = 1, max = 10000)
     public static int tensorDisplayRefreshInterval = 10;
 
     @Config.Name("Data Core Type")
@@ -37,6 +38,13 @@ public class MLConfig {
                     })
     @Config.RequiresMcRestart
     public static MLDataCore.BackEndType backendType = MLDataCore.BackEndType.MCML;
+
+    @Config.Name("Color Converter Mode")
+    @Config.Comment({
+                            "Whether to use blocks of nearest color or glass",
+                    })
+    public static MLColorConverterTileEntity.ColorMode ConverterCOlorMode= MLColorConverterTileEntity.ColorMode.GLASS;
+
 
     @Config.Name("Data Core Update Frequency")
     @Config.Comment({

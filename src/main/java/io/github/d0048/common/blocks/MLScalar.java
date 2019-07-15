@@ -72,13 +72,12 @@ public class MLScalar extends MLBlockBase {
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        worldIn.setBlockState(pos, getStateFromMeta((getMetaFromState(state) + 1) % MLConfig.scalarResolution));
+        setValue(worldIn, pos, (getValueAt(worldIn, pos) + 1) % MLConfig.scalarResolution);
         if (worldIn.isRemote)
             playerIn.sendMessage(
                     new TextComponentString("New State: " + ((getMetaFromState(state) + 1) % MLConfig.scalarResolution)));
         return true;
     }
-
 
     public MLScalar() {
         super("ml_scalar", "Scalar");
@@ -98,7 +97,19 @@ public class MLScalar extends MLBlockBase {
     public static void placeAt(World world, BlockPos pos, int val) {
         //info("Value " + val + " placed at " + pos);
         val = Math.min(Math.max(0, val), MLConfig.scalarResolution - 1);
-        world.setBlockState(pos, MLScalar.mlScalar.getStateFromMeta(val));
+        if (world.getBlockState(pos).getBlock() != mlScalar || mlScalar.getMetaFromState(world.getBlockState(pos)) != val) {
+            world.setBlockState(pos, mlScalar.getStateFromMeta(val));
+            int find = 4;
+            while (find-- > 0) {
+                if (world.getBlockState(pos.add(0, find, 0)).getBlock() == MLColorConverter.mlColorConverter) {
+                    try {
+                        ((MLColorConverterTileEntity) world.getTileEntity(pos.add(0, find, 0))).refresh();
+                    } catch (Exception e) {
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     public static int getValueAt(World world, BlockPos pos) {

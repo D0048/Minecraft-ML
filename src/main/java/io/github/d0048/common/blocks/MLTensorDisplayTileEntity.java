@@ -27,7 +27,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
 
-    int loop = MLConfig.tensorDisplayRefreshInterval;
+    int loop = (int) (Math.random()*MLConfig.tensorDisplayRefreshInterval);
 
     @Override
     public void update() {
@@ -211,7 +211,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         for (int i = 0; i < shape[0] || i == 0; i++)
             for (int j = 0; j < shape[1] || j == 0; j++) {
                 for (int k = 0; k < shape[2] || k == 0; k++) {
-                    BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);
+                    BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);//TODO fix
                     int index = i * shape[1] * shape[2] + shape[2] * j + k;// val = data[index];
                     pos2IndexMap.put(p, index);
                     index2PosMap.put(index, p);

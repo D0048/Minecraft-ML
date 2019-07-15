@@ -64,6 +64,7 @@ public class MLColorConverter extends MLBlockBase {
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+        ((MLColorConverterTileEntity) worldIn.getTileEntity(pos)).refresh();
     }
 
     public IBlockState getStateFromMeta(int meta) {

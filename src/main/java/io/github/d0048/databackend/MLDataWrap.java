@@ -29,7 +29,7 @@ public class MLDataWrap {
         int indexInternal = 0;
         for (int i = 0; i < index.length; i++) {
             int shapesum = 1;
-            for (int j = i; j < getShape().length - 1; j++) {
+            for (int j = i + 1; j < getShape().length - 1; j++) {
                 shapesum *= getShape()[j];
             }
             indexInternal += index[i] * shapesum;
@@ -42,7 +42,7 @@ public class MLDataWrap {
         int indexInternal = 0;
         for (int i = 0; i < index.length; i++) {
             int shapesum = 1;
-            for (int j = i; j < getShape().length - 1; j++) {
+            for (int j = i + 1; j < getShape().length - 1; j++) {
                 shapesum *= getShape()[j];
             }
             indexInternal += index[i] * shapesum;

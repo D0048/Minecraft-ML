@@ -84,12 +84,14 @@ public class MLDataCoreMCML extends MLDataCore {
                     System.out.println("No need to register constant: " + washedID[0]);
                     return;// Constant, no need to register
                 }
-                if (Parser.parse(washedID[0]).isAtom()) {
-                    info("atom");
+                try {
+                    Molecule m = Parser.parse(washedID[0]);
+                    MLDataWrap dataWrap = m.evaluate();
+                    if (dataWrap == null) throw new Exception();
+                    dataMap.put(washedID[0], dataWrap);
+                    dataMap.put(id, dataWrap);
+                } catch (Exception e) {
                     dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1], true));
-                } else {
-                    info("non atom");
-                    dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1], true)); // non-atom, evaluate on the go
                 }
             } else if (washedID[2].equals("file"))
                 throw new OperationNotSupportedException("Loading from file TODO");
