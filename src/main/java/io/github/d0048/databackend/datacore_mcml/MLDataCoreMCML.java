@@ -181,9 +181,9 @@ public class MLDataCoreMCML extends MLDataCore {
                 + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - Alias: " + TextFormatting.YELLOW + aliasMap.toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";
-        ret += TextFormatting.LIGHT_PURPLE + "    - OPs Avail: " + TextFormatting.YELLOW + Evaluater.opMap.toString().replace("},",
-                "}\n")
-                + TextFormatting.LIGHT_PURPLE + "\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - OPs Avail: ";
+        for (String s : Evaluater.opMap.keySet()) ret += TextFormatting.YELLOW + s + TextFormatting.LIGHT_PURPLE + ",";
+        ret += TextFormatting.LIGHT_PURPLE + "\n";
         return ret;
     }
 

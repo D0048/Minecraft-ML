@@ -53,7 +53,7 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         }
     }
 
-    public void refresh() {
+    public void refresh() throws Exception{
         //info("Converter refreshed");
         BlockPos pos = getPos();
         World world = getWorld();
