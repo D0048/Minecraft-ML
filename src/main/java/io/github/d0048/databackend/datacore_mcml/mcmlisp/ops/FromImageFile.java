@@ -38,6 +38,6 @@ public class FromImageFile extends OPBase {
 
     @Override
     public String getUsage() {
-        return "Load an image from file: \n    (" + getName() + "any_url_to_img)";
+        return "Load an image from file: \n    (" + getName() + " any_url_to_img)";
     }
 }

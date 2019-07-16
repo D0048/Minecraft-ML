@@ -7,6 +7,7 @@ import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.Evaluater;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.Molecule;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.Parser;
+import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.OPBase;
 import io.github.d0048.util.Util;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -51,20 +52,20 @@ public class MLDataCoreMCML extends MLDataCore {
                         dataMap.put(id, dataWrap);
                     } catch (Throwable e) {
                         //dataMap.remove(id);
-                        info("Error updating data ID: " + id + " because " + e+": " + e.getMessage());
+                        info("Error updating data ID: " + id + " because " + e + ": " + e.getMessage());
                         //e.printStackTrace();
                     }
                 }
             }
         } catch (Throwable e) {
-            info("MCML Backend experience a problem: "+ e+": " + e.getMessage());
+            info("MCML Backend experience a problem: " + e + ": " + e.getMessage());
             //e.printStackTrace();
         }
     }
 
     /**
      * ID Rule: [optional_alias_name]=name@[optional_shape]|type
-     * e.g x.png|file or (+ x 1)|eval or (x@[28,28,3])|eval or a=b
+     * e.g (x@[28,28,3])|eval or a=b
      * types supported: eval,file
      **/
     public void decodeID(String id) throws Exception {
@@ -91,8 +92,8 @@ public class MLDataCoreMCML extends MLDataCore {
                 } catch (Throwable e) {
                     dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1], true));
                 }
-            } else if (washedID[2].equals("file"))
-                throw new OperationNotSupportedException("Loading from file TODO");
+            } else
+                throw new OperationNotSupportedException("Other data types TODO");
         } catch (Exception e) {
             info("Error decoding ID: " + id + " due to " + e.getMessage());
             e.printStackTrace();
@@ -166,7 +167,13 @@ public class MLDataCoreMCML extends MLDataCore {
     }
 
     public String getUsage(ICommandSender sender) {
-        return "MCML Core Usage : \n";
+        String ret = TextFormatting.LIGHT_PURPLE + "MCML Core Usage : \n";
+        ret += TextFormatting.YELLOW + "inquire" + TextFormatting.LIGHT_PURPLE + ": get the current status information of Datacore\n";
+        ret += TextFormatting.LIGHT_PURPLE + "Available OPs: \n";
+        for (OPBase op : Evaluater.opMap.values()) {
+            ret += "    " + TextFormatting.LIGHT_PURPLE + op.getUsage() + "\n";
+        }
+        return ret;
     }
 
     @Override

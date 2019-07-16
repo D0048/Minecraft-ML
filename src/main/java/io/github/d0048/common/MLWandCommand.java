@@ -142,7 +142,7 @@ public class MLWandCommand extends CommandBase {
                 if (args.length >= 3) display.setWritable(parseBoolean(args[2]));
                 else display.toggleWritable();
                 sender.sendMessage(new TextComponentString(
-                        TextFormatting.LIGHT_PURPLE + "Display now" + TextFormatting.YELLOW + (display.isWritable() ? "rw" : "ro")));
+                        TextFormatting.LIGHT_PURPLE + "Display now " + TextFormatting.YELLOW + (display.isWritable() ? "rw" : "ro")));
             } else if (action.equals("normalize")) {
                 if (args.length >= 4) display.setNormalizationRange(Range.between(parseDouble(args[2]), parseDouble(args[3])));
                 else display.normalize();
@@ -181,10 +181,6 @@ public class MLWandCommand extends CommandBase {
         sender.sendMessage(new TextComponentString(getUsage(sender)));
     }
 
-    @Override
-    public String getUsage(ICommandSender sender) {
-        return "Usage TODO\n" + MCML.mlDataCore.getUsage(sender);
-    }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
@@ -211,6 +207,40 @@ public class MLWandCommand extends CommandBase {
         }
         return Collections.<String>emptyList();
 
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        String ret = "\n";
+        ret += TextFormatting.YELLOW + "info" + TextFormatting.LIGHT_PURPLE + ": display what's under your 1st wand selection\n";
+
+        ret += TextFormatting.YELLOW + "display" + TextFormatting.LIGHT_PURPLE + ": \n";
+        ret += "    " + TextFormatting.YELLOW + "setDataID <id>" + TextFormatting.LIGHT_PURPLE + ": give display a MCML-Lisp " +
+                "expression for what to display\n";
+        ret += "    " + TextFormatting.YELLOW + "reshape <x> <y> <z>" + TextFormatting.LIGHT_PURPLE + ": reshape display from lowest" +
+                " end\n";
+        ret += "    " + TextFormatting.YELLOW + "reroot" + TextFormatting.LIGHT_PURPLE +
+                ": move display lower edge to 2nd selection\n";
+        ret += "    " + TextFormatting.YELLOW + "relocate" + TextFormatting.LIGHT_PURPLE + ": reshape + reroot display between " +
+                "selection 1 & 2\n";
+        ret += "    " + TextFormatting.YELLOW + "normalize <optional_lower> <optional_upper>" + TextFormatting.LIGHT_PURPLE + ": " +
+                "normalize display into given values, automatically choose range if not given\n";
+        ret += "    " + TextFormatting.YELLOW + "toggleWrite" + TextFormatting.LIGHT_PURPLE + ": " +
+                "Toggle whether you can write to the display with your wand/hand\n";
+
+        ret += TextFormatting.YELLOW + "datacore" + TextFormatting.LIGHT_PURPLE + ": (commands may differ depending on which core " +
+                "you use)\n";
+        ret += MCML.mlDataCore.getUsage(sender).replace("\n","\n    ")+"\n";
+
+        ret += TextFormatting.YELLOW + "canvas" + TextFormatting.LIGHT_PURPLE + ": \n";
+        ret += "    " + TextFormatting.YELLOW + "fill <block_type> <optional_value>" + TextFormatting.LIGHT_PURPLE + ": fill the " +
+                "volume between both wand selection with block. e.g /canvas fill minecraft_ml:ml_scalar 0 for a white canvas\n";
+        ret += "    " + TextFormatting.YELLOW + "ink <R~[0,255]> <G~[0,255]> <B~[0,255]> <Radius>" + TextFormatting.LIGHT_PURPLE +
+                ": set color & radius the current stylus is using(for painting with right click) \n";
+
+        ret += TextFormatting.YELLOW + "shell <cmd>" + TextFormatting.LIGHT_PURPLE + ": execute a bash command(*nix only function)\n";
+
+        return ret;
     }
 
     @Override
