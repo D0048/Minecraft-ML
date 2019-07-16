@@ -26,29 +26,24 @@ public class MLDataWrap {
     }
 
     public double getData(int[] index) {
-        int indexInternal = 0;
-        for (int i = 0; i < index.length; i++) {
-            int shapesum = 1;
-            for (int j = i + 1; j < getShape().length - 1; j++) {
-                shapesum *= getShape()[j];
-            }
-            indexInternal += index[i] * shapesum;
-        }
-        //System.out.println(Arrays.toString(index) + " -> " + indexInternal);
-        return getData()[indexInternal];
+        return getData()[extIndex2InternalIndex(index)];
     }
 
     public void setData(int[] index, double val) {
+        getData()[extIndex2InternalIndex(index)] = val;
+    }
+
+    public int extIndex2InternalIndex(int[] index) {
         int indexInternal = 0;
         for (int i = 0; i < index.length; i++) {
             int shapesum = 1;
-            for (int j = i + 1; j < getShape().length - 1; j++) {
+            for (int j = i + 1; j < getShape().length; j++) {
                 shapesum *= getShape()[j];
             }
             indexInternal += index[i] * shapesum;
         }
         //System.out.println(Arrays.toString(index) + " -> " + indexInternal);
-        getData()[indexInternal] = val;
+        return indexInternal;
     }
 
     public double[] getData() {
