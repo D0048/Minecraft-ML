@@ -13,13 +13,14 @@ import org.apache.commons.lang3.Range;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     String dataID = "";
     int[] displayShape = new int[3];
     BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
-    HashMap<BlockPos, Integer> pos2IndexMap = new HashMap<BlockPos, Integer>();
-    HashMap<Integer, BlockPos> index2PosMap = new HashMap<Integer, BlockPos>();
+    ConcurrentHashMap<BlockPos, Integer> pos2IndexMap = new ConcurrentHashMap<BlockPos, Integer>();
+    ConcurrentHashMap<Integer, BlockPos> index2PosMap = new ConcurrentHashMap<Integer, BlockPos>();
     Range<Double> normalizationRange = Range.between(-1D, 1D);
 
     public MLTensorDisplayTileEntity() {
@@ -206,19 +207,23 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             MCML.logger.warn("Displaying a tensor larger than 3D, only first 3 used!");
 
         edgeHigh = edgeLow.add(shape[0], shape[1], shape[2]);
-        info("Solving Data: " + Arrays.toString(data) + " with shape " + Arrays.toString(shape));
-
-        for (int i = 0; i < shape[0] || i == 0; i++)
-            for (int j = 0; j < shape[1] || j == 0; j++) {
-                for (int k = 0; k < shape[2] || k == 0; k++) {
-                    BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);//TODO fix
-                    //int index = i * shape[1] * shape[2] + shape[2] * j + k;
-                    int index=getDataWrap().extIndex2InternalIndex(new int[]{i,j,k});
-                    pos2IndexMap.put(p, index);
-                    index2PosMap.put(index, p);
-                    //MLScalar.placeAt(getWorld(), p, val);
+        //info("Solving Data: " + Arrays.toString(data) + " with shape " + Arrays.toString(shape));
+        info("Solving Data: [" + getDataID() + "] with shape " + Arrays.toString(shape));
+        final int[] shapeFinal = shape.clone();
+        new Thread(() -> {
+            info("Staring a new thread to solve datawrap");
+            for (int i = 0; i < shapeFinal[0] || i == 0; i++)
+                for (int j = 0; j < shapeFinal[1] || j == 0; j++) {
+                    for (int k = 0; k < shapeFinal[2] || k == 0; k++) {
+                        BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);
+                        int index = getDataWrap().extIndex2InternalIndex(new int[]{i, j, k});
+                        pos2IndexMap.put(p, index);
+                        index2PosMap.put(index, p);
+                        //MLScalar.placeAt(getWorld(), p, val);
+                    }
                 }
-            }
+            info("Datawrap sovled.");
+        }).start();
         writeValues();
         return this;
     }

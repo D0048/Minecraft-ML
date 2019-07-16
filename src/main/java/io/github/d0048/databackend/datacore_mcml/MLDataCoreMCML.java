@@ -49,17 +49,16 @@ public class MLDataCoreMCML extends MLDataCore {
                         m = Parser.parse(id);
                         MLDataWrap dataWrap = m.evaluate();
                         dataMap.put(id, dataWrap);
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         //dataMap.remove(id);
-                        info("Error updating data ID: " + id + " because " + e.getMessage());
-                        info(m + "");
-                        e.printStackTrace();
+                        info("Error updating data ID: " + id + " because " + e+": " + e.getMessage());
+                        //e.printStackTrace();
                     }
                 }
             }
-        } catch (Exception e) {
-            info("MCML Backend experience a problem: ");
-            e.printStackTrace();
+        } catch (Throwable e) {
+            info("MCML Backend experience a problem: "+ e+": " + e.getMessage());
+            //e.printStackTrace();
         }
     }
 
@@ -79,7 +78,7 @@ public class MLDataCoreMCML extends MLDataCore {
                 System.out.println("This id is already registered, remove first: " + washedID[0] + " | " + washedID[3]);
                 return;
             }
-            if (washedID[2].equals("eval")) {// Default to eval OR or eval type
+            if (washedID[2].equals("eval")) {// Default to eval
                 if (test4Const(washedID[0]) != null) {
                     System.out.println("No need to register constant: " + washedID[0]);
                     return;// Constant, no need to register
@@ -89,8 +88,7 @@ public class MLDataCoreMCML extends MLDataCore {
                     MLDataWrap dataWrap = m.evaluate();
                     if (dataWrap == null) throw new Exception();
                     dataMap.put(washedID[0], dataWrap);
-                    dataMap.put(id, dataWrap);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     dataMap.put(washedID[0], MLDataWrap.fromStringShape(washedID[1], true));
                 }
             } else if (washedID[2].equals("file"))
@@ -182,7 +180,7 @@ public class MLDataCoreMCML extends MLDataCore {
         ret += TextFormatting.LIGHT_PURPLE + "    - Alias: " + TextFormatting.YELLOW + aliasMap.toString()
                 + TextFormatting.LIGHT_PURPLE + "\n";
         ret += TextFormatting.LIGHT_PURPLE + "    - OPs Avail: ";
-        for (String s : Evaluater.opMap.keySet()) ret += TextFormatting.YELLOW + s + TextFormatting.LIGHT_PURPLE + ",";
+        for (String s : Evaluater.opMap.keySet()) ret += TextFormatting.YELLOW + s + TextFormatting.LIGHT_PURPLE + ", ";
         ret += TextFormatting.LIGHT_PURPLE + "\n";
         return ret;
     }
