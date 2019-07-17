@@ -1,5 +1,6 @@
 package io.github.d0048;
 
+import io.github.d0048.common.RunToCommand;
 import io.github.d0048.common.blocks.MLColorConverter;
 import io.github.d0048.databackend.MLDataCore.BackEndType;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
@@ -76,5 +77,6 @@ public class MCML {
     @EventHandler
     public void start(FMLServerStartingEvent event) {
         event.registerServerCommand(MLWandCommand.commandStylus = new MLWandCommand());
+        event.registerServerCommand(RunToCommand.runToCommand = new RunToCommand());
     }
 }
