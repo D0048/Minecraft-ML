@@ -37,10 +37,10 @@ public class Parser {
             try {
                 System.out.print("MCMLisp REPL> ");
                 String a = br.readLine();
-                //Molecule m = parse(a);
-                //System.out.println(m + "");
-                MLDataWrap data = MCML.mlDataCore.registerDataForID(a);
-                //MLDataWrap data = m.evaluate();
+                Molecule m = parse(a);
+                System.out.println(m + "");
+                //MLDataWrap data = MCML.mlDataCore.registerDataForID(a);
+                MLDataWrap data = m.evaluate();
                 System.out.println(MCML.mlDataCore);
                 System.out.println(data);
                 //System.out.println(Arrays.toString(data.getData()));

@@ -101,6 +101,7 @@ public class MLDataWrap {
                 ret.setData(new int[]{i, 1, j}, color.getGreen());
                 ret.setData(new int[]{i, 2, j}, color.getBlue());
             }
+
         return ret;
     }
 
@@ -115,7 +116,7 @@ public class MLDataWrap {
     }
 
     public MLDataWrap clone() {
-        return new MLDataWrap(getShape(), getData());
+        return new MLDataWrap(getShape().clone(), getData().clone());
     }
 
 }

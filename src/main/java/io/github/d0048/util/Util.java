@@ -303,6 +303,12 @@ public class Util {
         return buffer;
     }
 
+    public static double[] int2DoubleArray(int[] arr) {
+        double[] buffer = new double[arr.length];
+        for (int i = 0; i < arr.length; i++) buffer[i] = arr[i];
+        return buffer;
+    }
+
     public static void main(String[] args) {
         completeBlockName("mi");
     }

@@ -17,7 +17,9 @@ public class Evaluater {
         registerOP(new Multiply());
         registerOP(new Slice());
         registerOP(new Reshape());
+        registerOP(new Shapeof());
         registerOP(new Matmul());
+        registerOP(new Transpose());
         registerOP(new FromImageFile());
     }
 

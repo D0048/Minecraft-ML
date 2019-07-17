@@ -37,12 +37,15 @@ public class MLDataCoreMCML extends MLDataCore {
         (backend = new Thread(() -> backendThread())).start();
     }
 
+    long lastRunTimeMs = 0;
+
     public void backendThread() {
         if (MCML.logger == null) return;
         info("MCML Backend is now up and running!");
         try {
             while (true) {
                 Thread.sleep(MLConfig.backendUpdateInterval);
+                long timeStart = System.currentTimeMillis();
                 Set<String> ids = dataMap.keySet();
                 for (String id : ids) {
                     Molecule m = null;
@@ -56,6 +59,7 @@ public class MLDataCoreMCML extends MLDataCore {
                         //e.printStackTrace();
                     }
                 }
+                lastRunTimeMs = System.currentTimeMillis() - timeStart;
             }
         } catch (Throwable e) {
             info("MCML Backend experience a problem: " + e + ": " + e.getMessage());
@@ -189,6 +193,8 @@ public class MLDataCoreMCML extends MLDataCore {
         ret += TextFormatting.LIGHT_PURPLE + "    - OPs Avail: ";
         for (String s : Evaluater.opMap.keySet()) ret += TextFormatting.YELLOW + s + TextFormatting.LIGHT_PURPLE + ", ";
         ret += TextFormatting.LIGHT_PURPLE + "\n";
+        ret += TextFormatting.LIGHT_PURPLE + "    - Last run took: " + TextFormatting.YELLOW + lastRunTimeMs + " ms"
+                + TextFormatting.LIGHT_PURPLE + "\n";
         return ret;
     }
 
