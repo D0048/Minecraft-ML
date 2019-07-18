@@ -64,7 +64,10 @@ public class MLDataWrap {
         this.setShape(new int[]{data.length});
         this.setData(data);
     }
-
+    public MLDataWrap(int[] shape) {
+        this.setShape(shape);
+        this.setData(new double[Util.arrCumProduct(shape)]);
+    }
     public static MLDataWrap sameValue(int size, double val) {
         double[] datatmp = new double[size];
         for (int i = 0; i < datatmp.length; i++) {

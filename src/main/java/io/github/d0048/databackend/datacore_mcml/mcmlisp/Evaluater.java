@@ -20,6 +20,7 @@ public class Evaluater {
         registerOP(new Shapeof());
         registerOP(new Matmul());
         registerOP(new Transpose());
+        registerOP(new ReduceSum());
         registerOP(new FromImageFile());
     }
 
