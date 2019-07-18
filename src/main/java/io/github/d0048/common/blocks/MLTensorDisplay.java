@@ -1,11 +1,13 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MCML;
+import io.github.d0048.client.gui.MLTensorDisplayGui;
 import io.github.d0048.common.items.MLWand;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -62,6 +64,8 @@ public class MLTensorDisplay extends MLBlockBase {
             display.reDraw();
             playerIn.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display re-rendered!"));
             return true;
+        }else {
+            Minecraft.getMinecraft().displayGuiScreen(new MLTensorDisplayGui(pos));
         }
         return true;
     }

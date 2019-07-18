@@ -18,6 +18,7 @@ public class Evaluater {
         registerOP(new Multiply());
         registerOP(new Cut());
         registerOP(new Slice());
+        registerOP(new Squeeze());
         registerOP(new Reshape());
         registerOP(new Shapeof());
         registerOP(new Matmul());

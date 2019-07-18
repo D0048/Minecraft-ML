@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     String dataID = "";
-    int[] displayShape = new int[3];
+    int[] displayShape = new int[]{1,1,1};
     BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
     ConcurrentHashMap<BlockPos, Integer> pos2IndexMap = new ConcurrentHashMap<BlockPos, Integer>();
     ConcurrentHashMap<Integer, BlockPos> index2PosMap = new ConcurrentHashMap<Integer, BlockPos>();
@@ -177,11 +177,11 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             }
         pos2IndexMap.clear();
         index2PosMap.clear();
-        if (isDisplayShapeValid())
-            edgeHigh = edgeLow.add(getDisplayShape()[0], getDisplayShape()[1], getDisplayShape()[2]);
-        else {
-            edgeLow = edgeHigh = this.getPos().add(1, 0, 1);
-        }
+        //if (isDisplayShapeValid())
+        edgeHigh = edgeLow.add(getDisplayShape()[0], getDisplayShape()[1], getDisplayShape()[2]);
+        //else {
+        //    edgeLow = edgeHigh = this.getPos().add(1, 0, 1);
+        //}
         return this;
     }
 
@@ -274,6 +274,9 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         if (compound.hasKey("edgeLow"))
             edgeLow = new BlockPos(compound.getIntArray("edgeLow")[0], compound.getIntArray("edgeLow")[1],
                     compound.getIntArray("edgeLow")[2]);
+        if (compound.hasKey("displayShape")) {
+            setDisplayShape(compound.getIntArray("displayShape"));
+        }
         if (compound.hasKey("dataID")) {
             try {
                 setDataID(compound.getString("dataID"));
@@ -281,9 +284,6 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                 info("Malformed DataID: " + compound.getString("dataID"));
                 MCML.logger.error(e);
             }
-        }
-        if (compound.hasKey("displayShape")) {
-            setDisplayShape(compound.getIntArray("displayShape"));
         }
         double max = 1, min = -1;
         if (compound.hasKey("rangeMax")) {
