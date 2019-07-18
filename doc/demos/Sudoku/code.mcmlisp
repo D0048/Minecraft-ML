@@ -1,0 +1,17 @@
+# Example solution:
+# 1 3 2
+# 2 1 3
+# 3 2 1
+
+sudoku@[3,3]
+#eg_ans=[[1,3,2],[2,1,3],[3,2,1]]
+
+(and
+     (eq (reduce_sum (squeeze (slice sudoku [0,0] [1,3])) [0] ) 6 ) 
+     (eq (reduce_sum (squeeze (slice sudoku [1,0] [2,3])) [0] ) 6 ) 
+     (eq (reduce_sum (squeeze (slice sudoku [2,0] [3,3])) [0] ) 6 ) 
+     (eq (reduce_sum (squeeze (slice sudoku [0,0] [3,1])) [0] ) 6 ) 
+     (eq (reduce_sum (squeeze (slice sudoku [0,1] [3,2])) [0] ) 6 ) 
+     (eq (reduce_sum (squeeze (slice sudoku [0,2] [3,3])) [0] ) 6 ) 
+     )
+(and (eq (reduce_sum (squeeze (slice sudoku [0,0] [1,3])) [0] ) 6 ) (eq (reduce_sum (squeeze (slice sudoku [1,0] [2,3])) [0] ) 6 ) (eq (reduce_sum (squeeze (slice sudoku [2,0] [3,3])) [0] ) 6 ) (eq (reduce_sum (squeeze (slice sudoku [0,0] [3,1])) [0] ) 6 ) (eq (reduce_sum (squeeze (slice sudoku [0,1] [3,2])) [0] ) 6 ) (eq (reduce_sum (squeeze (slice sudoku [0,2] [3,3])) [0] ) 6 ) )
