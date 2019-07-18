@@ -1,6 +1,7 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MLConfig;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.TextFormatting;
 import org.tensorflow.TensorFlow;
 
@@ -39,7 +40,9 @@ public class MLScalar extends MLBlockBase {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
                 int val = state.getValue(MLScalar.propertyValue).intValue();
-                return new ModelResourceLocation("minecraft_ml:ml_scalar" + (MLConfig.HQ_MODEL ? "" : "_simplified"), "value_" + val);
+                val = (int) (((double) val / 16D) * MLConfig.scalarResolution + 0.9);
+                return new ModelResourceLocation("minecraft_ml:ml_scalar" + (MLConfig.HQ_MODEL ? "" : "_simplified"),
+                        "value_" + val);
             }
         });
         mlScalarItemBlock = new ItemBlock(mlScalar);
