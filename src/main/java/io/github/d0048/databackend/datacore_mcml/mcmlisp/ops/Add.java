@@ -15,10 +15,14 @@ public class Add extends OPBase {
     public MLDataWrap runRaw(List<MLDataWrap> args) {
         checkArguments(args);
         int maxLen = args.get(0).getData().length;
+        int[] maxShape = args.get(0).getShape();
         for (int i = 1; i < args.size(); i++) {
-            maxLen = Math.max(maxLen, args.get(i).getData().length);
+            if (maxLen < args.get(i).getData().length) {
+                maxLen = Math.max(maxLen, args.get(i).getData().length);
+                maxShape = args.get(i).getShape();
+            }
         }
-        MLDataWrap ret = MLDataWrap.sameValue(maxLen, 0);
+        MLDataWrap ret = new MLDataWrap(maxShape);
         for (MLDataWrap dw : args) {
             if (dw.getData().length == 1) {
                 for (int i = 0; i < maxLen; i++) ret.getData()[i] += dw.getData()[0];
@@ -34,7 +38,7 @@ public class Add extends OPBase {
 
     @Override
     public String getUsage() {
-        return "Adding data along their size: \n    ("+getName()+" data_1 data_2 ... data_n)";
+        return "Adding data along their size: \n    (" + getName() + " data_1 data_2 ... data_n)";
     }
 
 }

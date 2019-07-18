@@ -116,7 +116,7 @@ public class MLWandCommand extends CommandBase {
                         parseBlockPos(sender, args, 2, false)
                         : selections[1];
                 if (display.reroot(pos)) {
-                    sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display lower edge" +
+                    sender.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display lower edge " +
                             TextFormatting.YELLOW + pos + TextFormatting.LIGHT_PURPLE + " set!"));
                 } else {
                     sender.sendMessage(new TextComponentString(

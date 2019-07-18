@@ -2,6 +2,7 @@ package io.github.d0048;
 
 import io.github.d0048.common.blocks.MLColorConverterTileEntity;
 import io.github.d0048.databackend.MLDataCore;
+import io.github.d0048.databackend.datacore_mcml.mcmlisp.Evaluater;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -43,7 +44,7 @@ public class MLConfig {
     @Config.Comment({
                             "Whether to use blocks of nearest color or glass",
                     })
-    public static MLColorConverterTileEntity.ColorMode ConverterCOlorMode= MLColorConverterTileEntity.ColorMode.GLASS;
+    public static MLColorConverterTileEntity.ColorMode ConverterCOlorMode = MLColorConverterTileEntity.ColorMode.GLASS;
 
 
     @Config.Name("Data Core Update Frequency")
@@ -52,6 +53,15 @@ public class MLConfig {
                     })
     @Config.RangeInt(min = 0, max = 100000)
     public static int backendUpdateInterval = 200;
+
+    @Config.Name("Tolerance of Absolute Error")
+    @Config.Comment({
+                            "Compensating for float point errors, numbers with absolute difference less than this will be treated as" +
+                                    " equal in compare operations",
+                    })
+    @Config.RangeDouble(min = 0, max = 0.99)
+    public static int compareTolerance = 16;
+
     @Config.Name("High Quality Models")
     @Config.Comment({
                             "Use high-quality 3D models. They are fantastic but requires a beefy computer.",
@@ -70,6 +80,7 @@ public class MLConfig {
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
             if (event.getModID().equals(MCML.MODID)) {
                 ConfigManager.sync(MCML.MODID, Config.Type.INSTANCE);
+                Evaluater.compareTolerance = compareTolerance;
                 System.out.println("Config sync");
             }
         }

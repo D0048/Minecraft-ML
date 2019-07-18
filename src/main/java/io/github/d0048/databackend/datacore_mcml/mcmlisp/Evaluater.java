@@ -3,6 +3,7 @@ package io.github.d0048.databackend.datacore_mcml.mcmlisp;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.*;
+import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.binary.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public class Evaluater {
     public static HashMap<String, OPBase> opMap = new HashMap();
+    public static double compareTolerance = 0; // How much to compensate for float point errors in compare operations
 
     public static void init() {
         registerOP(new Add());
@@ -24,6 +26,17 @@ public class Evaluater {
         registerOP(new ReduceMean());
         registerOP(new ReduceMax());
         registerOP(new FromImageFile());
+
+        registerOP(new And());
+        registerOP(new LargerThan());
+        registerOP(new SmallerThan());
+        registerOP(new Equal());
+        registerOP(new LargerEqual());
+        registerOP(new Max());
+        registerOP(new Min());
+        registerOP(new Or());
+        registerOP(new SmallerEqual());
+        registerOP(new Xor());
     }
 
     static void registerOP(OPBase op) {
