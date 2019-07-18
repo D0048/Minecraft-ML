@@ -2,7 +2,7 @@
     "forge_marker": 1,
     "defaults": {
         "parent": "block/orientable",
-        "model": "minecraft_ml:ml_tensordisplay/ml_colorconverter.obj"
+        "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj"
     },
     "variants": {
         "normal": {"parent": "block/orientable", "model": "minecraft_ml:ml_colorconverter/ml_colorconverter.obj","y": 0, "x": 0},

@@ -1,11 +1,10 @@
-package io.github.d0048.common.gui;
+package io.github.d0048.client.gui;
 
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
-import scala.reflect.internal.Trees.New;
 
 public class MLGuiHandler implements IGuiHandler {
 	public static MLGuiHandler INSTANCE = new MLGuiHandler();

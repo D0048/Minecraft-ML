@@ -1,9 +1,8 @@
-package io.github.d0048.common.gui;
+package io.github.d0048.client.gui;
 
 import java.io.IOException;
 import java.util.List;
 
-import akka.event.Logging.Info;
 import io.github.d0048.MCML;
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
 import net.minecraft.client.gui.GuiButton;
