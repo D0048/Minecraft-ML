@@ -4,6 +4,7 @@ import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.util.Util;
 import org.apache.commons.lang3.Range;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Slice extends OPBase {
@@ -13,36 +14,54 @@ public class Slice extends OPBase {
     }
 
     @Override
-    public MLDataWrap runRaw(List<MLDataWrap> args) {
+    public MLDataWrap runRaw(List<MLDataWrap> args) throws Exception {
         MLDataWrap src = args.get(0);
-        int start = (int) args.get(1).getData()[0], end = (int) args.get(2).getData()[0];
-        if (end < 0) end = src.getData().length + end + 1;
-        if (start == end) {
-            end += 1;
-        } else if (start > end) {
-            int tmp = start;
-            start = end;
-            end = tmp;
+        int[] start = Util.double2IntArray(args.get(1).getData()), end = Util.double2IntArray(args.get(2).getData());
+        if (start.length != end.length || start.length != src.getShape().length)
+            throw new Exception("slice start and end mismatch: " + Arrays.toString(start) + " -> " + Arrays.toString(end));
+        for (int i = 0; i < start.length; i++) {
+            if (end[i] > src.getShape()[i] || start[i] > end[i])
+                throw new Exception("Malformed slice boundaries: " + Arrays.toString(start) + " -> " + Arrays.toString(end));
         }
-        start = Util.clipIntoRange(start, 0, src.getData().length - 1);
-        end = Util.clipIntoRange(end, 1, src.getData().length);
-        /*
-        Range validRange = Range.between(0, src.getData().length), sliceRange = Range.between(start, end);
-        if (!validRange.contains(start) || !validRange.contains(end))
-            throw new IllegalArgumentException("Shape mismatch in slice: slice " + start + "," + end + " from " + validRange);
-         */
-        int[] newShape = new int[]{end - start};
-        MLDataWrap buffer = new MLDataWrap(newShape, new double[newShape[0]]);
-        for (int i = start; i < end; i++) {
-            buffer.getData()[i - start] = src.getData()[i];
+        int[] newShape = Util.arrCumDiff(end, start);
+        MLDataWrap newData = new MLDataWrap(newShape);
+        traverseNDDataWrap(new int[]{}, src, newData, start, end);
+        //System.out.println("slice: " + Arrays.toString(src.getShape()) + " -> " + Arrays.toString(newData.getShape()));
+        return newData;
+    }
+
+    static void traverseNDDataWrap(int[] previousD, MLDataWrap wrap, MLDataWrap newData, int[] start, int[] end) {
+        int[] shape = wrap.getShape();
+        if (previousD.length + 1 == wrap.getShape().length) {
+            for (int i = 0; i < shape[shape.length - 1]; i++) {
+                int[] index = Arrays.copyOf(previousD, previousD.length + 1);
+                index[index.length - 1] = i;
+                //Operate on final index
+                boolean isInRange = true;
+                for (int j = 0; j < start.length; j++)
+                    if (!(index[j] >= start[j] && index[j] < end[j])) {
+                        isInRange = false;
+                        break;
+                    }
+                if (isInRange) {
+                    //System.out.println(Arrays.toString(index));
+                    //System.out.println(Arrays.toString(start) + "->" + Arrays.toString(end));
+                    newData.setData(Util.arrCumDiff(index, start), wrap.getData(index));
+                }
+            }
+        } else {
+            for (int i = 0; i < shape[previousD.length]; i++) {
+                int[] index = Arrays.copyOf(previousD, previousD.length + 1);
+                index[index.length - 1] = i;
+                traverseNDDataWrap(index, wrap, newData, start, end);
+            }
         }
-        return buffer;
     }
 
     @Override
     public String getUsage() {
-        //return "Slice data along their length: \n    (" + getName() + " [shape_from_inclusive] [shape_to_exclusive])";
-        return "Slice data: \n    (" + getName() + " [index_from_inclusive] [index_to_exclusive])";
+        return "Slice data between given axes: \n    (" + getName() + " [index,from,inclusive] [index,to,exclusive])";
     }
 
 }
+

@@ -23,7 +23,7 @@ public class ReduceSum extends OPBase {
         }
         MLDataWrap newData = data;
         for (int i = 0; i < axes4Reduce.length; i++) newData = sum1Axis(newData, i);
-        System.out.println("reduce_sum: " + Arrays.toString(data.getShape()) + " -> " + Arrays.toString(newData.getShape()));
+        //System.out.println("reduce_sum: " + Arrays.toString(data.getShape()) + " -> " + Arrays.toString(newData.getShape()));
         return newData;
     }
 
@@ -41,7 +41,7 @@ public class ReduceSum extends OPBase {
             for (int i = 0; i < shape[shape.length - 1]; i++) {
                 int[] index = Arrays.copyOf(previousD, previousD.length + 1);
                 index[index.length - 1] = i;
-                System.out.println(Arrays.toString(index));
+                //System.out.println(Arrays.toString(index));
                 //Operate on final index
                 int[] indexNew = index.clone();
                 indexNew[axis2Sum] = 0;

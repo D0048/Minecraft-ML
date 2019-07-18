@@ -1,6 +1,5 @@
 package io.github.d0048.databackend.datacore_mcml.mcmlisp;
 
-import io.github.d0048.MCML;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.ops.*;
@@ -15,6 +14,7 @@ public class Evaluater {
     public static void init() {
         registerOP(new Add());
         registerOP(new Multiply());
+        registerOP(new Cut());
         registerOP(new Slice());
         registerOP(new Reshape());
         registerOP(new Shapeof());

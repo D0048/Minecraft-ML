@@ -142,6 +142,12 @@ public class Util {
         return a;
     }
 
+    public static int[] arrCumDiff(int[] arr1, int[] arr2) {
+        int[] ret = arr1.clone();
+        for (int i = 0; i < ret.length; i++) ret[i] -= arr2[i];
+        return ret;
+    }
+
     public static int arrCumProduct(int[] arr) {
         int a = 1;
         for (int i : arr) a *= i;
