@@ -64,7 +64,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             Cleanup().unregisterID();
             this.dataID = dataID.trim();
             if ((MCML.mlDataCore.registerDataForID(dataID)) != null) {
-                if (Util.arrCumProduct(displayShape) != Util.arrCumProduct(getDataWrap().getShape()))
+                if (Util.arrCumProduct(displayShape) >= Util.arrCumProduct(getDataWrap().getShape()))
                     setDisplayShape(getDataWrap().getShape().clone());
                 solveDataWrap();
                 return true;
@@ -255,6 +255,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         compound.setString("dataID", dataID);
+        compound.setIntArray("myPosition", new int[]{getPos().getX(), getPos().getY(), getPos().getZ()});
         compound.setIntArray("edgeHigh", new int[]{edgeHigh.getX(), edgeHigh.getY(), edgeHigh.getZ()});
         compound.setIntArray("edgeLow", new int[]{edgeLow.getX(), edgeLow.getY(), edgeLow.getZ()});
         compound.setIntArray("displayShape", displayShape);
@@ -285,6 +286,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                 MCML.logger.error(e);
             }
         }
+
         double max = 1, min = -1;
         if (compound.hasKey("rangeMax")) {
             max = (compound.getDouble("rangeMax"));

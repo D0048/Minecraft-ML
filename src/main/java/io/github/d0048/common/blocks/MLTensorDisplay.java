@@ -3,6 +3,8 @@ package io.github.d0048.common.blocks;
 import io.github.d0048.MCML;
 import io.github.d0048.client.gui.MLTensorDisplayGui;
 import io.github.d0048.common.items.MLWand;
+import io.github.d0048.common.networking.MCMLNetworkingBus;
+import io.github.d0048.common.networking.MLTensorDisplaySyncMessage;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -11,8 +13,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -61,10 +65,12 @@ public class MLTensorDisplay extends MLBlockBase {
         Item item = playerIn.inventory.getCurrentItem().getItem();
         if (!worldIn.isRemote) {
             MLTensorDisplayTileEntity display = ((MLTensorDisplayTileEntity) worldIn.getTileEntity(pos));
+            MCMLNetworkingBus.getWrapperInstance()
+                    .sendTo(new MLTensorDisplaySyncMessage(display.writeToNBT(new NBTTagCompound())), (EntityPlayerMP) playerIn);
             display.reDraw();
             playerIn.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Display re-rendered!"));
             return true;
-        }else {
+        } else {
             Minecraft.getMinecraft().displayGuiScreen(new MLTensorDisplayGui(pos));
         }
         return true;

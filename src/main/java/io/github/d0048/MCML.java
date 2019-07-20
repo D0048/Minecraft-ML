@@ -2,6 +2,7 @@ package io.github.d0048;
 
 import io.github.d0048.common.RunToCommand;
 import io.github.d0048.common.blocks.MLColorConverter;
+import io.github.d0048.common.networking.MCMLNetworkingBus;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 import io.github.d0048.databackend.datacore_tf.MLDataCoreTF;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import org.apache.logging.log4j.Logger;
 
 import io.github.d0048.common.MLWandCommand;
@@ -38,6 +40,7 @@ public class MCML {
     public static IProxy proxy;
 
     public static MLDataCore mlDataCore;
+    private static SimpleNetworkWrapper INSTANCE = null;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -60,6 +63,7 @@ public class MCML {
         MLTensorDisplay.commonInit();
         MLWand.commonInit();
         MLColorConverter.commonInit();
+        MCMLNetworkingBus.init();
         proxy.preInit();
     }
 
