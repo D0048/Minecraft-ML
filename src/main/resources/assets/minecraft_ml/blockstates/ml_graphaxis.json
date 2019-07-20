@@ -6,7 +6,7 @@
     },
     "variants": {
         "normal": {"parent": "block/orientable", "model": "minecraft_ml:ml_graphaxis/ml_graphaxis.obj","y": 0, "x": 0},
-        "inventory": {"parent": "block/orientable", "model": "minecraft_ml:ml_graphaxis/ml_graphaxis.obj","y": 180, "x": 90},
+        "inventory": {"parent": "block/orientable", "model": "minecraft_ml:ml_graphaxis/ml_graphaxis_small.obj","y": 180, "x": 90},
         "south": { "model": "minecraft_ml:ml_graphaxis/ml_graphaxis.obj", "y": 90 },
         "west":  { "model": "minecraft_ml:ml_graphaxis/ml_graphaxis.obj", "y": 180 },
         "north": { "model": "minecraft_ml:ml_graphaxis/ml_graphaxis.obj", "y": 270 },

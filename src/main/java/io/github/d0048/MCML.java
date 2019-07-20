@@ -1,7 +1,7 @@
 package io.github.d0048;
 
 import io.github.d0048.common.RunToCommand;
-import io.github.d0048.common.blocks.MLColorConverter;
+import io.github.d0048.common.blocks.*;
 import io.github.d0048.common.networking.MCMLNetworkingBus;
 import io.github.d0048.databackend.datacore_mcml.MLDataCoreMCML;
 import io.github.d0048.databackend.datacore_tf.MLDataCoreTF;
@@ -21,9 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 import io.github.d0048.common.MLWandCommand;
 import io.github.d0048.databackend.MLDataCore;
-import io.github.d0048.common.blocks.MLBlockBase;
-import io.github.d0048.common.blocks.MLScalar;
-import io.github.d0048.common.blocks.MLTensorDisplay;
 import io.github.d0048.client.gui.MLGuiHandler;
 import io.github.d0048.common.items.MLWand;
 
@@ -63,6 +60,7 @@ public class MCML {
         MLTensorDisplay.commonInit();
         MLWand.commonInit();
         MLColorConverter.commonInit();
+        MLGraphAxis.commonInit();
         MCMLNetworkingBus.init();
         proxy.preInit();
     }

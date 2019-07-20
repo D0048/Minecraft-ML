@@ -7,13 +7,11 @@ import io.github.d0048.MCML;
 import io.github.d0048.common.networking.MCMLNetworkingBus;
 import io.github.d0048.common.networking.MLTensorDisplaySyncMessage;
 import io.github.d0048.databackend.datacore_mcml.mcmlisp.Parser;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiScreenBook;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.*;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.config.GuiCheckBox;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
@@ -21,11 +19,11 @@ import org.lwjgl.input.Keyboard;
 //GuiScreenBook
 @SideOnly(Side.CLIENT)
 public class MLTensorDisplayGui extends GuiScreen {
-    GuiButton btnRerender;
     GuiTextField fieldIDInput;
-    final int BTN_RERENDER = 0, FIELD_IDINPUT = 1;
+    GuiButton btnRerender, btnRW;
+    final int BTN_RERENDER = 0, FIELD_IDINPUT = 1, BTN_RW = 2;
 
-    static final String loadingTxt = "Loading Display Status, please wait......";
+    static final String loadingTxt = "Loading Display Status...";
     public static NBTTagCompound currentNBT = null;
 
     BlockPos displayPos;
@@ -38,9 +36,11 @@ public class MLTensorDisplayGui extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
         buttonList.add(btnRerender = new GuiButton(
-                BTN_RERENDER, (width / 2) - 100 / 2, height - 40, 100, 20, "Close"));
-        fieldIDInput = new GuiTextField(
-                FIELD_IDINPUT, this.fontRenderer, this.width / 2 - 68, this.height / 2 - 46, 137, 20);
+                BTN_RERENDER, (width / 2) - 100 / 2, height - 40, 100, 20, "Render"));
+        buttonList.add(btnRW = new GuiButton(
+                BTN_RW, 10, 40, fontRenderer.getStringWidth(loadingTxt), 20, loadingTxt));
+        setAllBtnEnabled(false);
+        fieldIDInput = new GuiTextField(FIELD_IDINPUT, fontRenderer, 0, 0, width, 30);
         fieldIDInput.setMaxStringLength(Integer.MAX_VALUE);
         fieldIDInput.setText(loadingTxt);
         fieldIDInput.setTextColor(0x999999);
@@ -59,6 +59,11 @@ public class MLTensorDisplayGui extends GuiScreen {
             case BTN_RERENDER:
                 mc.displayGuiScreen(null);
                 break;
+            case BTN_RW:
+                if (currentNBT != null) {
+                    currentNBT.setBoolean("writable", !currentNBT.getBoolean("writable"));
+                }
+                break;
         }
     }
 
@@ -76,7 +81,7 @@ public class MLTensorDisplayGui extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        MCMLNetworkingBus.getWrapperInstance().sendToServer(new MLTensorDisplaySyncMessage(currentNBT));
+        submit();
         currentNBT = null;
     }
 
@@ -85,15 +90,22 @@ public class MLTensorDisplayGui extends GuiScreen {
         fieldIDInput.updateCursorCounter();
         String dataID = fieldIDInput.getText();
         if (currentNBT != null && dataID.equals(loadingTxt)) {
+            setAllBtnEnabled(true);
+            setBtnTxtDynamic(fontRenderer, btnRW,
+                    currentNBT.getBoolean("writable") ? "Read/Write" : "Write Only",
+                    currentNBT.getBoolean("writable") ? 0x11FF11 : 0xFF1111);
             fieldIDInput.setText(currentNBT.getString("dataID"));
             fieldIDInput.setCursorPositionZero();
             fieldIDInput.setFocused(true);
         } else if (!dataID.equals(loadingTxt)) {
             try {
+                setBtnTxtDynamic(fontRenderer, btnRW,
+                        currentNBT.getBoolean("writable") ? "Read/Write" : "Write Only",
+                        currentNBT.getBoolean("writable") ? 0x11FF11 : 0xFF1111);
                 Parser.parse(dataID);
                 btnRerender.enabled = true;
                 fieldIDInput.setTextColor(0x11FF11);
-                if (currentNBT != null) currentNBT.setString("dataID", dataID.trim().replace("\n"," "));
+                if (currentNBT != null) currentNBT.setString("dataID", dataID.trim().replace("\n", " "));
             } catch (Throwable e) {
                 fieldIDInput.setTextColor(0xFF1111);
                 btnRerender.enabled = false;
@@ -101,9 +113,28 @@ public class MLTensorDisplayGui extends GuiScreen {
         }
     }
 
+    static void setBtnTxtDynamic(FontRenderer fontRenderer, GuiButton btn, String txt, int color) {
+        btn.displayString = txt;
+        btn.width = fontRenderer.getStringWidth(txt) + 5;
+        btn.packedFGColour = color;
+    }
+
+    private void submit() {
+        if (currentNBT != null) {
+            MCMLNetworkingBus.getWrapperInstance().sendToServer(new MLTensorDisplaySyncMessage(currentNBT));
+            info("Display Sync request: " + currentNBT);
+        }
+    }
+
     @Override
     public boolean doesGuiPauseGame() {
         return false;
+    }
+
+    private void setAllBtnEnabled(boolean status) {
+        for (GuiButton btn : buttonList) {
+            btn.enabled = status;
+        }
     }
 
     static void info(String s) {

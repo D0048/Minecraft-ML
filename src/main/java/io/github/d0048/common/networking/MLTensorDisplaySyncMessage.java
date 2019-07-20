@@ -46,7 +46,6 @@ public class MLTensorDisplaySyncMessage implements IMessage {
                 EntityPlayerMP player = ctx.getServerHandler().player;
                 World world = player.getEntityWorld();
                 player.getServerWorld().addScheduledTask(() -> {
-                    player.inventory.addItemStackToInventory(new ItemStack(Items.DIAMOND, 1));
                     int[] pos = message.nbt.getIntArray("myPosition");
                     try {
                         (world.getTileEntity(new BlockPos(pos[0], pos[1], pos[2]))).readFromNBT(message.nbt);

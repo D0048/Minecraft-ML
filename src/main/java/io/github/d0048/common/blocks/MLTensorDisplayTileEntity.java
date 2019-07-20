@@ -224,7 +224,9 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                 }
             info("Datawrap sovled.");
         }).start();
-        writeValues();
+        if (isWritable())
+            readValues();
+        else writeValues();
         return this;
     }
 
@@ -261,6 +263,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         compound.setIntArray("displayShape", displayShape);
         compound.setDouble("rangeMax", getNormalizationRange().getMaximum());
         compound.setDouble("rangeMin", getNormalizationRange().getMinimum());
+        compound.setBoolean("writable", isWritable());
         markDirty();
         return compound;
 
@@ -277,6 +280,12 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                     compound.getIntArray("edgeLow")[2]);
         if (compound.hasKey("displayShape")) {
             setDisplayShape(compound.getIntArray("displayShape"));
+        }
+        if (compound.hasKey("writable")) {
+            try {
+                setWritable(compound.getBoolean("writable"));
+            } catch (Exception e) {//meant to fail on load
+            }
         }
         if (compound.hasKey("dataID")) {
             try {
@@ -295,6 +304,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             min = (compound.getDouble("rangeMin"));
         }
         setNormalizationRange(Range.between(min, max));
+
     }
 
     public MLTensorDisplayTileEntity setWritable(boolean b) {
