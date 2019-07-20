@@ -60,7 +60,7 @@ public class MLConfig {
                                     " equal in compare operations",
                     })
     @Config.RangeDouble(min = 0, max = 0.99)
-    public static int compareTolerance = 16;
+    public static double compareTolerance = 0;
 
     @Config.Name("High Quality Models")
     @Config.Comment({

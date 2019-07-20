@@ -86,6 +86,8 @@ public class MLTensorDisplayGui extends GuiScreen {
         String dataID = fieldIDInput.getText();
         if (currentNBT != null && dataID.equals(loadingTxt)) {
             fieldIDInput.setText(currentNBT.getString("dataID"));
+            fieldIDInput.setCursorPositionZero();
+            fieldIDInput.setFocused(true);
         } else if (!dataID.equals(loadingTxt)) {
             try {
                 Parser.parse(dataID);

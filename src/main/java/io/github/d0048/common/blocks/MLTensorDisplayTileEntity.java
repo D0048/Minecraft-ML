@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     String dataID = "";
-    int[] displayShape = new int[]{1,1,1};
+    int[] displayShape = new int[]{1, 1, 1};
     BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
     ConcurrentHashMap<BlockPos, Integer> pos2IndexMap = new ConcurrentHashMap<BlockPos, Integer>();
     ConcurrentHashMap<Integer, BlockPos> index2PosMap = new ConcurrentHashMap<Integer, BlockPos>();
@@ -60,6 +60,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
 
     public boolean setDataID(String dataID) {
         try {
+            //if (dataID.equals(getDataID())) return true;
             markDirty();
             Cleanup().unregisterID();
             this.dataID = dataID.trim();
@@ -68,9 +69,8 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                     setDisplayShape(getDataWrap().getShape().clone());
                 solveDataWrap();
                 return true;
-            } else {
-                throw new IllegalArgumentException("Data ID not found");
             }
+            return false;
         } catch (Exception e) {
             info("Error setting dataID of \"" + dataID + "\" due to " + e.getMessage());
             e.printStackTrace();
@@ -80,21 +80,12 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
 
     public boolean setDisplayShape(int[] displayShape) {
         int[] backup = this.displayShape;
-        try {
-            this.displayShape = displayShape;
-            if (isDisplayShapeValid()) {
-                reDraw();
-                markDirty();
-                return true;
-            } else {
-                throw new Exception("Invalid Display Shape");
-            }
-        } catch (Exception e) {
-            this.displayShape = backup;
-            e.printStackTrace();
-            reDraw();
-            return false;
-        }
+        this.displayShape = displayShape;
+        if (!isDisplayShapeValid())
+            MCML.logger.warn("Using an invalid display shape for " + getDataID() + " with " + Arrays.toString(displayShape));
+        reDraw();
+        markDirty();
+        return true;
     }
 
     public MLTensorDisplayTileEntity normalize() {
@@ -142,8 +133,13 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     public void writeValues() {
         if (getWorld() == null || getDataWrap() == null) return;
         Set<Integer> indexs = index2PosMap.keySet();
+        if (indexs.isEmpty()) {
+            solveDataWrap();
+            return;
+        }
         double[] values = getDataWrap().getData();
         double min = getNormalizationRange().getMinimum(), max = getNormalizationRange().getMaximum();
+
 
         for (int i : indexs) {
             double value = values[i];
@@ -178,7 +174,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         pos2IndexMap.clear();
         index2PosMap.clear();
         //if (isDisplayShapeValid())
-        edgeHigh = edgeLow.add(getDisplayShape()[0], getDisplayShape()[1], getDisplayShape()[2]);
+        //edgeHigh = edgeLow.add(getDisplayShape()[0], getDisplayShape()[1], getDisplayShape()[2]);
         //else {
         //    edgeLow = edgeHigh = this.getPos().add(1, 0, 1);
         //}
@@ -194,7 +190,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         if (getDataWrap() == null || getWorld() == null) return this;
 
         int[] shape = getDisplayShape();
-        double[] data = getDataWrap().getData();
+        /*
         if (!isDisplayShapeValid()) {
             MCML.logger.warn("Display shape too large, use original instead!");
             shape = getDataWrap().getShape();
@@ -202,7 +198,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                 shape = Arrays.copyOf(shape, shape.length + 1);
                 shape[shape.length - 1] = 1;
             }
-        }
+        }*/
         if (shape.length > 3)
             MCML.logger.warn("Displaying a tensor larger than 3D, only first 3 used!");
 
@@ -216,10 +212,14 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                 for (int j = 0; j < shapeFinal[1] || j == 0; j++) {
                     for (int k = 0; k < shapeFinal[2] || k == 0; k++) {
                         BlockPos p = edgeHigh.add(-i - 1, -j - 1, -k - 1);
-                        int index = getDataWrap().extIndex2InternalIndex(new int[]{i, j, k});
-                        pos2IndexMap.put(p, index);
-                        index2PosMap.put(index, p);
-                        //MLScalar.placeAt(getWorld(), p, val);
+                        try {
+                            int index = getDataWrap().extIndex2InternalIndex(new int[]{i, j, k});
+                            pos2IndexMap.put(p, index);
+                            index2PosMap.put(index, p);
+                            //MLScalar.placeAt(getWorld(), p, val);
+                        } catch (Exception e) {
+
+                        }
                     }
                 }
             info("Datawrap sovled.");
@@ -319,7 +319,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public int[] getDisplayShape() {
-        int[] shape = Util.arrCumProduct(displayShape) != 0 ? displayShape : getDataWrap().getShape();
+        int[] shape = displayShape;
         while (shape.length < 3) { //pad to 3D
             shape = Arrays.copyOf(shape, shape.length + 1);
             shape[shape.length - 1] = 1;

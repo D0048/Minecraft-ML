@@ -64,10 +64,12 @@ public class MLDataWrap {
         this.setShape(new int[]{data.length});
         this.setData(data);
     }
+
     public MLDataWrap(int[] shape) {
         this.setShape(shape);
         this.setData(new double[Util.arrCumProduct(shape)]);
     }
+
     public static MLDataWrap sameValue(int size, double val) {
         double[] datatmp = new double[size];
         for (int i = 0; i < datatmp.length; i++) {
@@ -110,7 +112,10 @@ public class MLDataWrap {
 
     @Override
     public String toString() {
-        return "Data Wrap" + " of shape " + TextFormatting.YELLOW + Arrays.toString(getShape())
+        return "Data Wrap " + TextFormatting.YELLOW +
+                (getData().length < 9 ? Arrays.toString(getData()) :
+                        "[" + getData()[0] + "..." + getData()[getData().length - 1] + "]") + TextFormatting.LIGHT_PURPLE
+                + " of shape " + TextFormatting.YELLOW + Arrays.toString(getShape())
                 + TextFormatting.LIGHT_PURPLE;
     }
 
