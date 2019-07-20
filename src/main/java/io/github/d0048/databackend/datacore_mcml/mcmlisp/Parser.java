@@ -12,7 +12,8 @@ import java.util.Stack;
 
 public class Parser {
     public static Molecule parse(String input) throws Exception {
-        if (input.contains("(") && !isParenthesisMatch(input)) throw new Exception("Syntax: Parenthesis mismatch");
+        if (!isParenthesisMatch(input)) throw new Exception("Syntax: Parenthesis " +
+                "mismatch");
         return new Molecule(input);
     }
 
@@ -22,7 +23,7 @@ public class Parser {
         while (lastlen != 0) {
             bone = bone.replace("{}", "").replace("[]", "").replace("()", "");
             if (bone.length() == lastlen) return false;
-            lastlen=bone.length();
+            lastlen = bone.length();
         }
         return true;
     }

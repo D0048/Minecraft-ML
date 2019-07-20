@@ -17,8 +17,12 @@ public class Slice extends OPBase {
     public MLDataWrap runRaw(List<MLDataWrap> args) throws Exception {
         MLDataWrap src = args.get(0);
         int[] start = Util.double2IntArray(args.get(1).getData()), end = Util.double2IntArray(args.get(2).getData());
+
         if (start.length != end.length || start.length != src.getShape().length)
             throw new Exception("slice start and end mismatch: " + Arrays.toString(start) + " -> " + Arrays.toString(end));
+        for (int i = 0; i < end.length; i++) {
+            if (end[i] == -1) end[i] = src.getShape()[i];
+        }
         for (int i = 0; i < start.length; i++) {
             if (end[i] > src.getShape()[i] || start[i] > end[i])
                 throw new Exception("Malformed slice boundaries: " + Arrays.toString(start) + " -> " + Arrays.toString(end));

@@ -23,18 +23,20 @@ public abstract class BinaryOPBase extends OPBase {
                 maxWrap = args.get(i);
             }
         }
-        maxWrap = maxWrap.clone();
+        MLDataWrap ret = maxWrap.clone();
         int[] maxShape = maxWrap.getShape();
         int maxLen = Util.arrCumProduct(maxShape);
 
-        MLDataWrap ret = MLDataWrap.sameValue(maxLen, 1);
+        //MLDataWrap ret = MLDataWrap.sameValue(maxLen, 1);
         ret.setShape(maxShape);
         for (MLDataWrap dw : args) {
-            if (dw.getData().length == 1) {
-                for (int i = 0; i < maxLen; i++) ret.getData()[i] = binaryOP(ret.getData()[i], dw.getData()[0]);
-            } else {
-                for (int i = 0; i < dw.getData().length; i++) {
-                    ret.getData()[i] = binaryOP(ret.getData()[i], dw.getData()[i]);
+            if (dw != maxWrap) {
+                if (dw.getData().length == 1) {
+                    for (int i = 0; i < maxLen; i++) ret.getData()[i] = binaryOP(ret.getData()[i], dw.getData()[0]);
+                } else {
+                    for (int i = 0; i < dw.getData().length; i++) {
+                        ret.getData()[i] = binaryOP(ret.getData()[i], dw.getData()[i]);
+                    }
                 }
             }
         }
