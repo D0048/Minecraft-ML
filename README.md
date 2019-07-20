@@ -12,6 +12,11 @@ Finally, a easy to use toolkit to manipulate/visualize data in Minecraft! Load m
 ---
 ### Showcases
 
+#### Use MCMLisp For a Sudoku Puzzle
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=lymKdGbcpo0"><img src="https://img.youtube.com/vi/lymKdGbcpo0/0.jpg" alt="Sudoku" width="50%" height="50%"></a>
+</div>
+
 #### Simple Data Operations
 
 <div align="center">
