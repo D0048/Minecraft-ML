@@ -1,14 +1,15 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MLConfig;
+import io.github.d0048.common.MLAsyncHelper;
 import io.github.d0048.util.SerializableBlockPos;
 import io.github.d0048.util.Util;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,8 +20,8 @@ public class MLGraphAxisTileEntity extends MLTileEntityBase {
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         try {
-            info(pointsMap.toString());
-            info("Write Length: " + Util.serialize(pointsMap).length);
+            //info(pointsMap.toString());
+            //info("Write Length: " + Util.serialize(pointsMap).length);
             compound.setByteArray("serialize_pointsMap", Util.serialize(pointsMap));
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,10 +33,10 @@ public class MLGraphAxisTileEntity extends MLTileEntityBase {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         try {
-            info("Read Length: " + compound.getByteArray("serialize_pointsMap").length);
+            //info("Read Length: " + compound.getByteArray("serialize_pointsMap").length);
             pointsMap = (ConcurrentHashMap<SerializableBlockPos, Double>)
                     Util.deserialize(compound.getByteArray("serialize_pointsMap"));
-            info(pointsMap.toString());
+            //info(pointsMap.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,7 +57,9 @@ public class MLGraphAxisTileEntity extends MLTileEntityBase {
 
     public void cleanUp() {
         for (SerializableBlockPos p : pointsMap.keySet()) {
-            world.destroyBlock(p.getPos(), false);
+            world.setBlockState(p.getPos(), Blocks.AIR.getDefaultState());
+            //world.destroyBlock(p.getPos(), false);
+            //MLAsyncHelper.removeAsync(getWorld(), p.getPos());
         }
     }
 

@@ -38,7 +38,7 @@ public class MLConfig {
                             "How big a batch should async operation process each tick.",
                     })
     @Config.RangeInt(min = 1, max = Integer.MAX_VALUE)
-    public static int asyncBatchSize = 100;
+    public static int asyncBatchSize = 10;
 
     @Config.Name("Data Core Type")
     @Config.Comment({

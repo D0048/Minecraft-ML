@@ -1,6 +1,7 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MLConfig;
+import io.github.d0048.common.MLAsyncHelper;
 import io.github.d0048.util.ColorUtil;
 import io.github.d0048.util.Util;
 import net.minecraft.block.state.IBlockState;
@@ -68,6 +69,8 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         }
         world.setBlockState(pos.add(0, 1, 0), Blocks.WOOL.getStateFromMeta(15));// Black
         world.setBlockState(pos.add(0, 2, 0), state);
+        //MLAsyncHelper.placeAsync(world, pos.add(0, 1, 0), Blocks.WOOL.getStateFromMeta(15));
+        //MLAsyncHelper.placeAsync(world, pos.add(0, 2, 0), state);
     }
 
     @Override

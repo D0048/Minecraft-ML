@@ -2,9 +2,11 @@ package io.github.d0048.common.blocks;
 
 import io.github.d0048.MCML;
 import io.github.d0048.MLConfig;
+import io.github.d0048.common.MLAsyncHelper;
 import io.github.d0048.databackend.MLDataWrap;
 import io.github.d0048.util.ParticleUtil;
 import io.github.d0048.util.Util;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -167,7 +169,9 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
             for (int i = edgeLow.getX(); i <= edgeHigh.getX() - 1; i++) {
                 for (int j = edgeLow.getY(); j <= edgeHigh.getY() - 1; j++) {
                     for (int k = edgeLow.getZ(); k <= edgeHigh.getZ() - 1; k++) {
-                        getWorld().destroyBlock(new BlockPos(i, j, k), false);
+                        world.setBlockState(new BlockPos(i, j, k), Blocks.AIR.getDefaultState());
+                        //getWorld().destroyBlock(new BlockPos(i, j, k), false);
+                        //MLAsyncHelper.removeAsync(getWorld(), new BlockPos(i, j, k));
                     }
                 }
             }
@@ -185,6 +189,8 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         MCML.mlDataCore.unregisterID(getDataID());
         return this;
     }
+
+    public static Thread dataSolver = new Thread();
 
     MLTensorDisplayTileEntity solveDataWrap() {
         if (getDataWrap() == null || getWorld() == null) return this;
@@ -206,7 +212,8 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
         //info("Solving Data: " + Arrays.toString(data) + " with shape " + Arrays.toString(shape));
         info("Solving Data: [" + getDataID() + "] with shape " + Arrays.toString(shape));
         final int[] shapeFinal = shape.clone();
-        new Thread(() -> {
+        dataSolver.interrupt();
+        (dataSolver = new Thread(() -> {
             info("Staring a new thread to solve datawrap");
             for (int i = 0; i < shapeFinal[0] || i == 0; i++)
                 for (int j = 0; j < shapeFinal[1] || j == 0; j++) {
@@ -223,7 +230,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
                     }
                 }
             info("Datawrap sovled.");
-        }).start();
+        })).start();
         if (isWritable())
             readValues();
         else writeValues();

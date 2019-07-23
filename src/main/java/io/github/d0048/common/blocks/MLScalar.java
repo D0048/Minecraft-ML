@@ -1,12 +1,9 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MLConfig;
-import net.minecraft.util.Util;
+import io.github.d0048.common.MLAsyncHelper;
 import net.minecraft.util.text.TextFormatting;
-import org.tensorflow.TensorFlow;
 
-import io.github.d0048.MCML;
-import io.github.d0048.common.MLTab;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -23,10 +20,8 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import scala.collection.parallel.ParIterableLike.Max;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 
 public class MLScalar extends MLBlockBase {
     public static MLScalar mlScalar;// this holds the unique instance of your block
@@ -113,6 +108,7 @@ public class MLScalar extends MLBlockBase {
         val = Math.min(Math.max(0, val), MLConfig.scalarResolution - 1);
         if (world.getBlockState(pos).getBlock() != mlScalar || mlScalar.getMetaFromState(world.getBlockState(pos)) != val) {
             world.setBlockState(pos, mlScalar.getStateFromMeta(val));
+            //MLAsyncHelper.placeAsync(world,pos,mlScalar.getStateFromMeta(val));
             int find = 4;
             while (find-- > 0) {
                 if (world.getBlockState(pos.add(0, find, 0)).getBlock() == MLColorConverter.mlColorConverter) {
