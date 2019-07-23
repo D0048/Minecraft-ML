@@ -16,6 +16,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class MLColorConverterTileEntity extends MLTileEntityBase {
     BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
+
     public static enum ColorMode {
         GLASS, ANY//,WOOL
     }
@@ -40,7 +42,7 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         super.readFromNBT(compound);
     }
 
-    int loop = (int) (Math.random()*MLConfig.colorConverterRefershInterval);
+    int loop = (int) (Math.random() * MLConfig.colorConverterRefershInterval);
 
     @Override
     public void update() {
@@ -53,7 +55,7 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         }
     }
 
-    public void refresh() throws Exception{
+    public void refresh() throws Exception {
         //info("Converter refreshed");
         BlockPos pos = getPos();
         World world = getWorld();
@@ -74,5 +76,11 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         }
         world.setBlockState(pos.add(0, 1, 0), Blocks.WOOL.getStateFromMeta(15));// Black
         world.setBlockState(pos.add(0, 2, 0), state);
+    }
+
+    @Override
+    public String toString() {
+        return TextFormatting.LIGHT_PURPLE + "Color Converter updating " + TextFormatting.YELLOW + "[On Demand]" +
+                TextFormatting.LIGHT_PURPLE + ", using " + TextFormatting.YELLOW + MLConfig.ConverterCOlorMode;
     }
 }

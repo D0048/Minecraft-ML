@@ -10,12 +10,15 @@ import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import javax.annotation.Nullable;
 
 public class MLGraphAxis extends MLBlockBase {
     public static MLGraphAxis mlGraphAxis;// this holds the unique instance of your block
@@ -24,7 +27,8 @@ public class MLGraphAxis extends MLBlockBase {
 
     public static void commonInit() {
         ForgeRegistries.BLOCKS.register(mlGraphAxis = new MLGraphAxis());
-        //GameRegistry.registerTileEntity(MLGraphAxisTileEntity.class,new ModelResourceLocation("minecraft_ml:ml_graphaxis" + (MLConfig.HQ_MODEL ? "" : "_simplified"),         "normal"));
+        GameRegistry.registerTileEntity(MLGraphAxisTileEntity.class,
+                new ModelResourceLocation("minecraft_ml:ml_graphaxis", "inventory"));
         ModelLoader.setCustomStateMapper(mlGraphAxis, new StateMapperBase() {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
@@ -49,7 +53,7 @@ public class MLGraphAxis extends MLBlockBase {
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+        worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing()), 2);
     }
 
     public IBlockState getStateFromMeta(int meta) {
@@ -62,6 +66,20 @@ public class MLGraphAxis extends MLBlockBase {
 
     public int getMetaFromState(IBlockState state) {
         return ((EnumFacing) state.getValue(FACING)).getIndex();
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        if (world.isRemote) return null;
+        MLGraphAxisTileEntity te = new MLGraphAxisTileEntity();
+        te.setWorld(world);
+        return te;
     }
 
     public MLGraphAxis() {

@@ -25,6 +25,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import scala.collection.parallel.ParIterableLike.Max;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class MLScalar extends MLBlockBase {
@@ -39,12 +40,11 @@ public class MLScalar extends MLBlockBase {
         ModelLoader.setCustomStateMapper(mlScalar, valueMapper = new StateMapperBase() {
             @Override
             protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                int val = state.getValue(MLScalar.propertyValue).intValue();
-                //System.out.println(val);
-                val = (int) ((((double) val + 0.9) / MLConfig.scalarResolution) * 16);
-                //System.out.println(" -> " + val);
+                int stateVal = state.getValue(MLScalar.propertyValue).intValue();
+                int modelVal = (int) ((((double) stateVal + 0.9) / MLConfig.scalarResolution) * 16);
+                //info(stateVal + " -> " + modelVal);
                 return new ModelResourceLocation("minecraft_ml:ml_scalar" + (MLConfig.HQ_MODEL ? "" : "_simplified"),
-                        "value_" + val);
+                        "value_" + modelVal);
             }
         });
         mlScalarItemBlock = new ItemBlock(mlScalar);
@@ -74,14 +74,23 @@ public class MLScalar extends MLBlockBase {
         return this.getDefaultState().withProperty(propertyValue, meta);
     }
 
+    private static DecimalFormat df = new DecimalFormat("##.##");
+
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
                                     EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        setValue(worldIn, pos, (getValueAt(worldIn, pos) + 1) % MLConfig.scalarResolution);
+        if (hand.equals(EnumHand.OFF_HAND)) return false;
+        int newVal = (getValueAt(worldIn, pos) + 1) % MLConfig.scalarResolution;
+        //info(getValueAt(worldIn, pos) + " -> " + newVal);
+        setValue(worldIn, pos, newVal);
         if (worldIn.isRemote)
-            playerIn.sendMessage(
-                    new TextComponentString("New State: " + ((getMetaFromState(state) + 1) % MLConfig.scalarResolution)));
-        return true;
+            playerIn.sendStatusMessage(
+                    new TextComponentString(
+                            TextFormatting.LIGHT_PURPLE + "" + TextFormatting.BOLD
+                                    + "Normalized: [" + String.format("%02d", newVal) + "/" + MLConfig.scalarResolution + "] -> "
+                                    + df.format(((double) newVal * 100 / MLConfig.scalarResolution)) + "%"),
+                    true);
+        return false;
     }
 
     public MLScalar() {

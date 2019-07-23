@@ -93,8 +93,10 @@ public class MLTensorDisplay extends MLBlockBase {
     @Override
     @Nullable
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return world.isRemote ? null : new MLTensorDisplayTileEntity();
-        //return new MLTensorDisplayTileEntity();
+        if (world.isRemote) return null;
+        MLTensorDisplayTileEntity te = new MLTensorDisplayTileEntity();
+        te.setWorld(world);
+        return te;
     }
 
     @Override

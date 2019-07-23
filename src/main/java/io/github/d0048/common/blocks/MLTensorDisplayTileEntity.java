@@ -3,6 +3,7 @@ package io.github.d0048.common.blocks;
 import io.github.d0048.MCML;
 import io.github.d0048.MLConfig;
 import io.github.d0048.databackend.MLDataWrap;
+import io.github.d0048.util.ParticleUtil;
 import io.github.d0048.util.Util;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
@@ -11,7 +12,6 @@ import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.Range;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,10 +33,10 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     @Override
     public void update() {
         if (loop-- < 0 && getDataWrap() != null) {
-            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow,
+            ParticleUtil.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeLow,
                     (int) (Math.sqrt(getPos().distanceSq(edgeLow)) * 2),
                     0, 0, 1);
-            Util.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
+            ParticleUtil.spawnLine(getWorld(), EnumParticleTypes.REDSTONE, getPos(), edgeHigh,
                     (int) (Math.sqrt(getPos().distanceSq(edgeHigh)) * 2),
                     0, 0, 1);
             loop = MLConfig.tensorDisplayRefreshInterval;
@@ -121,7 +121,7 @@ public class MLTensorDisplayTileEntity extends MLTileEntityBase {
     }
 
     public MLTensorDisplayTileEntity hint() {
-        Util.surroundArea(getWorld(), EnumParticleTypes.ENCHANTMENT_TABLE, edgeHigh, edgeLow, 55);
+        ParticleUtil.surroundArea(getWorld(), EnumParticleTypes.ENCHANTMENT_TABLE, edgeHigh, edgeLow, 55);
         return this;
     }
 

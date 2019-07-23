@@ -1,18 +1,29 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MLConfig;
+import io.github.d0048.client.gui.MLTensorDisplayGui;
+import io.github.d0048.common.networking.MCMLNetworkingBus;
+import io.github.d0048.common.networking.MLTensorDisplaySyncMessage;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -53,7 +64,10 @@ public class MLColorConverter extends MLBlockBase {
     @Nullable
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
-        return world.isRemote ? null : new MLColorConverterTileEntity();
+        if (world.isRemote) return null;
+        MLColorConverterTileEntity te = new MLColorConverterTileEntity();
+        te.setWorld(world);
+        return te;
     }
 
     @Override
@@ -64,10 +78,25 @@ public class MLColorConverter extends MLBlockBase {
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
         worldIn.setBlockState(pos, state.withProperty(FACING, placer.getHorizontalFacing().getOpposite()), 2);
+        refreshAt(worldIn, pos);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+                                    EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!worldIn.isRemote) {
+            refreshAt(worldIn, pos);
+            playerIn.sendMessage(new TextComponentString(TextFormatting.LIGHT_PURPLE + "Converter re-rendered!"));
+            return false;
+        }
+        return false;
+    }
+
+    public static void refreshAt(World world, BlockPos pos) {
         try {
-            ((MLColorConverterTileEntity) worldIn.getTileEntity(pos)).refresh();
+            ((MLColorConverterTileEntity) world.getTileEntity(pos)).refresh();
         } catch (Exception e) {
-            info("Error occur refreshing Color Converter at "+pos);
+            info("Error occur refreshing Color Converter at " + pos);
             e.printStackTrace();
         }
     }

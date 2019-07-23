@@ -1,6 +1,5 @@
 package io.github.d0048.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -9,20 +8,18 @@ import javax.annotation.Nullable;
 
 import io.github.d0048.MCML;
 import io.github.d0048.common.blocks.MLBlockBase;
-import io.github.d0048.common.blocks.MLColorConverterTileEntity;
 import io.github.d0048.common.blocks.MLScalar;
 import io.github.d0048.common.blocks.MLTensorDisplayTileEntity;
 import io.github.d0048.common.items.MLWand;
 import io.github.d0048.util.ColorUtil;
+import io.github.d0048.util.ParticleUtil;
 import io.github.d0048.util.Util;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -164,7 +161,7 @@ public class MLWandCommand extends CommandBase {
                 int val = 0;
                 if (args.length >= 3) val = parseInt(args[2]);
                 IBlockState state = (b == MLScalar.mlScalar) ? MLScalar.mlScalar.getStateFromMeta(val) : b.getDefaultState();
-                Util.fillArea(selections, world, state);
+                ParticleUtil.fillArea(selections, world, state);
             } else if (args[0].equals("ink")) {
                 if (args.length >= 5) MLWand.mlWand.setPlayer2Brush((EntityPlayer) sender, new MLBrush(parseInt(args[1]),
                         parseInt(args[2]), parseInt(args[3]), parseInt(args[4])));
