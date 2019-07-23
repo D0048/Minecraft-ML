@@ -1,22 +1,19 @@
 package io.github.d0048.util;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.*;
-
 import io.github.d0048.MCML;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.Range;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
 
 public class Util {
 
@@ -43,6 +40,12 @@ public class Util {
         return a;
     }
 
+    public static double arrCumSum(double[] arr) {
+        double a = 0;
+        for (double i : arr) a += i;
+        return a;
+    }
+
     public static int[] arrCumDiff(int[] arr1, int[] arr2) {
         int[] ret = arr1.clone();
         for (int i = 0; i < ret.length; i++) ret[i] -= arr2[i];
@@ -55,6 +58,22 @@ public class Util {
         return a;
     }
 
+    public static double[] arrProduct(double[] arr1, double[] arr2) {
+        double[] dst = arr1.clone();
+        for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+            dst[i] *= arr2[i];
+        }
+        return dst;
+    }
+
+    public static double[] arrDivide(double[] arr1, double[] arr2) {
+        double[] dst = arr1.clone();
+        for (int i = 0; i < Math.min(arr1.length, arr2.length); i++) {
+            dst[i] /= arr2[i] == 0 ? 1 : arr2[i];
+        }
+        return dst;
+    }
+
     public static <Double> Range arrRange(double[] a) {
         double min = a[0], max = a[0];
         for (double i : a) {
@@ -62,6 +81,18 @@ public class Util {
             if (i > max) max = i;
         }
         return Range.between(min, max);
+    }
+
+    public static double arrMax(double[] arr) {
+        double i = arr[0];
+        for (double d : arr) {
+            if (d > i) i = d;
+        }
+        return i;
+    }
+
+    public static BlockPos arr2BlockPos(double[] arr) {
+        return new BlockPos(arr[0], arr[Math.min(arr.length - 1, 1)], arr[Math.min(arr.length - 1, 2)]);
     }
 
     static void info(String s) {
@@ -214,6 +245,19 @@ public class Util {
         double[] buffer = new double[arr.length];
         for (int i = 0; i < arr.length; i++) buffer[i] = arr[i];
         return buffer;
+    }
+
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(obj);
+        return out.toByteArray();
+    }
+
+    public static Object deserialize(byte[] data) throws IOException, ClassNotFoundException {
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        ObjectInputStream is = new ObjectInputStream(in);
+        return is.readObject();
     }
 
     public static void main(String[] args) {

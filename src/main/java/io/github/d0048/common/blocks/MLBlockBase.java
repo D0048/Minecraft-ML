@@ -53,6 +53,11 @@ public class MLBlockBase extends Block {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SideOnly(Side.CLIENT)
+    public boolean addDestroyEffects(World world, BlockPos pos, net.minecraft.client.particle.ParticleManager manager) {
+        return MLConfig.HQ_MODEL;
+    }
+
     public String getInfoAt(World world, BlockPos pos) {
         return this.toString();
     }

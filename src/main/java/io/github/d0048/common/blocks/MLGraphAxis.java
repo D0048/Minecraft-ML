@@ -1,6 +1,7 @@
 package io.github.d0048.common.blocks;
 
 import io.github.d0048.MLConfig;
+import io.github.d0048.common.items.MLWand;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
@@ -80,6 +81,14 @@ public class MLGraphAxis extends MLBlockBase {
         MLGraphAxisTileEntity te = new MLGraphAxisTileEntity();
         te.setWorld(world);
         return te;
+    }
+
+    @Override
+    public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        if (!worldIn.isRemote) {
+            ((MLGraphAxisTileEntity) worldIn.getTileEntity(pos)).cleanUp();
+        }
+        super.breakBlock(worldIn, pos, state);
     }
 
     public MLGraphAxis() {

@@ -21,10 +21,10 @@ public class MLConfig {
 
     @Config.Name("Refresh Interval of Color Converter")
     @Config.Comment({
-                            "How many ticks to wait before refreshing, lower is faster.",
+                            "How many ticks to wait before refreshing, lower is faster, -1 for on demand",
                     })
-    @Config.RangeInt(min = 1, max = 10000)
-    public static int colorConverterRefershInterval = 5;
+    @Config.RangeInt(min = -1, max = 10000)
+    public static int colorConverterRefershInterval = -1;
 
     @Config.Name("Refresh Interval of Tensor Display")
     @Config.Comment({
@@ -32,6 +32,13 @@ public class MLConfig {
                     })
     @Config.RangeInt(min = 1, max = 10000)
     public static int tensorDisplayRefreshInterval = 10;
+
+    @Config.Name("Async Operation Batch Size")
+    @Config.Comment({
+                            "How big a batch should async operation process each tick.",
+                    })
+    @Config.RangeInt(min = 1, max = Integer.MAX_VALUE)
+    public static int asyncBatchSize = 100;
 
     @Config.Name("Data Core Type")
     @Config.Comment({
@@ -44,7 +51,7 @@ public class MLConfig {
     @Config.Comment({
                             "Whether to use blocks of nearest color or glass",
                     })
-    public static MLColorConverterTileEntity.ColorMode ConverterCOlorMode = MLColorConverterTileEntity.ColorMode.GLASS;
+    public static MLColorConverterTileEntity.ColorMode ConverterColorMode = MLColorConverterTileEntity.ColorMode.GLASS;
 
 
     @Config.Name("Data Core Update Frequency")

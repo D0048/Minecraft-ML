@@ -3,27 +3,17 @@ package io.github.d0048.common.blocks;
 import io.github.d0048.MLConfig;
 import io.github.d0048.util.ColorUtil;
 import io.github.d0048.util.Util;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.nio.ByteBuffer;
-import java.util.List;
 
 public class MLColorConverterTileEntity extends MLTileEntityBase {
     BlockPos edgeLow = new BlockPos(0, 0, 0), edgeHigh = edgeLow;
@@ -42,13 +32,15 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         super.readFromNBT(compound);
     }
 
-    int loop = (int) (Math.random() * MLConfig.colorConverterRefershInterval);
+    int loop = MLConfig.colorConverterRefershInterval > 0 ? (int) (Math.random() * MLConfig.colorConverterRefershInterval) :
+            MLConfig.colorConverterRefershInterval;
 
     @Override
     public void update() {
+        if (loop < 0) return;
         if (loop-- < 0) {
             try {
-                //refresh();
+                refresh();
             } catch (Exception e) {
             }
             loop = MLConfig.colorConverterRefershInterval;
@@ -66,7 +58,7 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
         int b =
                 (int) (MLScalar.getValueAt(getWorld(), pos.add(0, -3, 0)) * (256D / MLConfig.scalarResolution));
         IBlockState state;
-        if (MLConfig.ConverterCOlorMode == ColorMode.ANY) {
+        if (MLConfig.ConverterColorMode == ColorMode.ANY) {
             String color = Util.rgb2Hex(new int[]{r, g, b});
             ItemStack stack = ColorUtil.getBlockFromColor(color).first();
             ItemBlock ib = (ItemBlock) stack.getItem();
@@ -81,6 +73,6 @@ public class MLColorConverterTileEntity extends MLTileEntityBase {
     @Override
     public String toString() {
         return TextFormatting.LIGHT_PURPLE + "Color Converter updating " + TextFormatting.YELLOW + "[On Demand]" +
-                TextFormatting.LIGHT_PURPLE + ", using " + TextFormatting.YELLOW + MLConfig.ConverterCOlorMode;
+                TextFormatting.LIGHT_PURPLE + ", using " + TextFormatting.YELLOW + MLConfig.ConverterColorMode;
     }
 }
