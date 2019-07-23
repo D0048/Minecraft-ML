@@ -29,7 +29,7 @@ public class MLAsyncHelper {
     }
 
     public static void placeAsync(WorldServer world, BlockPos pos, IBlockState state) {
-        toActionList.add(new Operation(world, pos, Blocks.AIR.getDefaultState()));
+        toActionList.add(new Operation(world, pos, state));
     }
 
     static class Operation {

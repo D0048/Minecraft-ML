@@ -19,9 +19,9 @@ public class MLGraphAxisTileEntity extends MLTileEntityBase {
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         try {
-            compound.setByteArray("serialize_pointsMap", Util.serialize(pointsMap));
             info(pointsMap.toString());
             info("Write Length: " + Util.serialize(pointsMap).length);
+            compound.setByteArray("serialize_pointsMap", Util.serialize(pointsMap));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,10 +32,10 @@ public class MLGraphAxisTileEntity extends MLTileEntityBase {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         try {
+            info("Read Length: " + compound.getByteArray("serialize_pointsMap").length);
             pointsMap = (ConcurrentHashMap<SerializableBlockPos, Double>)
                     Util.deserialize(compound.getByteArray("serialize_pointsMap"));
             info(pointsMap.toString());
-            info("Read Length: " + compound.getByteArray("serialize_pointsMap").length);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,8 +55,8 @@ public class MLGraphAxisTileEntity extends MLTileEntityBase {
     }
 
     public void cleanUp() {
-        for (BlockPos p : pointsMap.keySet()) {
-            world.destroyBlock(p, false);
+        for (SerializableBlockPos p : pointsMap.keySet()) {
+            world.destroyBlock(p.getPos(), false);
         }
     }
 
