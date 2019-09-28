@@ -159,8 +159,17 @@ public class MLWandCommand extends CommandBase {
             if (args[0].equals("fill")) {
                 Block b = Block.getBlockFromName(args[1]);
                 int val = 0;
-                if (args.length >= 3) val = parseInt(args[2]);
-                IBlockState state = (b == MLScalar.mlScalar) ? MLScalar.mlScalar.getStateFromMeta(val) : b.getDefaultState();
+                if (args.length >= 3) {
+                    try {
+                        val = parseInt(args[2]);
+                    } catch (Exception E) {
+                        MCML.logger.warn("Invalid Meta ID when fill: " + args[2]);
+                    }
+                }
+                IBlockState state = b.getStateFromMeta(val);
+                sender.sendMessage(new TextComponentString(
+                        TextFormatting.LIGHT_PURPLE + "Filling: " + TextFormatting.YELLOW + state + TextFormatting.LIGHT_PURPLE +
+                                " in chosen area. "));
                 ParticleUtil.fillArea(selections, world, state);
             } else if (args[0].equals("ink")) {
                 if (args.length >= 5) MLWand.mlWand.setPlayer2Brush((EntityPlayer) sender, new MLBrush(parseInt(args[1]),
@@ -227,11 +236,11 @@ public class MLWandCommand extends CommandBase {
 
         ret += TextFormatting.YELLOW + "datacore" + TextFormatting.LIGHT_PURPLE + ": (commands may differ depending on which core " +
                 "you use)\n";
-        ret += MCML.mlDataCore.getUsage(sender).replace("\n","\n    ")+"\n";
+        ret += MCML.mlDataCore.getUsage(sender).replace("\n", "\n    ") + "\n";
 
         ret += TextFormatting.YELLOW + "canvas" + TextFormatting.LIGHT_PURPLE + ": \n";
         ret += "    " + TextFormatting.YELLOW + "fill <block_type> <optional_value>" + TextFormatting.LIGHT_PURPLE + ": fill the " +
-                "volume between both wand selection with block. e.g /canvas fill minecraft_ml:ml_scalar 0 for a white canvas\n";
+                "volume between both wand selection with block. e.g /canvas fill minecraft_ml:ml_scalar 4 for a grey canvas\n";
         ret += "    " + TextFormatting.YELLOW + "ink <R~[0,255]> <G~[0,255]> <B~[0,255]> <Radius>" + TextFormatting.LIGHT_PURPLE +
                 ": set color & radius the current stylus is using(for painting with right click) \n";
 

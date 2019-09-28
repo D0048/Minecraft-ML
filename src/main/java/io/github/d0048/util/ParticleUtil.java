@@ -107,7 +107,7 @@ public class ParticleUtil {
         for (int i = ss[0].getX(); i <= ss[1].getX(); i++)
             for (int j = ss[0].getY(); j <= ss[1].getY(); j++)
                 for (int k = ss[0].getZ(); k <= ss[1].getZ(); k++)
-                    //world.setBlockState(new BlockPos(i, j, k), state);
-                    MLAsyncHelper.placeAsync(world,new BlockPos(i,j,k),state);
+                    world.setBlockState(new BlockPos(i, j, k), state);
+                    //MLAsyncHelper.placeAsync(world,new BlockPos(i,j,k),state);
     }
 }
